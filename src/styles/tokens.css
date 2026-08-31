@@ -1,0 +1,231 @@
+/* ==========================================================================
+   tokens.css
+   The only place a colour, size, radius, duration or easing is defined.
+
+   PALETTE — derived from the RB monogram, pixel by pixel
+   -----------------------------------------------------
+   The mark is two letters in two colour families. The R runs deep navy
+   (#163a61, which is also the wordmark) down to a mid blue (#126ea0). The B
+   runs orange (#f3771f) down to gold (#fbc704). Those four values are read
+   straight out of `RB Logo/RB_Logo transparent.png` and every token below is
+   derived from them.
+
+   ONE ACCENT, and it is the ORANGE.
+
+     ORANGE is everything.  The primary button, text selection, the selected
+                            state, the rules under eyebrows and steps, index
+                            numerals, links, the current nav item, the estimate
+                            figure. One ramp, five steps, no second accent.
+     NAVY is the ground.    Not an accent at all: the ink, the dark band and
+                            every neutral.
+
+   The GOLD at the foot of the B is deliberately absent from the interface. It
+   survives in exactly two places, and both of them are the logo rather than the
+   UI: the monogram itself, and --brand-ramp, which reproduces the mark's own
+   gradient on the three brand edges. Nothing is painted gold.
+
+   That is a real decision and not only a preference. Gold is a light colour —
+   #fbc704 measures 1.44:1 on the page ground — so it can only ever be a fill,
+   never a rule, never a numeral, never a link. Half the marks on this site are
+   1px rules and small type, and they were all having to be orange anyway. One
+   warm ramp that can do every job beats two that each do half.
+
+   Every neutral, including the dark band, is pulled to hue 250, which is the
+   navy's own family. That is what makes the greys read as part of the mark
+   rather than as generic slate, and it is what lets a single warm accent carry
+   the whole page without fighting anything.
+
+   TYPE
+   ----
+   One family for everything: Schibsted Grotesk. No monospace, and no second
+   face for figures: a fee and the sentence around it are the same typeface.
+
+   Contrast ratios in the comments are MEASURED and re-proved on every build by
+   scripts/check-contrast.mjs. A comment that drifts fails the build.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- the base three ----------------------------------------------------
+     accent  = the orange from the top of the B, verbatim.
+     ink     = a near-black pulled to the navy's hue family.
+     surface = the light ground, same family.
+     --------------------------------------------------------------------- */
+  --accent:  oklch(70.25% 0.1766 49.43);  /* #f3771f  the logo orange */
+  --ink:     oklch(24% 0.05 250);         /* #0a2036  14.99:1 on surface */
+  --surface: oklch(96.8% 0.006 250);      /* #f1f5f8  never #fff */
+
+  /* --- the mark's own four, kept verbatim --------------------------------
+     Not used directly as text or fill anywhere. They exist so the derived
+     tokens below have something to be measured against, and so the brand ramp
+     can be written once.
+     --------------------------------------------------------------------- */
+  --brand-navy:   oklch(34.39% 0.0800 252.74); /* #163a61  wordmark, top of the R */
+  --brand-blue:   oklch(51.35% 0.1114 239.93); /* #126ea0  foot of the R */
+  --brand-orange: oklch(70.25% 0.1766 49.43);  /* #f3771f  top of the B */
+  --brand-gold:   oklch(85.15% 0.1735 89.48);  /* #fbc704  foot of the B */
+
+  /* The B's own gradient, written once. Decorative rules only, never text. */
+  --brand-ramp: linear-gradient(
+    90deg,
+    var(--brand-blue) 0%,
+    var(--brand-orange) 58%,
+    var(--brand-gold) 100%
+  );
+
+  /* --- surfaces ----------------------------------------------------------
+     surface-invert is the hero and the footer: the navy taken down until the
+     accent sits on it as text at 6.00:1.
+     --------------------------------------------------------------------- */
+  --surface-raised:   oklch(99.3% 0.004 250); /* #fbfdff  cards, panels */
+  --surface-sunken:   oklch(94.2% 0.010 250); /* #e7ecf2  recessed bands */
+  --surface-disabled: oklch(94.2% 0.010 250); /* #e7ecf2 */
+  --surface-invert:   oklch(23% 0.055 250);   /* #051e35  hero, footer */
+
+  /* --- ink tones ---------------------------------------------------------
+     muted is for secondary prose on SOLID grounds only. Banned on glass:
+     glass carries --ink at full strength or nothing.
+     --------------------------------------------------------------------- */
+  --ink-soft:     oklch(38% 0.035 250); /* #344455  9.10:1  supporting prose */
+  --muted:        oklch(50% 0.035 250); /* #546577  5.45:1  captions, secondary */
+  /* WCAG 1.4.3 exempts inactive controls from the text minimum. Held at 3:1 so
+     a disabled control still reads as disabled rather than merely quiet. */
+  --ink-disabled: oklch(60% 0.015 250); /* #7a8189  3.33:1 on the disabled ground */
+  --ink-invert:   oklch(99.3% 0.004 250);/* #fbfdff  16.55:1 on the dark band */
+  --muted-invert: oklch(78% 0.03 250);  /* #a9b9ca  8.46:1 on the dark band */
+
+  /* --- the accent ramp: one warm family, five steps ------------------------
+     Every brand-coloured thing on the site comes from here.
+
+     The fill takes an INK label, never white: white on this orange is 2.90:1
+     and ink is 5.85:1. accent-deep is the hover, and it is a genuinely deeper,
+     more saturated orange rather than a lighter one — it holds the ink label at
+     4.91:1, which is the floor. Anything darker than this and neither a dark
+     nor a light label clears AA, so #ec6100 is the end of the road downward.
+
+     accent-ink and accent-lift are the same hue taken far enough in each
+     direction to be TEXT: on a light ground and on the dark band respectively.
+     Between them they cover every rule, numeral, link and chevron on the site.
+     --------------------------------------------------------------------- */
+  --ink-on-accent: oklch(24% 0.05 250);       /* #0a2036  5.85:1 on the accent */
+  --accent-deep:   oklch(66% 0.19 45);        /* #ec6100  4.91:1  hover, pressed */
+  --accent-ink:    oklch(52% 0.155 42);       /* #ae4104  5.38:1  accent as text on light */
+  --accent-lift:   oklch(76% 0.155 58);       /* #f9953d  7.55:1  accent as text on dark */
+  --accent-tint:   oklch(95.5% 0.040 62);     /* #ffebd5  opaque wash, 14.15:1 */
+  --accent-wash:   oklch(70.25% 0.1766 49.43 / 0.14);
+
+  /* --- lines -------------------------------------------------------------
+     Two tokens because WCAG 1.4.11 governs control boundaries and not
+     decorative rules.
+     --------------------------------------------------------------------- */
+  --line:        oklch(88% 0.012 250); /* #d2d8df  hairlines, dividers, card edges */
+  --line-strong: oklch(62% 0.02 250);  /* #7d8792  3.31:1  form control borders */
+  --line-invert: oklch(100% 0 0 / 0.14);/* hairlines on the dark band */
+
+  /* --- focus -------------------------------------------------------------
+     Two-tone, no third hue: ink core, raised-surface halo. Whichever ground
+     the control sits on, one of the two tones clears 3:1 against it.
+     --------------------------------------------------------------------- */
+  --focus-ring:       oklch(24% 0.05 250);   /* #0a2036  14.99:1 surface, 5.85:1 accent */
+  --focus-ring-inner: oklch(99.3% 0.004 250);/* #fbfdff  16.55:1 on the dark band */
+
+  /* --- state -------------------------------------------------------------- */
+  --danger: oklch(48% 0.17 26);        /* #a92324  6.51:1 on surface */
+
+  /* --- glass -------------------------------------------------------------
+     One recipe site-wide, and only over the hero photograph.
+     --------------------------------------------------------------------- */
+  --glass-fill:   oklch(99.3% 0.004 250 / 0.78);
+  --glass-edge:   oklch(100% 0 0 / 0.85);     /* specular top rim */
+  --glass-under:  oklch(23% 0.055 250 / 0.16);/* darker base hairline */
+  --glass-opaque: oklch(97.8% 0.005 250);     /* the @supports fallback */
+  --blur: 20px;                                /* ONE blur value site-wide */
+
+  /* --- shadow ------------------------------------------------------------- */
+  --shadow-tint: 23% 0.055 250;
+  --shadow-1:
+    0 1px 2px -1px oklch(var(--shadow-tint) / 0.10),
+    0 2px 6px -2px oklch(var(--shadow-tint) / 0.08);
+  --shadow-2:
+    0 2px 4px -2px oklch(var(--shadow-tint) / 0.10),
+    0 8px 20px -6px oklch(var(--shadow-tint) / 0.12);
+  --shadow-3:
+    0 4px 8px -4px oklch(var(--shadow-tint) / 0.10),
+    0 24px 48px -12px oklch(var(--shadow-tint) / 0.16);
+
+  /* --- type ---------------------------------------------------------------
+     ONE family for the whole site. Self-hosted, latin subset, real italic
+     file, font-display: optional, so no swap and no CLS.
+
+     There is deliberately no monospace. Figures are the same face as the prose,
+     so a fee sits in the same typeface as the sentence around it. Tabular
+     figures are applied to phone numbers, dates and counts and withheld from
+     currency; base.css states why.
+     --------------------------------------------------------------------- */
+  --font-sans: 'Schibsted Grotesk', 'Schibsted Fallback', system-ui,
+               -apple-system, 'Segoe UI', sans-serif;
+
+  --text-hero: clamp(2.25rem,   min(7vw,   9.6svh), 5rem);
+  --text-h2:   clamp(1.75rem,   min(4.8vw, 6.8svh), 2.875rem);
+  --text-h3:   clamp(1.1875rem, min(2.8vw, 3.8svh), 1.5rem);
+  --text-h4:   clamp(1.0625rem, min(2vw,   2.6svh), 1.1875rem);
+  --text-body: clamp(1.0625rem, 1rem + 0.3vw, 1.125rem);  /* 17px floor */
+  --text-sm:   clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+  --text-xs:   0.8125rem;
+  --text-eyebrow: 0.78125rem;
+  /* The one display size on the site: the calculator's estimate. */
+  --text-figure: clamp(2rem, 1.4rem + 3vw, 3.25rem);
+
+  --leading-tight: 1.06;
+  --leading-snug:  1.22;
+  --leading-body:  1.6;
+  --tracking-tight: -0.022em;
+  --tracking-eyebrow: 0.09em;
+  --measure:       68ch;
+  --measure-tight: 46ch;
+
+  /* --- space -------------------------------------------------------------- */
+  --section-y: clamp(3rem, min(2.5rem + 7vw, 12svh), 6.5rem);
+  --gutter:    clamp(1.125rem, 4vw, 2.5rem);
+  --container: 78rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* --- radius, concentrically ---------------------------------------------- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+  --pad-card: 1.5rem;
+  --pad-panel: 2rem;
+
+  /* --- motion --------------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-hover:   170ms;
+  --dur-control: 220ms;
+  --dur-enter:   600ms;
+  --dur-page:    480ms;
+
+  /* --- chrome ---------------------------------------------------------------
+     A full-width header bar. --header-h is the bar's own height and every
+     anchor offset derives from this one number; check-mobile.mjs fails if the
+     rendered bar disagrees with it.
+     --------------------------------------------------------------------- */
+  --header-inset: 0px;
+  --header-h: 3.75rem;
+  --tap-min: 44px;
+}
+
+@media (min-width: 56rem) {
+  :root { --header-h: 4.75rem; }
+}

@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# generated review artefacts, reproducible with `npm run shoot`
+frames/
+
+# vercel
+.vercel/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# The client's supplied source documents.
+#
+# The site publishes their CONTENT in full - every fee, every service line, every
+# director - and src/data/site.ts cites them as [PROFILE] and [FEES] on every
+# entry. The raw deck and spreadsheet themselves are a different matter: no build
+# script reads them, and this repository is public.
+#
+# They are held outside the repo, at "RB Logo/". The one logo file the build
+# actually reads is brand/rb-lockup.png, and that IS committed.
+RB Logo/

@@ -1,0 +1,593 @@
+---
+import Base from '../layouts/Base.astro';
+import Estimator from '../components/Estimator.astro';
+import {
+  site, serviceLines, steps, audiences, faqs, sectors, team, packages,
+} from '../data/site';
+
+const title = 'Reliance Business Partners — accountants in Colombo';
+const description =
+  'Accounting, tax, payroll, advisory, Power BI and company secretarial from one firm in Nugegoda, Colombo. Incorporation from LKR 36,000.';
+
+/* Three facts, each one sourced. Nothing here is a claim the firm has not
+   already made in its own profile or its own fee sheet. */
+const heroFacts = [
+  { label: 'A firm since', value: String(site.founded) },
+  { label: 'Professionals', value: `${team.total} across four grades` },
+  { label: 'Incorporation from', value: `LKR ${packages[0].price.toLocaleString('en-US')}` },
+];
+---
+<Base title={title} description={description} overHero>
+
+  {/*
+    1. Hero.
+
+    Deliberately NOT a full-bleed photograph with the copy laid over it. The
+    ground here is built rather than shot: the navy field, two soft brand-hued
+    light sources, and one hard diagonal that repeats the leg of the R in the
+    mark. That is "overlapping shapes", which is what glass.css requires behind
+    a glass surface, so the header above it is still real glass rather than a
+    frost over a flat colour.
+
+    The photograph is still here, but as an OBJECT in the layout — an inset
+    panel on the right with the mark's own gradient along its top edge —
+    instead of the background the words sit on.
+  */}
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero-field" aria-hidden="true">
+      <span class="glow glow--warm"></span>
+      <span class="glow glow--deep"></span>
+      <span class="leg"></span>
+    </div>
+
+    <div class="container hero-grid">
+      <div class="hero-copy on-invert">
+        <p class="eyebrow hero-eyebrow">Nugegoda &middot; Colombo &middot; Since {site.founded}</p>
+        <h1 id="hero-h">One firm for the accounts, the tax and the company itself.</h1>
+        <p class="hero-lede">
+          Accounting and BPO, tax and assurance, payroll, business advisory, Power BI
+          reporting and corporate secretarial work &mdash; all of it under one
+          umbrella, and priced in the open.
+        </p>
+        <div class="row hero-actions">
+          <a class="btn btn--primary btn--lg" href="#estimate">Price an incorporation</a>
+          <a class="btn btn--ghost btn--lg" href="#services">See what we do</a>
+        </div>
+
+        <dl class="hero-facts">
+          {heroFacts.map((f) => (
+            <div>
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div class="hero-figure on-invert">
+        <figure class="shot">
+          <picture>
+            <source type="image/avif" srcset="/hero/hero-panel-640.avif 640w, /hero/hero-panel-900.avif 900w" sizes="(min-width: 62rem) 29rem, 100vw" />
+            <source type="image/webp" srcset="/hero/hero-panel-640.webp 640w, /hero/hero-panel-900.webp 900w" sizes="(min-width: 62rem) 29rem, 100vw" />
+            <img src="/hero/hero-panel-900.webp" width="900" height="1350" alt="" loading="eager" fetchpriority="high" decoding="async" />
+          </picture>
+        </figure>
+        <p class="shot-tag">
+          <span class="shot-tag-k">Registered office</span>
+          <span class="shot-tag-v">{site.address.locality}</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. The estimator, lifted out of the hero. -->
+  <Estimator />
+
+  {/*
+    3. Services.
+
+    A numbered ledger, not a grid of cards. Six items in a card grid is the
+    default shape every professional-services site reaches for, and the row form
+    suits this content better anyway: the reader is scanning a list of things
+    the firm does, in order, and the index numeral gives them a place to be.
+  */}
+  <section id="services" class="section band" aria-labelledby="services-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What we do</p>
+        <h2 id="services-h">Six service areas, one set of people.</h2>
+        <p>
+          Most clients start with one of these and end up with three. Because it is
+          the same firm, the ledger the accountant keeps is the ledger the tax
+          computation is built from.
+        </p>
+      </div>
+
+      <ol class="ledger">
+        {serviceLines.map((s, i) => (
+          <li>
+            <a class="lg-row link-plain" href={`/services/${s.slug}/`}>
+              <span class="lg-n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="lg-body">
+                <span class="lg-title">{s.title}</span>
+                <span class="lg-blurb">{s.blurb}</span>
+              </span>
+              <span class="lg-go" aria-hidden="true"></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 4. How it works. The section that removes fear. -->
+  <section id="how" class="section" aria-labelledby="how-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Incorporating a company</p>
+        <h2 id="how-h">Four steps, and you knew the price at step zero.</h2>
+        <p>
+          Most people registering a company have never done it before. This is the
+          whole sequence, with nothing hidden in the middle of it.
+        </p>
+      </div>
+
+      <ol class="steps">
+        {steps.map((s, i) => (
+          <li class={`step reveal reveal-${Math.min(i + 1, 4)}`}>
+            <span class="step-n">{String(s.n).padStart(2, '0')}</span>
+            <h3>{s.title}</h3>
+            <p>{s.detail}</p>
+            <p class="step-meta">{s.who}</p>
+          </li>
+        ))}
+      </ol>
+
+      <p class="closing-line">
+        What you end up holding is a Certificate of Incorporation, a TIN certificate,
+        your seals, and the resolutions a bank needs to open the account.{' '}
+        <a href="/packages/">See exactly what is in each package</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- 5. The firm. Numbers and values, both from the profile. -->
+  <section id="firm" class="section band" aria-labelledby="firm-h">
+    <div class="container">
+      <div class="two-col">
+        <div class="section-head">
+          <p class="eyebrow">The firm</p>
+          <h2 id="firm-h">Seventeen people, four directors, one umbrella.</h2>
+          <p>
+            Reliance Business Partners was established in {site.founded} as a limited
+            liability company, to put business services a growing company needs in
+            one place instead of four.
+          </p>
+          <p class="vision">&ldquo;{site.vision}&rdquo;</p>
+          <a class="btn btn--secondary firm-cta" href="/about/">Meet the board</a>
+        </div>
+
+        <div class="firm-panels">
+          <div class="solid-panel">
+            <h3>Who is here</h3>
+            <dl class="rows team-rows">
+              {team.rows.map((r) => (
+                <div>
+                  <dt>{r.role}</dt>
+                  <dd class="tnum">{r.n}</dd>
+                </div>
+              ))}
+              <div class="total-row">
+                <dt>Total</dt>
+                <dd class="tnum">{team.total}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="solid-panel">
+            <h3>What we hold to</h3>
+            <ul class="ticks">
+              {site.values.map((v) => <li>{v}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Sectors. A flat chip field, no cards. -->
+  <section id="sectors" class="section" aria-labelledby="sectors-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Sectorial expertise</p>
+        <h2 id="sectors-h">Fourteen sectors we already know the shape of.</h2>
+        <p>
+          Not a client list. These are the industries whose books, filings and
+          seasonality the firm has worked in before.
+        </p>
+      </div>
+      <ul class="chips">
+        {sectors.map((s) => <li>{s}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. Who this is for. Hairline rows, no cards. -->
+  <section id="who" class="section band" aria-labelledby="who-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Where to start</p>
+        <h2 id="who-h">Four ways people arrive here.</h2>
+      </div>
+      <div class="rows routes">
+        {audiences.map((a) => (
+          <a class="route link-plain" href={a.to}>
+            <span class="row-label">{a.title}</span>
+            <span class="row-value">{a.detail}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ. details/summary, no JS. -->
+  <section id="faq" class="section" aria-labelledby="faq-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-h">The things people ask first.</h2>
+      </div>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <div class="answer"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Contact and CTA -->
+  <section id="contact" class="section band" aria-labelledby="contact-h">
+    <div class="container">
+      <div class="cta-panel">
+        <div class="cta-copy">
+          <h2 id="contact-h">Tell us what you are setting up.</h2>
+          <p>
+            Describe it in your own words. You get the scope and the fee in writing
+            before any work begins, and making contact costs nothing.
+          </p>
+        </div>
+        <div class="row cta-actions">
+          <a class="btn btn--primary btn--lg" href="/contact/">Start an enquiry</a>
+          <a class="btn btn--secondary btn--lg tnum" href={site.phoneHref}>{site.phone}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  /* --- hero -------------------------------------------------------------
+     A built ground, not a photographed one. See the note on the markup. */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    background: var(--surface-invert);
+    margin-top: calc((var(--header-h) + var(--header-inset)) * -1);
+    padding-block: calc(var(--header-h) + var(--space-7)) calc(var(--space-8) + var(--space-6));
+    overflow: hidden;
+  }
+
+  /* The depth the glass header needs: two soft light sources and one hard
+     diagonal, all in the mark's own colours. */
+  .hero-field { position: absolute; inset: 0; z-index: -1; }
+
+  /* mix-blend-mode: screen, not a translucent overlay. A low-alpha warm colour
+     laid over navy averages toward olive, which is the one colour this brand
+     does not contain. Screen is how light actually behaves: it adds, so a dim
+     amber over navy lifts to warm amber and never passes through green. The
+     sources are therefore DARK — they are light being added, not paint. */
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    mix-blend-mode: screen;
+  }
+  /* Both sources are centred OFF the canvas, so what reaches the page is the
+     falloff rather than the hot core. The header is glass and samples whatever
+     is under it; a bright source near the top edge turns the whole bar tan. */
+  /* Sized for the viewport, not fixed. A 40rem source pushed 13rem off the
+     right edge is a corner accent at 1440px and a wash across the entire bar at
+     390px, where it turns the glass header tan end to end. */
+  .glow--warm {
+    width: 24rem; height: 18rem;
+    top: -12rem; right: -9rem;
+    background: oklch(35% 0.075 68);
+  }
+  @media (min-width: 62rem) {
+    .glow--warm { width: 40rem; height: 28rem; top: -17rem; right: -13rem; }
+  }
+  .glow--deep {
+    width: 52rem; height: 40rem;
+    bottom: -24rem; left: -18rem;
+    background: oklch(36% 0.072 245);
+  }
+  /* The leg of the R, at the R's own angle. It sits to the RIGHT of the copy
+     column so it frames the figure rather than cutting across the headline, and
+     it is blurred: a hard-edged band reads as a rendering artefact, a soft one
+     reads as light. */
+  .leg {
+    position: absolute;
+    right: 2%;
+    top: -30%;
+    width: 30rem;
+    height: 170%;
+    transform: rotate(24deg);
+    transform-origin: top right;
+    filter: blur(10px);
+    background: linear-gradient(
+      100deg,
+      transparent 0 44%,
+      oklch(100% 0 0 / 0.04) 44% 56%,
+      transparent 56%
+    );
+  }
+
+  .hero-grid { display: grid; gap: var(--space-7); align-items: center; }
+  @media (min-width: 62rem) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr) 25rem; gap: var(--space-8); }
+  }
+  @media (min-width: 74rem) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr) 29rem; }
+  }
+
+  .hero-copy { max-width: 40rem; }
+  .hero-eyebrow { color: var(--accent); }  /* the logo orange, 6.00:1 on the hero */
+  .hero h1 { color: var(--ink-invert); max-width: 16ch; }
+  .hero-lede {
+    color: var(--muted-invert);
+    font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.1875rem);
+    max-width: 46ch;
+    margin-top: var(--space-5);
+  }
+  .hero-actions { margin-top: var(--space-6); gap: var(--space-3); }
+
+  /* Facts as three orange-ruled columns rather than one bordered block. */
+  .hero-facts {
+    display: grid;
+    gap: var(--space-4) var(--space-6);
+    margin-top: var(--space-7);
+  }
+  @media (min-width: 40rem) {
+    .hero-facts { grid-template-columns: repeat(3, auto); justify-content: start; }
+  }
+  .hero-facts > div { padding-top: var(--space-3); border-top: 2px solid var(--accent); }
+  .hero-facts dt {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted-invert);
+    margin-bottom: var(--space-1);
+  }
+  .hero-facts dd { color: var(--ink-invert); margin: 0; font-size: var(--text-sm); font-weight: 600; }
+
+  /* --- the photograph, as an object ---------------------------------------- */
+  .hero-figure { position: relative; }
+  .shot {
+    margin: 0;
+    position: relative;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-3);
+  }
+  /* The mark's own gradient across the top edge of the panel. */
+  .shot::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    z-index: 1;
+    background: var(--brand-ramp);
+  }
+  .shot img {
+    width: 100%;
+    height: clamp(13rem, 32vw, 24rem);
+    object-fit: cover;
+    object-position: 50% 28%;
+  }
+  @media (min-width: 62rem) { .shot img { height: 29rem; } }
+
+  .shot-tag {
+    display: grid;
+    gap: 2px;
+    margin-top: var(--space-4);
+    padding-inline-start: var(--space-4);
+    border-inline-start: 2px solid var(--accent);
+  }
+  .shot-tag-k {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted-invert);
+  }
+  .shot-tag-v { color: var(--ink-invert); font-size: var(--text-sm); font-weight: 600; }
+
+  /* --- services: a numbered ledger ------------------------------------------
+     Rules between the rows, no boxes. The numeral is the only ornament and it
+     is doing a job: it tells you how many of these there are and where you are
+     in them. */
+  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  @media (min-width: 62rem) {
+    .ledger {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-8);
+    }
+    /* With two columns the top rule would only sit above the first two rows. */
+    .ledger > li:nth-child(-n+2) { border-top: 0; }
+    .ledger > li { border-top: 1px solid var(--line); }
+    .ledger > li:nth-child(2n) { margin-top: 0; }
+  }
+
+  .lg-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: var(--space-4);
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    transition: background-color var(--dur-hover) var(--ease-out);
+  }
+  .lg-n {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--accent-ink);
+    padding-top: 0.25em;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+  .lg-body { display: grid; gap: var(--space-2); }
+  .lg-title {
+    font-size: var(--text-h4);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+  }
+  .lg-blurb { color: var(--muted); font-size: var(--text-sm); }
+
+  /* A chevron drawn from two borders, so there is no icon file and no SVG. */
+  .lg-go {
+    align-self: center;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-top: 2px solid var(--accent-ink);
+    border-right: 2px solid var(--accent-ink);
+    transform: rotate(45deg);
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+  .lg-row:hover { background: var(--accent-tint); }
+  .lg-row:hover .lg-go { transform: rotate(45deg) translate3d(2px, -2px, 0); }
+
+  /* --- how it works ------------------------------------------------------ */
+  .closing-line {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line);
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+
+  /* --- the firm ---------------------------------------------------------- */
+  .two-col { display: grid; gap: var(--space-6); align-items: start; }
+  @media (min-width: 52rem) { .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); } }
+  .two-col .section-head { margin-bottom: 0; }
+  .vision {
+    margin-top: var(--space-5);
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--accent);
+    color: var(--ink);
+    font-style: italic;
+  }
+  .firm-cta { margin-top: var(--space-5); }
+
+  .firm-panels { display: grid; gap: var(--space-4); }
+  .firm-panels h3 { font-size: var(--text-h4); margin-bottom: var(--space-4); }
+  .team-rows { border-top: 0; margin: 0; }
+  .team-rows > *:first-child { padding-top: 0; }
+  .team-rows > *:last-child { border-bottom: 0; padding-bottom: 0; }
+  .total-row dt, .total-row dd { font-weight: 700; color: var(--ink); }
+
+  /* --- sectors ------------------------------------------------------------ */
+  .chips {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .chips li {
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  /* --- routes ------------------------------------------------------------- */
+  .routes { max-width: var(--measure); }
+  .route {
+    color: var(--ink);
+    transition: padding-inline-start var(--dur-hover) var(--ease-out);
+  }
+  .route:hover { padding-inline-start: var(--space-2); }
+  .route .row-value { color: var(--muted); }
+  /* .rows right-aligns its value, which is right for a two-word figure and
+     wrong for a sentence: once it wraps, a right-aligned ragged-left block
+     appears in the middle of the page. Above the fold-in width these read as
+     two proper columns instead. */
+  @media (min-width: 40rem) {
+    .routes .row-label { flex: 0 0 13rem; }
+    .routes .row-value { flex: 1; text-align: start; }
+  }
+
+  /* --- closing panel --------------------------------------------------------
+     Light, because the footer immediately below is the dark region and two dark
+     blocks in a row read as two endings.
+
+     It was accent-tinted for one iteration and that was wrong: the accent
+     button sitting on its own tint measures about 1.5:1 between fill and
+     ground, so the control had no visible edge, which is exactly what WCAG
+     1.4.11 asks for at 3:1. The mark's gradient along the top edge marks the
+     panel instead. It is the same device as the footer rule and the hero
+     figure's edge — one brand gesture used in three places is a system, not
+     decoration. */
+  .cta-panel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .cta-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--brand-ramp);
+  }
+  .cta-copy h2 { max-width: 16ch; }
+  .cta-copy p {
+    color: var(--ink-soft);
+    margin-top: var(--space-4);
+    max-width: 40ch;
+  }
+  .cta-actions { gap: var(--space-3); }
+
+  /* The photograph drifts a little against the field as you scroll. One
+     transform, guarded, off entirely under reduced motion. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .shot img {
+        animation: drift linear both;
+        animation-timeline: scroll();
+        animation-range: 0 80svh;
+      }
+    }
+  }
+  @keyframes drift {
+    from { transform: translate3d(0, 0, 0) scale(1.08); }
+    to   { transform: translate3d(0, -3%, 0) scale(1.08); }
+  }
+</style>

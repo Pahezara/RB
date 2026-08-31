@@ -1,0 +1,679 @@
+---
+import { site, packages, extras, annualRetainer } from '../data/site';
+
+/*
+ * The fee estimator.
+ *
+ * Two rules govern this component.
+ *
+ * 1. IT OWNS NO PRICES. Every figure is written into a data- attribute from
+ *    src/data/site.ts, which transcribes the client's own fee sheet, and the
+ *    script reads them back out of the DOM. There is no number in the
+ *    JavaScript. Change the sheet, change the data file, and the calculator
+ *    follows; there is no second place for a price to go stale.
+ *
+ * 2. IT WORKS WITH THE SCRIPT DISABLED. The default state is rendered on the
+ *    server with the arithmetic already done, so a visitor with no JavaScript
+ *    sees the Basic package for one director at its real price, the full
+ *    contents of all three packages, and every extra with its own figure
+ *    beside it. The script upgrades a correct page; it does not rescue a
+ *    broken one.
+ *
+ * The monthly figure is kept in its own column and never folded into the
+ * one-time total. A subscription added into a setup cost is how an estimate
+ * quietly becomes wrong.
+ */
+
+const money = (n: number) => n.toLocaleString('en-US');
+const base = packages[0];
+const oneOff = extras.filter((e) => e.kind === 'once');
+const monthly = extras.filter((e) => e.kind === 'monthly');
+const MAX_DIRECTORS = 10;
+---
+
+<section id="estimate" class="estimate" aria-labelledby="estimate-h">
+  <div class="container">
+    <div class="panel">
+      <div class="head">
+        <p class="eyebrow">What it will cost</p>
+        <h2 id="estimate-h">Price your incorporation before you call.</h2>
+        <p class="lede">
+          Pick a package, set the number of directors, and add anything else you
+          will need on day one. The figures are the firm's published fee
+          structure, not a range.
+        </p>
+      </div>
+
+      <form class="calc" id="estimate-form">
+        <fieldset class="block">
+          <legend>Package</legend>
+          <div class="picks">
+            {packages.map((p, i) => (
+              <label class="pick">
+                <input
+                  type="radio"
+                  name="package"
+                  value={p.slug}
+                  checked={i === 0}
+                  data-price={p.price}
+                  data-per-director={p.perDirector}
+                  data-name={p.name}
+                  aria-label={
+                    `${p.name} package, LKR ${money(p.price)} for one director, ` +
+                    `plus LKR ${money(p.perDirector)} for each additional director`
+                  }
+                />
+                <span class="pick-body">
+                  <span class="pick-top">
+                    <span class="pick-name">{p.name}</span>
+                    <span class="pick-tick" aria-hidden="true"></span>
+                  </span>
+                  <span class="pick-price">
+                    <span class="cur">LKR</span> {money(p.price)}
+                  </span>
+                  <span class="pick-meta">
+                    one director &middot; {p.includes.length} items included
+                  </span>
+                  <span class="pick-sum">{p.summary}</span>
+                  <span class="pick-add">
+                    + LKR {money(p.perDirector)} per additional director
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class="two">
+          <fieldset class="block">
+            <legend>
+              Directors{' '}
+              <span class="count tnum" id="director-count" aria-hidden="true">1</span>
+            </legend>
+            <input
+              class="slider"
+              type="range"
+              id="directors"
+              name="directors"
+              min="1"
+              max={MAX_DIRECTORS}
+              step="1"
+              value="1"
+              aria-label="Number of directors"
+              aria-describedby="directors-hint"
+            />
+            <p class="hint" id="directors-hint">
+              Drag, or use the arrow keys. The first director is in the package
+              price; each one after that is added at the package's own rate.
+            </p>
+          </fieldset>
+
+          <fieldset class="block">
+            <legend>Also needed</legend>
+            <div class="adds">
+              {extras.map((e) => (
+                <label class="add">
+                  <input
+                    type="checkbox"
+                    name="extra"
+                    value={e.slug}
+                    data-price={e.price}
+                    data-kind={e.kind}
+                    data-name={e.name}
+                  />
+                  <span class="add-body">
+                    <span class="add-box" aria-hidden="true"></span>
+                    <span class="add-text">
+                      <span class="add-name">{e.name}</span>
+                      <span class="add-price">
+                        from LKR {money(e.price)}{e.kind === 'monthly' ? ' a month' : ''}
+                      </span>
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+      </form>
+
+      <div class="result">
+        {/*
+          The live region is the two figures and nothing more. Putting it on the
+          whole result would re-announce every breakdown row on every step of a
+          slider drag, and the range input already announces its own value.
+        */}
+        <div class="figures" aria-live="polite">
+          <div class="figure-block">
+            <p class="figure-label">Estimated one-time cost</p>
+            {/* The gap between the currency and the figure is a real character,
+                not only a margin: the two spans are adjacent, so without it the
+                live region announces "LKR36,000". */}
+            <p class="figure">
+              <span class="cur">LKR&nbsp;</span><span id="total-once">{money(base.price)}</span>
+            </p>
+            <p class="figure-note" id="total-once-note">
+              {base.name} package, one director.
+            </p>
+          </div>
+
+          <div class="figure-block" id="monthly-block" hidden>
+            <p class="figure-label">Then, every month</p>
+            <p class="figure figure--alt">
+              <span class="cur">LKR&nbsp;</span><span id="total-monthly">0</span>
+            </p>
+            <p class="figure-note">Billed monthly, separately from the setup.</p>
+          </div>
+        </div>
+
+        <ul class="breakdown" id="breakdown">
+          <li>
+            <span class="bk-label">{base.name} package, one director</span>
+            <span class="bk-amount">LKR {money(base.price)}</span>
+          </li>
+        </ul>
+
+        <p class="after">
+          From the second year, the annual retainer is{' '}
+          <strong>LKR {money(annualRetainer)}</strong>, charged when your Form 15
+          is filed. The first year is already in every package above.
+        </p>
+      </div>
+
+      <p class="disclaimer">
+        <strong>This is an estimate, not a quotation.</strong>{' '}
+        The package prices and the per-director rates are exact and come from the
+        firm's fee structure.
+        {oneOff.length + monthly.length > 0 && (
+          <> The {monthly.length ? 'website and POS lines are' : 'add-on lines are'} starting
+          prices and depend on scope.</>
+        )}
+        Government charges on additional filings are separate. Tell us what you
+        are setting up and you get the real figure in writing before any work
+        begins.
+      </p>
+
+      <div class="row actions">
+        <a class="btn btn--primary btn--lg" href="/contact/">Get this in writing</a>
+        <a class="btn btn--secondary btn--lg tnum" href={site.phoneHref}>{site.phone}</a>
+        <a class="btn btn--ghost btn--lg" href="/packages/">Compare the packages</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /*
+   * Reads every price out of the DOM, so this file contains no figures at all.
+   * If the markup is missing, nothing runs and the server-rendered default
+   * stands, which is already correct.
+   */
+  const form = document.getElementById('estimate-form') as HTMLFormElement | null;
+  const onceEl = document.getElementById('total-once');
+  const onceNote = document.getElementById('total-once-note');
+  const monthlyEl = document.getElementById('total-monthly');
+  const monthlyBlock = document.getElementById('monthly-block');
+  const breakdown = document.getElementById('breakdown');
+  const countEl = document.getElementById('director-count');
+  const slider = document.getElementById('directors') as HTMLInputElement | null;
+
+  if (form && onceEl && onceNote && monthlyEl && monthlyBlock && breakdown && countEl && slider) {
+    const money = (n: number) => n.toLocaleString('en-US');
+    const num = (el: Element | null, attr: string) =>
+      Number((el as HTMLElement | null)?.dataset[attr] ?? 0);
+
+    const row = (label: string, amount: string) => {
+      const li = document.createElement('li');
+      const l = document.createElement('span');
+      l.className = 'bk-label';
+      l.textContent = label;
+      const a = document.createElement('span');
+      a.className = 'bk-amount';
+      a.textContent = amount;
+      li.append(l, a);
+      return li;
+    };
+
+    function update() {
+      const pkg = form!.querySelector<HTMLInputElement>('input[name="package"]:checked');
+      if (!pkg) return;
+
+      const price = num(pkg, 'price');
+      const perDirector = num(pkg, 'perDirector');
+      const name = pkg.dataset.name ?? '';
+      const directors = Math.max(1, Number(slider!.value));
+      const extraDirectors = directors - 1;
+
+      // The track's filled portion. CSS owns the gradient; this owns the stop.
+      const span = Number(slider!.max) - Number(slider!.min);
+      slider!.style.setProperty(
+        '--fill',
+        `${span > 0 ? ((directors - Number(slider!.min)) / span) * 100 : 0}%`,
+      );
+
+      const lines: HTMLLIElement[] = [];
+      let once = price;
+      let permonth = 0;
+
+      lines.push(row(
+        `${name} package, ${directors === 1 ? 'one director' : 'first director'}`,
+        `LKR ${money(price)}`,
+      ));
+
+      if (extraDirectors > 0) {
+        const add = extraDirectors * perDirector;
+        once += add;
+        lines.push(row(
+          `${extraDirectors} more director${extraDirectors > 1 ? 's' : ''} at LKR ${money(perDirector)} each`,
+          `LKR ${money(add)}`,
+        ));
+      }
+
+      for (const box of form!.querySelectorAll<HTMLInputElement>('input[name="extra"]:checked')) {
+        const p = num(box, 'price');
+        const label = box.dataset.name ?? '';
+        if (box.dataset.kind === 'monthly') {
+          permonth += p;
+          lines.push(row(`${label}, from`, `LKR ${money(p)} a month`));
+        } else {
+          once += p;
+          lines.push(row(`${label}, from`, `LKR ${money(p)}`));
+        }
+      }
+
+      onceEl!.textContent = money(once);
+      onceNote!.textContent = directors === 1
+        ? `${name} package, one director.`
+        : `${name} package, ${directors} directors.`;
+      countEl!.textContent = String(directors);
+
+      if (permonth > 0) {
+        monthlyEl!.textContent = money(permonth);
+        monthlyBlock!.removeAttribute('hidden');
+      } else {
+        monthlyBlock!.setAttribute('hidden', '');
+      }
+
+      breakdown!.replaceChildren(...lines);
+    }
+
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    update();
+  }
+</script>
+
+<style>
+  /* The panel lifts out of the hero above it and lands on the page ground, so
+     the first thing below the headline is the number people came for. It is a
+     SOLID surface, never glass: glass on this site never carries a price, a
+     form control or a table, and this carries all three. */
+  .estimate {
+    position: relative;
+    z-index: 2;
+    margin-top: calc(var(--space-8) * -1);
+    padding-bottom: var(--section-y);
+  }
+  .panel {
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-3);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+    --r-inner: max(var(--r-sm), calc(var(--r-xl) - 2.5rem));
+  }
+  [hidden] { display: none !important; }
+
+  .head { max-width: var(--measure); }
+  .head h2 { max-width: 18ch; }
+  .lede {
+    color: var(--ink-soft);
+    margin-top: var(--space-4);
+    max-width: 52ch;
+  }
+
+  /* --- form scaffolding --------------------------------------------------- */
+  .calc { margin-top: var(--space-6); display: grid; gap: var(--space-6); }
+  .block { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .block legend {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    width: 100%;
+    padding: 0;
+    margin-bottom: var(--space-3);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .count {
+    font-size: var(--text-h4);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink);
+  }
+  .hint { color: var(--muted); font-size: var(--text-sm); margin-top: var(--space-3); }
+
+  .two { display: grid; gap: var(--space-6); }
+  @media (min-width: 48rem) { .two { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-7); } }
+
+  /* --- package picker ------------------------------------------------------
+     The native radio is stretched over the whole card at zero opacity, so the
+     card IS the control: one 44px-plus tap target, keyboard behaviour and the
+     checked state all come free from the browser instead of being rebuilt. */
+  .picks { display: grid; gap: var(--space-3); }
+  @media (min-width: 46rem) { .picks { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .pick { position: relative; display: block; }
+  .pick input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .pick-body {
+    display: grid;
+    gap: var(--space-2);
+    height: 100%;
+    padding: var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    transition: border-color var(--dur-hover) var(--ease-out),
+                background-color var(--dur-hover) var(--ease-out);
+  }
+  .pick input:hover + .pick-body { border-color: var(--line-strong); }
+
+  /* Selected. The border does the work at 14.99:1, not the accent, which is
+     2.86:1 on this ground and could never carry a state on its own. The tint
+     and the tick are confirmation, not the signal. */
+  .pick input:checked + .pick-body {
+    background: var(--accent-tint);
+    border-color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+  .pick input:focus-visible + .pick-body {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--focus-ring-inner);
+  }
+
+  .pick-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .pick-name { font-weight: 700; font-size: var(--text-h4); }
+  .pick-tick {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: var(--r-pill);
+    border: 2px solid var(--line-strong);
+    background: var(--surface-raised);
+  }
+  .pick input:checked + .pick-body .pick-tick {
+    border-color: var(--ink);
+    background:
+      linear-gradient(var(--accent), var(--accent)) padding-box;
+    position: relative;
+  }
+  .pick input:checked + .pick-body .pick-tick::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 0.45rem;
+    height: 0.24rem;
+    border-left: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    transform: rotate(-45deg) translate(0.5px, -1px);
+  }
+  .pick-price { font-size: var(--text-h3); font-weight: 700; letter-spacing: var(--tracking-tight); }
+  /* The floor matters: .pick-price bottoms out at 19px on a 360px screen, and a
+     bare 0.62em would put this currency mark at 11.8px, under the 12px minimum
+     check-mobile enforces. */
+  .cur {
+    font-size: max(0.8125rem, 0.62em);
+    font-weight: 700;
+    color: var(--muted);
+    margin-inline-end: 0.35em;
+  }
+  .pick-meta {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .pick-sum { font-size: var(--text-sm); color: var(--ink-soft); }
+  .pick-add {
+    margin-top: auto;
+    padding-top: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+  .pick input:checked + .pick-body .pick-sum,
+  .pick input:checked + .pick-body .pick-meta,
+  .pick input:checked + .pick-body .pick-add,
+  .pick input:checked + .pick-body .cur { color: var(--ink); }
+
+  /* --- slider ---------------------------------------------------------------
+     The thumb is the accent with an ink rim. The rim is what satisfies 1.4.11:
+     the accent alone is 2.86:1 against this ground, under the 3:1 a control
+     boundary needs, so the edge has to come from the rim. */
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+  }
+  /* --fill is set by the script. With the script off it stays 0% and the track
+     is simply empty, which is exactly right for the default of one director. */
+  .slider {
+    --fill: 0%;
+    --track: linear-gradient(
+      to right,
+      var(--accent) 0 var(--fill),
+      var(--surface-sunken) var(--fill) 100%
+    );
+  }
+  .slider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: var(--r-pill);
+    background: var(--track);
+    border: 1px solid var(--line);
+  }
+  .slider::-moz-range-track {
+    height: 6px;
+    border-radius: var(--r-pill);
+    background: var(--track);
+    border: 1px solid var(--line);
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    margin-top: -11px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    box-shadow: var(--shadow-1);
+  }
+  .slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    box-shadow: var(--shadow-1);
+  }
+
+  /* --- extras ---------------------------------------------------------------
+     Same trick as the package cards: the checkbox is the row. */
+  .adds { display: grid; gap: var(--space-2); }
+  .add { position: relative; display: block; }
+  .add input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .add-body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--tap-min);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    transition: border-color var(--dur-hover) var(--ease-out),
+                background-color var(--dur-hover) var(--ease-out);
+  }
+  .add input:hover + .add-body { border-color: var(--line-strong); }
+  .add input:checked + .add-body {
+    background: var(--accent-tint);
+    border-color: var(--ink);
+  }
+  .add input:focus-visible + .add-body {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--focus-ring-inner);
+  }
+  .add-box {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-xs);
+    background: var(--surface-raised);
+    position: relative;
+  }
+  .add input:checked + .add-body .add-box { border-color: var(--ink); background: var(--accent); }
+  .add input:checked + .add-body .add-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 0.42rem;
+    height: 0.22rem;
+    /* Dark on the orange, not light. White on this orange is 2.90:1; the ink
+       is 5.85:1. Same rule the accent fill follows two rules up. */
+    border-left: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    transform: rotate(-45deg) translate(0.5px, -1px);
+  }
+  .add-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+    flex: 1;
+  }
+  .add-name { font-weight: 600; font-size: var(--text-sm); }
+  .add-price { color: var(--muted); font-size: var(--text-sm); white-space: nowrap; }
+  .add input:checked + .add-body .add-price { color: var(--ink-soft); }
+
+  /* --- result ---------------------------------------------------------------
+     The one dark field inside the panel, which is what makes the number the
+     thing your eye lands on. The accent reads 6.00:1 here. */
+  .result {
+    margin-top: var(--space-6);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: var(--surface-invert);
+    border-radius: var(--r-inner);
+    color: var(--ink-invert);
+  }
+  .figures { display: grid; gap: var(--space-5); }
+  @media (min-width: 40rem) {
+    .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .figure-block + .figure-block {
+      padding-inline-start: var(--space-6);
+      border-inline-start: 1px solid var(--line-invert);
+    }
+  }
+  .figure-label {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted-invert);
+  }
+  .figure {
+    font-size: var(--text-figure);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: var(--tracking-tight);
+    color: var(--accent);
+    margin-top: var(--space-2);
+  }
+  /* The second figure is WHITE, not a second warm tone. With one accent ramp
+     the lifted accent sits close enough to the accent itself that two figures
+     side by side would read as the same colour badly printed. The hierarchy is
+     carried by the colour instead: the one-time total is the accent, the
+     recurring figure beside it is plain. */
+  .figure--alt { color: var(--ink-invert); }
+  .figure .cur {
+    font-size: 0.38em;
+    color: var(--muted-invert);
+    letter-spacing: 0.02em;
+    /* The separation is the &nbsp; in the markup now, not a margin. */
+    margin-inline-end: 0;
+  }
+  .figure-note { color: var(--muted-invert); font-size: var(--text-sm); margin-top: var(--space-2); }
+
+  /* The rows inside are :global on purpose. Astro scopes a component's CSS by
+     stamping a data attribute onto the elements in its own template, and the
+     script below REPLACES these rows with elements it creates at runtime, which
+     carry no such attribute. Scoped selectors would match the server-rendered
+     row and then stop matching the moment anyone touched a control. The
+     container keeps its scope, so these rules still cannot leak. */
+  .breakdown {
+    list-style: none;
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4) 0 0;
+    border-top: 1px solid var(--line-invert);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .breakdown :global(li) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    justify-content: space-between;
+    font-size: var(--text-sm);
+  }
+  .breakdown :global(.bk-label) { color: var(--muted-invert); }
+  .breakdown :global(.bk-amount) { color: var(--ink-invert); font-weight: 600; }
+
+  .after {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line-invert);
+    color: var(--muted-invert);
+    font-size: var(--text-sm);
+  }
+  .after strong { color: var(--ink-invert); }
+
+  .disclaimer {
+    margin-top: var(--space-5);
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    max-width: var(--measure);
+  }
+  .actions { margin-top: var(--space-5); gap: var(--space-3); }
+</style>

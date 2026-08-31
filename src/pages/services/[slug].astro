@@ -1,0 +1,127 @@
+---
+import Base from '../../layouts/Base.astro';
+import { serviceLines, site, packages } from '../../data/site';
+
+export function getStaticPaths() {
+  return serviceLines.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+
+const { service } = Astro.props;
+const title = `${service.title} — Reliance Business Partners`;
+const description = `${service.blurb} From Reliance Business Partners, Nugegoda, Colombo.`;
+
+const others = serviceLines.filter((s) => s.slug !== service.slug);
+const money = (n: number) => n.toLocaleString('en-US');
+---
+<Base title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow"><a href="/services/">Services</a></p>
+        <h1>{service.title}</h1>
+        <p>{service.blurb}</p>
+      </div>
+
+      <div class="split">
+        <div>
+          <h2>What this covers</h2>
+          <ul class="ticks">
+            {service.covers.map((c) => <li>{c}</li>)}
+          </ul>
+
+          {'note' in service && service.note && (
+            <p class="service-note">{service.note}</p>
+          )}
+
+          {'packagesHref' in service && service.packagesHref && (
+            <div class="prices">
+              <h2>Incorporation is priced in the open</h2>
+              <p>
+                Three packages, each priced for a company with one director, plus a
+                published rate for every additional director.
+              </p>
+              <ul class="price-list">
+                {packages.map((p) => (
+                  <li>
+                    <span class="pl-name">{p.name}</span>
+                    <span class="pl-price">LKR {money(p.price)}</span>
+                  </li>
+                ))}
+              </ul>
+              <a class="btn btn--primary" href={service.packagesHref}>
+                See what is in each package
+              </a>
+            </div>
+          )}
+
+          <h2 class="also-h">Also from the same firm</h2>
+          <ul class="also">
+            {others.map((s) => (
+              <li><a class="link-plain" href={`/services/${s.slug}/`}>{s.title}</a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="solid-panel">
+          <h2>How to start</h2>
+          <p class="muted">
+            Describe what you need in your own words. You get the scope and the fee
+            in writing before any work begins.
+          </p>
+          <div class="stack">
+            <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
+            <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .split { display: grid; gap: var(--space-6); align-items: start; }
+  @media (min-width: 52rem) { .split { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--space-8); } }
+  .split h2 { font-size: var(--text-h3); margin-bottom: var(--space-4); }
+  .split .stack { margin-top: var(--space-5); }
+
+  /* Where the deck says a service is delivered through an associate practice,
+     that is printed on the service's own page rather than only in the footer. */
+  .service-note {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: var(--accent-tint);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    font-size: var(--text-sm);
+  }
+
+  .prices { margin-top: var(--space-7); }
+  .prices p { color: var(--ink-soft); max-width: var(--measure-tight); }
+  .price-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-5) 0;
+    border-top: 1px solid var(--line);
+  }
+  .price-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--line);
+  }
+  .pl-name { font-weight: 600; }
+  .pl-price { font-weight: 700; }
+
+  .also-h { margin-top: var(--space-7); font-size: var(--text-h4) !important; }
+  .also { list-style: none; padding: 0; display: grid; }
+  .also a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+  .also a:hover { color: var(--accent-ink); }
+</style>

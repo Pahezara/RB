@@ -1,0 +1,30 @@
+{
+  "name": "reliance-business-partners",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.3.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:html": "node scripts/audit-html.mjs",
+    "check:placeholders": "node scripts/placeholders.mjs",
+    "check:glass": "node scripts/check-glass-count.mjs",
+    "check:mobile": "node scripts/check-mobile.mjs",
+    "shoot": "node scripts/shoot-frames.mjs",
+    "verify": "npm run build && npm run check:contrast && npm run check:html && npm run check:placeholders && npm run check:glass && npm run check:mobile && npm run shoot"
+  },
+  "dependencies": {
+    "astro": "^5.13.2",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "culori": "^4.0.2",
+    "linkedom": "^0.18.11",
+    "playwright": "^1.55.0"
+  }
+}

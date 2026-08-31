@@ -1,0 +1,140 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, serviceLines } from '../data/site';
+
+/* A mailto LINK, not a form action. Links are not submissions, so no browser
+   warns about them, and the prefilled body asks for what a form would. */
+const mailtoBody = `What I need help with:
+
+
+My name:
+
+My company, if it already exists:
+
+A number or e-mail to reply to:
+`;
+
+const mailtoHref =
+  `mailto:${site.email}` +
+  `?subject=${encodeURIComponent('Enquiry')}` +
+  `&body=${encodeURIComponent(mailtoBody)}`;
+
+const title = 'Contact — Reliance Business Partners';
+const description =
+  'Call or e-mail Reliance Business Partners at No. 464, High Level Road, Gangodawila, Nugegoda. Tell us what you need and we will tell you what it costs.';
+---
+<Base title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Contact</p>
+        <h1>Tell us what you need.</h1>
+        <p>
+          Describe it in your own words. You do not need the accounting term for
+          it, and making contact costs nothing.
+        </p>
+      </div>
+
+      <div class="split">
+        {/*
+          NOT a form.
+
+          A form with action="mailto:" makes the browser warn that the
+          submission is not secure, because the target is not HTTPS, and it then
+          fails outright on most phones. So the enquiry is a set of direct
+          actions instead: they work on every device, with no JavaScript and no
+          third-party service holding the client's messages.
+
+          The e-mail action carries a prefilled subject and body, so it asks for
+          the same things a form would have.
+        */}
+        <div class="solid-panel enquiry">
+          <h2>Start an enquiry</h2>
+          <p class="lede">
+            Either one reaches the same people, and neither costs anything.
+          </p>
+
+          <div class="actions">
+            <a class="btn btn--primary btn--block tnum" href={site.phoneHref}>
+              Call {site.phone}
+            </a>
+            <a class="btn btn--secondary btn--block" href={mailtoHref}>
+              Write an e-mail
+            </a>
+          </div>
+
+          <h3 class="include-h">What to tell us</h3>
+          <ul class="ticks">
+            <li>Your name, and a number or e-mail we can reply to.</li>
+            <li>What you need, in your own words.</li>
+            <li>Whether the company already exists, or is being set up.</li>
+            <li>Any date or filing deadline that already applies.</li>
+          </ul>
+          <p class="muted form-note">
+            You do not need documents ready. Working out what is actually needed
+            is part of the first conversation.
+          </p>
+        </div>
+
+        <div class="stack">
+          <div class="solid-panel">
+            <h2>Direct</h2>
+            <address>
+              <a class="tnum" href={site.phoneHref}>{site.phone}</a>
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </address>
+          </div>
+
+          <div class="solid-panel">
+            <h2>Office</h2>
+            <address>
+              <span>{site.address.street}</span>
+              <span>{site.address.locality}</span>
+              <span>Sri Lanka</span>
+            </address>
+          </div>
+
+          <div class="solid-panel">
+            <h2>What we can take on</h2>
+            <ul class="svc-list">
+              {serviceLines.map((s) => (
+                <li><a class="link-plain" href={`/services/${s.slug}/`}>{s.title}</a></li>
+              ))}
+            </ul>
+            <p class="muted form-note">
+              Registering a company? The fees are published in full on the{' '}
+              <a href="/packages/">packages page</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .split { display: grid; gap: var(--space-6); align-items: start; }
+  @media (min-width: 52rem) { .split { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
+  .split h2 { font-size: var(--text-h3); margin-bottom: var(--space-4); }
+  address { font-style: normal; display: grid; gap: var(--space-1); }
+  .form-note { font-size: var(--text-sm); margin-top: var(--space-4); }
+  .enquiry .lede { color: var(--ink-soft); margin-bottom: var(--space-5); }
+  .enquiry .actions { display: grid; gap: var(--space-3); }
+  .enquiry .include-h {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: var(--space-6) 0 var(--space-4);
+  }
+  .svc-list { list-style: none; padding: 0; display: grid; }
+  .svc-list a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    border-bottom: 1px solid var(--line);
+  }
+  .svc-list li:last-child a { border-bottom: 0; }
+  .svc-list a:hover { color: var(--accent-ink); }
+</style>

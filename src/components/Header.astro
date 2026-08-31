@@ -1,0 +1,221 @@
+---
+import { site } from '../data/site';
+interface Props { overHero?: boolean }
+const { overHero = false } = Astro.props;
+
+const nav = [
+  { label: 'Services', href: '/services/' },
+  { label: 'Packages', href: '/packages/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Contact', href: '/contact/' },
+];
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href.startsWith('/#') ? false : href === '/' ? path === '/' : path.startsWith(href);
+---
+{/*
+  A full-width bar. Glass where it sits over the hero photograph, solid with a
+  hairline everywhere else, because a light frost over a flat light ground is
+  not glass.
+
+  The brand is the MONOGRAM plus the firm's name as real text, never a
+  rasterised lockup. The supplied lockup sets the name on one line at roughly
+  24:1, which at the 130px this bar has to spare would be three-pixel letters.
+  See the note at the top of scripts/prepare-brand.mjs.
+*/}
+<header class:list={['site-header', overHero ? 'over-hero glass' : 'on-ground']}>
+  <div class="container bar">
+    <a class="brand link-plain" href="/" aria-label={`${site.shortName}, home`}>
+      <picture>
+        <source srcset="/brand/mark-64.webp 82w, /brand/mark-128.webp 165w" type="image/webp" sizes="42px" />
+        <img src="/brand/mark-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
+      </picture>
+      <span class="brand-name" aria-hidden="true">
+        <span class="brand-a">Reliance</span>
+        <span class="brand-b">Business Partners</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a class="link-plain" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="tel link-plain tnum" href={site.phoneHref}>{site.phone}</a>
+      <a class="btn btn--primary cta" href="/contact/">Start an enquiry</a>
+
+      <details class="menu">
+        <summary aria-label="Menu"><span class="bars" aria-hidden="true"></span></summary>
+        <div class="menu-panel">
+          <ul>
+            {nav.map((item) => (
+              <li><a class="link-plain" href={item.href}>{item.label}</a></li>
+            ))}
+            <li><a class="link-plain" href="/#estimate">Fee estimator</a></li>
+          </ul>
+          <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
+          <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Off the hero the bar is a solid ground with a hairline, not glass. */
+  .site-header.on-ground {
+    background: var(--surface-raised);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header.glass { border-radius: 0; }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    height: var(--header-h);
+  }
+
+  /* --- brand ------------------------------------------------------------ */
+  /* The mark is 30px tall here, so the LINK carries the touch target rather
+     than the image. Without the min-height the whole brand is a 30px tap
+     target on every page. */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: none;
+    line-height: 0;
+    min-height: var(--tap-min);
+  }
+  .brand img { width: auto; height: 30px; }
+
+  /* Two lines, because the mark is 1.29:1 and a single line beside it leaves
+     the wordmark floating in the middle of a bar it does not fill. Stacked, the
+     name is the same height as the mark and the pair reads as one lockup. */
+  .brand-name {
+    display: grid;
+    gap: 1px;
+    line-height: 1;
+  }
+  .brand-a {
+    font-size: 1.0625rem;
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink);
+  }
+  .brand-b {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  /* --- nav -------------------------------------------------------------- */
+  .nav { display: none; margin-inline: auto; }
+  .nav ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; }
+  .nav a {
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    font-weight: 650;
+    padding-block: var(--space-2);
+    border-bottom: 2px solid transparent;
+    transition: color var(--dur-hover) var(--ease-out),
+                border-color var(--dur-hover) var(--ease-out);
+  }
+  /* accent-ink, the darkened accent: it marks where you are on a light ground,
+     where the accent itself is only 2.86:1 and could not be text. */
+  .nav a:hover { color: var(--ink); border-bottom-color: var(--accent-ink); }
+  .nav a[aria-current="page"] { color: var(--ink); font-weight: 700; border-bottom-color: var(--accent-ink); }
+
+  /* --- actions ---------------------------------------------------------- */
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-inline-start: auto;
+    flex: none;
+  }
+  .tel { display: none; color: var(--ink); font-size: var(--text-sm); font-weight: 600; }
+  .cta { display: none; }
+
+  /* --- mobile menu: <details>, so it works with no JavaScript ----------- */
+  .menu { position: relative; flex: none; }
+  .menu summary {
+    display: grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    list-style: none;
+  }
+  .menu summary::-webkit-details-marker { display: none; }
+  .bars, .bars::before, .bars::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+  }
+  .bars { position: relative; }
+  .bars::before, .bars::after { content: ""; position: absolute; left: 0; }
+  .bars::before { top: -6px; }
+  .bars::after { top: 6px; }
+
+  .menu-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + var(--space-3));
+    width: min(18rem, calc(100vw - var(--gutter) * 2));
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-3);
+    --r-inner: max(var(--r-xs), calc(var(--r-lg) - var(--space-3)));
+  }
+  .menu-panel ul { list-style: none; margin: 0 0 var(--space-2); padding: 0; display: grid; }
+  .menu-panel ul a {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3);
+    border-radius: var(--r-inner);
+    color: var(--ink);
+    font-weight: 600;
+    min-height: var(--tap-min);
+  }
+  .menu-panel ul a:hover { background: var(--surface-sunken); }
+
+  /* Below 22rem the two-line name and the menu button start to fight. The name
+     shortens to its first line rather than the bar wrapping. */
+  @media (max-width: 22rem) {
+    .brand-b { display: none; }
+  }
+
+  @media (min-width: 56rem) {
+    .brand img { height: 38px; }
+    .brand-a { font-size: 1.25rem; }
+    .brand-b { font-size: 0.875rem; }
+    .nav { display: block; }
+    .tel, .cta { display: inline-flex; }
+    .menu { display: none; }
+  }
+</style>

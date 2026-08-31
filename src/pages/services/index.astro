@@ -1,0 +1,120 @@
+---
+import Base from '../../layouts/Base.astro';
+import { serviceLines, site } from '../../data/site';
+const title = 'Services — Reliance Business Partners';
+const description =
+  'Accounting and BPO, tax and assurance, business advisory, payroll, Power BI and corporate secretarial, from a firm in Nugegoda, Colombo.';
+---
+<Base title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Services</p>
+        <h1>What we work on.</h1>
+        <p>
+          Six areas. Most clients use more than one of them, which is the point of
+          having them in the same firm: the ledger the accountant keeps is the
+          ledger the tax computation is built from.
+        </p>
+      </div>
+
+      {/* The same numbered ledger as the home page, one column wider so each
+          entry can carry what it actually covers rather than only a blurb. */}
+      <ol class="ledger">
+        {serviceLines.map((s, i) => (
+          <li>
+            <a class="lg-row link-plain" href={`/services/${s.slug}/`}>
+              <span class="lg-n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="lg-body">
+                <span class="lg-title">{s.title}</span>
+                <span class="lg-blurb">{s.blurb}</span>
+                {/* The character, not the entity. Inside an expression Astro
+                    escapes the text, so "&middot;" would print literally. */}
+                <span class="lg-covers">{s.covers.slice(0, 3).join(' · ')}</span>
+              </span>
+              <span class="lg-go" aria-hidden="true"></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+
+      <div class="cta-panel">
+        <div>
+          <h2 class="cta-h">Registering a company?</h2>
+          <p>
+            Corporate secretarial is the one service with published prices. All
+            three incorporation packages, and everything in them, are on the
+            packages page.
+          </p>
+        </div>
+        <div class="row">
+          <a class="btn btn--primary btn--lg" href="/packages/">See the packages</a>
+          <a class="btn btn--secondary btn--lg tnum" href={site.phoneHref}>{site.phone}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+
+  .lg-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: var(--space-4) var(--space-5);
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    transition: background-color var(--dur-hover) var(--ease-out);
+  }
+  .lg-n {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--accent-ink);
+    padding-top: 0.25em;
+  }
+  .lg-body { display: grid; gap: var(--space-2); max-width: var(--measure); }
+  .lg-title {
+    font-size: var(--text-h3);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+  .lg-blurb { color: var(--ink-soft); font-size: var(--text-sm); }
+  .lg-covers {
+    color: var(--muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.01em;
+  }
+
+  /* A chevron drawn from two borders, so there is no icon file and no SVG. */
+  .lg-go {
+    align-self: center;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-top: 2px solid var(--accent-ink);
+    border-right: 2px solid var(--accent-ink);
+    transform: rotate(45deg);
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+  .lg-row:hover { background: var(--accent-tint); }
+  .lg-row:hover .lg-go { transform: rotate(45deg) translate3d(2px, -2px, 0); }
+
+  .cta-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--space-7);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .cta-h { font-size: var(--text-h3); max-width: 18ch; }
+  .cta-panel p { color: var(--ink-soft); margin-top: var(--space-3); max-width: 46ch; }
+  .cta-panel .row { gap: var(--space-3); }
+</style>

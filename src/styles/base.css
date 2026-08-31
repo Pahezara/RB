@@ -1,0 +1,275 @@
+/* ==========================================================================
+   base.css — fonts, reset, type mechanics, focus, selection, scrollbars, print.
+   No colour, size, radius, duration or easing is defined here. Tokens only.
+   ========================================================================== */
+
+/* --------------------------------------------------------------- fonts ---
+   Self-hosted, latin-subset, real italic and real weight files. Nothing is
+   ever synthesised.
+
+   font-display: optional means the face either arrives before first paint or
+   is not used for this load at all. There is no swap, so there is no CLS from
+   fonts. The metric-matched fallback below carries size-adjust so a visitor on
+   a slow connection, who never receives the webfont, still reads a page that
+   looks intentional rather than merely unstyled. */
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: optional;
+  src: url('/fonts/schibsted-grotesk-latin-var.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: optional;
+  src: url('/fonts/schibsted-grotesk-latin-var-italic.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched fallback, measured against the real face rather than guessed. */
+@font-face {
+  font-family: 'Schibsted Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');
+  size-adjust: 102.2%;
+  ascent-override: 95.6%;
+  descent-override: 25.2%;
+  line-gap-override: 0%;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Anchors clear the fixed header. One measured variable, used by both. */
+  scroll-padding-top: calc(var(--header-h) + var(--header-inset) + 1rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100svh;
+  overflow-x: hidden;
+  /* A flex column does two jobs at once.
+     1. It establishes a block formatting context, so the header's top margin
+        cannot collapse out of the body and push the whole document down.
+     2. With main growing, the footer is pushed to the bottom on short pages.
+        Without it, min-height stretches the body past the footer and paints
+        page ground underneath it, which is visible on the 404 page on any
+        large screen. */
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1 0 auto; }
+
+/* Landmarks and media -------------------------------------------------------- */
+img, picture, svg, video, canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+/* Headings ------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: 700;
+  text-wrap: balance;   /* no widows on headlines */
+  color: var(--ink);
+}
+h1 { font-size: var(--text-hero); }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); line-height: var(--leading-snug); }
+h4 { font-size: var(--text-h4); line-height: var(--leading-snug); }
+
+p, li { text-wrap: pretty; }
+
+/* Prose measure. Applied deliberately, never globally. */
+.prose { max-width: var(--measure); }
+.prose-narrow { max-width: var(--measure-tight); }
+
+/* Numbers. Same face as everything else: only the numeral widths change, so a
+   phone number in a sentence does not look pasted in from another typeface.
+
+   MONEY IS DELIBERATELY NOT IN THIS LIST. Under `tnum` this face gives the
+   grouping comma a full digit advance and centres it in that slot, so every
+   price on the site renders as "LKR 36 , 000" with a visible gap on both sides
+   of the comma. Nothing here stacks two prices in a column where digit
+   alignment would repay that, and amounts that sit in a column are
+   right-aligned, which lines up their edges whatever the digit widths are. So
+   currency uses the proportional figures the face was drawn with, and tabular
+   figures are kept for the things they were reached for: phone numbers, dates
+   and counts. */
+.tnum, time {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Links ---------------------------------------------------------------------- */
+/* Links are ink with an underline. The accent is not used for links: it measures
+   2.79:1 on the page ground, and an underline already marks a link without
+   spending the one colour that marks the primary action. */
+a { color: var(--ink); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+.link-plain { text-decoration: none; }
+.link-plain:hover { text-decoration: none; }
+
+/* The one outer container per section. Inner caps are left-aligned inside it,
+   never separate containers, which would produce three different left rules. */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left));
+}
+
+.section { padding-block: var(--section-y); }
+
+/* Anchor targets sit clear of the header. */
+[id] { scroll-margin-top: calc(var(--header-h) + var(--header-inset) + 1rem); }
+
+/* Focus ---------------------------------------------------------------------
+   Two-tone so it reads on both light and dark ground. Never outline: none.
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+  box-shadow: 0 0 0 4px var(--focus-ring-inner);
+}
+/* On dark grounds the two tones swap roles. */
+.on-invert :focus-visible {
+  outline-color: var(--focus-ring-inner);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+:focus:not(:focus-visible) { outline: none; }
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100%;
+  z-index: 999;
+  background: var(--surface-raised);
+  color: var(--ink);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus { top: var(--space-3); }
+
+/* Selection and scrollbars ---------------------------------------------------- */
+::selection {
+  background: var(--accent);
+  color: var(--ink-on-accent);
+}
+
+* { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: var(--r-pill);
+  border: 2px solid var(--surface);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ink); }
+
+/* Touch targets --------------------------------------------------------------- */
+a, button, input, select, textarea, summary, [role="button"] {
+  min-height: var(--tap-min);
+}
+a { min-height: auto; }  /* inline links are exempt; block links opt back in */
+.tap { min-height: var(--tap-min); min-width: var(--tap-min); }
+
+/* Motion ----------------------------------------------------------------------
+   Everything is visible by default. Animations only remove an offset that CSS
+   added a moment earlier, so a browser without animation-timeline shows the
+   finished page.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+    animation-timeline: none !important;
+  }
+}
+
+/* Cross-document transitions. Native, no JS, no router. */
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Scroll-driven reveal. Guarded, and stagger comes from animation-range,
+   never animation-delay, which is measured in time and does nothing here. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 28%;
+    }
+    .reveal-2 { animation-range: entry 14% cover 34%; }
+    .reveal-3 { animation-range: entry 18% cover 40%; }
+    .reveal-4 { animation-range: entry 22% cover 46%; }
+  }
+}
+
+/* Transform only, never opacity. With animation-fill-mode: both, an opacity
+   keyframe leaves the element at 0 everywhere OUTSIDE the range, so anything
+   that never enters the range stays invisible forever. A transform-only reveal
+   is worst-case a 14px offset, and the content is always readable. That is what
+   "everything is visible by default" has to mean in practice. */
+@keyframes reveal-in {
+  from { transform: translate3d(0, 14px, 0); }
+  to   { transform: none; }
+}
+
+/* Print ------------------------------------------------------------------------
+   Strip chrome, navigation and every translucency.
+   -------------------------------------------------------------------------- */
+@media print {
+  .site-header, .site-footer, .mobile-rail, .skip-link, nav, video { display: none !important; }
+  *, *::before, *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    color: #000 !important;
+    background-color: #fff !important;
+    border-color: #999 !important;
+  }
+  body { font-size: 11pt; line-height: 1.45; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; word-break: break-all; }
+  h1, h2, h3 { break-after: avoid; }
+  .section { padding-block: 1rem; }
+}

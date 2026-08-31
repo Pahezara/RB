@@ -1,0 +1,172 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, directors, team, sectors, serviceLines } from '../data/site';
+const title = 'About — Reliance Business Partners';
+const description =
+  'Reliance Business Partners (Pvt) Ltd is a firm of professionals established in 2018 in Gangodawila, Nugegoda, rendering business services under one umbrella.';
+---
+<Base title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">About</p>
+        <h1>A firm of professionals, under one umbrella.</h1>
+        <p>
+          {site.legalName} was established in {site.founded} as a limited liability
+          company. The idea was, and is, to render the business services a company
+          needs from one place rather than four.
+        </p>
+      </div>
+
+      <div class="split">
+        <div class="prose stack">
+          {/* Two things here, both easy to get wrong.
+              1. Each link and the punctuation after it sit on ONE line. A newline
+                 between them is whitespace, and renders as "payroll , analytics".
+              2. The titles are NOT lowercased. They are service names carrying
+                 acronyms, and .toLowerCase() turned "Accounting and BPO" into
+                 "accounting and bpo" and "Power BI" into "power bi". */}
+          <p>
+            That covers {serviceLines.length} areas of work:{' '}
+            {serviceLines.map((s, i) => {
+              const sep = i < serviceLines.length - 2 ? ', '
+                : i === serviceLines.length - 2 ? ' and ' : '.';
+              return <Fragment><a href={`/services/${s.slug}/`}>{s.title}</a>{sep}</Fragment>;
+            })}
+          </p>
+          <p>
+            Tax and assurance work is conducted through{' '}
+            {site.associates.map((a, i) => (
+              <Fragment><a href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '. '}</Fragment>
+            ))}
+            We name them here rather than leaving it to be discovered, because a
+            client is entitled to know which practice signs the audit.
+          </p>
+
+          <h2>Vision</h2>
+          <blockquote class="vision">{site.vision}</blockquote>
+
+          <h2>Values</h2>
+          <ul class="ticks">
+            {site.values.map((v) => <li>{v}</li>)}
+          </ul>
+        </div>
+
+        <div class="side">
+          <div class="solid-panel">
+            <h2>The team</h2>
+            <dl class="rows team-rows">
+              {team.rows.map((r) => (
+                <div>
+                  <dt>{r.role}</dt>
+                  <dd class="tnum">{r.n}</dd>
+                </div>
+              ))}
+              <div class="total-row">
+                <dt>Total</dt>
+                <dd class="tnum">{team.total}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="solid-panel">
+            <h2>Where we are</h2>
+            <address>
+              <span>{site.address.street}</span>
+              <span>{site.address.locality}</span>
+              <span>Sri Lanka</span>
+            </address>
+            <div class="stack office-actions">
+              <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
+              <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="board-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Board of directors</p>
+        <h2 id="board-h">Who is answerable for the work.</h2>
+        <p>
+          Four directors, between them Chartered Accountants, Chartered Management
+          Accountants and Registered Company Secretaries.
+        </p>
+      </div>
+      <div class="grid grid--people">
+        {directors.map((d) => (
+          <article class="person">
+            <h3>{d.name}</h3>
+            <p class="creds">{d.creds}</p>
+            <p class="bio">{d.bio}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="sect-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Sectorial expertise</p>
+        <h2 id="sect-h">Industries the firm has already worked in.</h2>
+      </div>
+      <ul class="chips">
+        {sectors.map((s) => <li>{s}</li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .split { display: grid; gap: var(--space-7); align-items: start; }
+  @media (min-width: 56rem) { .split { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--space-8); } }
+  .split h2 { font-size: var(--text-h3); margin-top: var(--space-5); }
+  .split .side h2 { margin-top: 0; font-size: var(--text-h4); margin-bottom: var(--space-4); }
+
+  .vision {
+    margin: 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--accent);
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .side { display: grid; gap: var(--space-4); }
+  address { font-style: normal; display: grid; gap: var(--space-1); }
+  .office-actions { margin-top: var(--space-5); }
+  .team-rows { border-top: 0; margin: 0; }
+  .team-rows > *:first-child { padding-top: 0; }
+  .team-rows > *:last-child { border-bottom: 0; padding-bottom: 0; }
+  .total-row dt, .total-row dd { font-weight: 700; color: var(--ink); }
+
+  /* --- board ---------------------------------------------------------------
+     Hairline-topped blocks rather than cards. There are no photographs, and a
+     card with nothing in it but text is a box drawn for its own sake. */
+  .grid--people { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  @media (min-width: 46rem) { .grid--people { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .person { border-top: 2px solid var(--ink); padding-top: var(--space-4); }
+  .person h3 { font-size: var(--text-h4); }
+  .creds {
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-ink);
+  }
+  .bio { margin-top: var(--space-3); color: var(--ink-soft); font-size: var(--text-sm); }
+
+  .chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .chips li {
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+</style>

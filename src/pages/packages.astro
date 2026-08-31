@@ -1,0 +1,326 @@
+---
+import Base from '../layouts/Base.astro';
+import {
+  site, packages, packageMatrix, ongoingFees, extras, annualRetainer,
+} from '../data/site';
+
+const title = 'Incorporation packages — Reliance Business Partners';
+const description =
+  'Company incorporation in Sri Lanka: Basic LKR 36,000, Advanced LKR 45,500, Premium LKR 60,000 for one director, and exactly what is in each.';
+
+const money = (n: number) => n.toLocaleString('en-US');
+---
+<Base title={title} description={description}>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Corporate secretarial</p>
+        <h1>Three packages, priced in full.</h1>
+        <p>
+          Each price below is for a company with one director. Every additional
+          director is added at the package's own rate. There is nothing else to
+          find out later.
+        </p>
+      </div>
+
+      <!-- The three columns, with their prices and their differences. -->
+      <div class="cols">
+        {packages.map((p, i) => (
+          <div class:list={['pkg', i === packages.length - 1 && 'pkg--last']}>
+            <h2>{p.name}</h2>
+            <p class="price"><span class="cur">LKR</span>{money(p.price)}</p>
+            <p class="price-meta">for a company with one director</p>
+            <p class="summary">{p.summary}</p>
+            <ul class="ticks">
+              {p.includes.map((line) => <li>{line}</li>)}
+            </ul>
+            <p class="per-director">
+              + LKR {money(p.perDirector)} for each additional director
+            </p>
+            <a class="btn btn--primary btn--block" href="/contact/">
+              Start with {p.name}
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <p class="jump">
+        Not sure which one? <a href="/#estimate">Put your own numbers into the
+        estimator</a> and it will add the directors and anything else you need.
+      </p>
+    </div>
+  </section>
+
+  <!-- Side by side, for the person who wants to see the difference in one look. -->
+  <section class="section band" aria-labelledby="compare-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Side by side</p>
+        <h2 id="compare-h">What changes between them.</h2>
+        <p>
+          The first four lines and the last are in all three. Everything else is
+          what you are choosing between.
+        </p>
+      </div>
+
+      {/* A horizontally scrolling table with no hint is a table most phone
+          users never scroll. The note is shown only where the table actually
+          overflows, and it is real text rather than a fading edge, because a
+          gradient is not an instruction. */}
+      <p class="table-hint">Scroll sideways to compare all three.</p>
+
+      <div class="table-wrap">
+        <table class="matrix">
+          <caption class="visually-hidden">
+            What each incorporation package includes
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Included</th>
+              {packages.map((p) => (
+                <th scope="col">
+                  <span class="th-name">{p.name}</span>
+                  <span class="th-price">LKR {money(p.price)}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {packageMatrix.map((rowItem) => (
+              <tr>
+                <th scope="row">
+                  {rowItem.label}
+                  {rowItem.wordingVaries && <span class="marker" aria-hidden="true">*</span>}
+                </th>
+                {rowItem.in.map((has, i) => (
+                  <td class:list={[has ? 'yes' : 'no']}>
+                    <span class="visually-hidden">
+                      {has ? 'Included in' : 'Not in'} {packages[i].name}
+                    </span>
+                    <span aria-hidden="true">{has ? '✓' : '–'}</span>
+                  </td>
+                ))}
+              </tr>
+            ))}
+            <tr class="foot-row">
+              <th scope="row">Each additional director</th>
+              {packages.map((p) => (
+                <td>LKR {money(p.perDirector)}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="note">
+        <span aria-hidden="true">*</span> The firm's fee sheet words this line
+        differently between packages: Form 18 and Form 19 are specified as{' '}
+        <em>certified</em> copies on Advanced and as plain copies on Premium. The
+        difference is flagged rather than smoothed over. Ask us which applies to
+        your filing and we will confirm it in writing.
+      </p>
+    </div>
+  </section>
+
+  <!-- After the first year. -->
+  <section class="section" aria-labelledby="ongoing-h">
+    <div class="container">
+      <div class="split">
+        <div>
+          <div class="section-head">
+            <p class="eyebrow">Afterwards</p>
+            <h2 id="ongoing-h">What is charged once the company exists.</h2>
+            <p>
+              The first year retainer is inside all three packages. These are the
+              things that can be billed after that, each at a published rate.
+            </p>
+          </div>
+          <dl class="rows fee-rows">
+            {ongoingFees.map((f) => (
+              <div>
+                <dt>
+                  {f.label}
+                  <span class="fee-detail">{f.detail}</span>
+                </dt>
+                <dd>{f.amount}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div class="side">
+          <div class="solid-panel">
+            <h3>Systems for day one</h3>
+            <p class="muted">
+              Two things a new company usually needs the week it starts trading.
+              Both are starting prices.
+            </p>
+            <dl class="rows fee-rows">
+              {extras.map((e) => (
+                <div>
+                  <dt>{e.name}</dt>
+                  <dd>
+                    from LKR {money(e.price)}{e.kind === 'monthly' ? ' / month' : ''}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div class="solid-panel">
+            <h3>Year two onwards</h3>
+            <p class="muted">
+              The annual retainer is <strong>LKR {money(annualRetainer)}</strong>,
+              charged when your Form 15 is filed. It is the only thing that recurs
+              automatically.
+            </p>
+            <div class="stack">
+              <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
+              <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* --- the three columns -------------------------------------------------- */
+  .cols { display: grid; gap: var(--space-4); align-items: start; }
+  @media (min-width: 52rem) { .cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .pkg {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    height: 100%;
+    padding: var(--pad-card);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  /* The fullest package carries the accent rim. It marks the most complete
+     option rather than a recommended one: the firm has not said which it
+     recommends, so the site does not either. */
+  .pkg--last { border-color: var(--ink); box-shadow: inset 0 3px 0 0 var(--accent); }
+
+  .pkg h2 { font-size: var(--text-h3); }
+  .price {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.375rem);
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.05;
+  }
+  .cur { font-size: 0.5em; color: var(--muted); font-weight: 700; margin-inline-end: 0.35em; }
+  .price-meta {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .summary { color: var(--ink-soft); font-size: var(--text-sm); }
+  .pkg .ticks { margin-top: var(--space-2); font-size: var(--text-sm); }
+  .per-director {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  .pkg .btn { margin-top: var(--space-2); }
+
+  .jump {
+    margin-top: var(--space-6);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  /* --- matrix --------------------------------------------------------------
+     The wrapper scrolls, not the document. check-mobile fails the build if the
+     page itself ever overflows sideways. */
+  .table-hint {
+    margin-bottom: var(--space-3);
+    color: var(--muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+  /* min-width on .matrix is 34rem; above that plus the gutters there is nothing
+     to scroll and nothing to say. */
+  @media (min-width: 40rem) { .table-hint { display: none; } }
+
+  .table-wrap {
+    /* position: relative is load-bearing, not decoration. Without it the sticky
+       header cells are laid out against the root rather than against this
+       scroller, and the document itself picks up 146px of horizontal overflow
+       at 360px even though the wrapper is visibly clipping. Measured: 506px of
+       document scroll width with it off, 360px with it on. */
+    position: relative;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--surface-raised);
+  }
+  .matrix { border-collapse: collapse; width: 100%; min-width: 34rem; }
+  .matrix th, .matrix td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-size: var(--text-sm);
+  }
+  .matrix thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface-sunken);
+    vertical-align: bottom;
+  }
+  .matrix thead th:not(:first-child) { text-align: center; }
+  .th-name { display: block; font-weight: 700; font-size: var(--text-body); }
+  .th-price { display: block; font-weight: 600; color: var(--muted); font-size: var(--text-xs); }
+  .matrix tbody th { font-weight: 600; color: var(--ink); }
+  .matrix td { text-align: center; }
+  .matrix tbody tr:last-child th, .matrix tbody tr:last-child td { border-bottom: 0; }
+  .yes { color: var(--accent-ink); font-weight: 700; }
+  .no { color: var(--muted); }
+  .marker { color: var(--muted); }
+  .foot-row th, .foot-row td {
+    background: var(--surface-sunken);
+    font-weight: 700;
+  }
+  .note {
+    margin-top: var(--space-4);
+    color: var(--muted);
+    font-size: var(--text-sm);
+    max-width: var(--measure);
+  }
+
+  /* --- ongoing ------------------------------------------------------------- */
+  /* minmax(0, …) on every track, not 1fr. A bare 1fr floors at the column's
+     min-content width, so a single long word or figure can widen the grid past
+     its container. minmax(0, 1fr) lets the track actually shrink. */
+  .split { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-7); align-items: start; }
+  @media (min-width: 56rem) {
+    .split { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--space-8); }
+  }
+  .split h3 { font-size: var(--text-h4); margin-bottom: var(--space-3); }
+  .side { display: grid; gap: var(--space-4); }
+  .side .muted { font-size: var(--text-sm); }
+  .side .stack { margin-top: var(--space-5); }
+  .fee-rows dt { display: grid; gap: var(--space-1); max-width: 34ch; }
+  .fee-detail { font-weight: 400; color: var(--muted); font-size: var(--text-sm); }
+  /* NOT nowrap. "LKR 5,000 virtually, LKR 7,500 in person" is 310px wide, and a
+     grid column's automatic minimum is its min-content size, so one unbreakable
+     string here pushed the whole PAGE past 320px. The amounts are kept atomic by
+     non-breaking spaces inside the figures themselves (see ongoingFees in
+     site.ts); the sentence around them wraps like any other. */
+  /* text-align: start, not the .rows default of right. While the label and the
+     value sit side by side the box is content-sized and alignment is invisible;
+     the moment the row wraps, a right-aligned value is stranded on its own line
+     away from the label it belongs to. */
+  .fee-rows dd { font-weight: 600; color: var(--ink); text-align: start; }
+  .side .fee-rows { border-top: 0; margin-top: var(--space-4); }
+  .side .fee-rows > *:first-child { padding-top: 0; }
+  .side .fee-rows > *:last-child { border-bottom: 0; padding-bottom: 0; }
+  .side .fee-rows dd { color: var(--muted); font-weight: 600; }
+</style>

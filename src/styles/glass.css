@@ -1,0 +1,93 @@
+/* ==========================================================================
+   glass.css — ONE recipe, site-wide. Never hand-roll a second version.
+
+   B3 resolution, applied everywhere: glass is the CHROME of this site, not its
+   content. It carries the header, the mobile CTA rail, card rims, the hero's
+   floating panel, and dialog and menu surfaces. It never carries a price, a
+   form field, a legal clause, a table, or a paragraph over about forty words.
+   Content surfaces are solid --surface sitting on a glass-edged rim, which
+   reads as glass without putting blur behind text people must read.
+
+   Anatomy of every glass surface:
+     1. translucent fill in OKLCH with explicit alpha, proved over black and white
+     2. backdrop-filter: blur(var(--blur)) saturate(1.4), ONE blur value site-wide
+     3. specular top rim + darker bottom hairline, via one inset box-shadow pair
+        (not two extra elements)
+     4. one shadow from the ramp, hue-matched to --ink, never neutral grey
+     5. concentric radius: inner = outer - padding
+   ========================================================================== */
+
+.glass {
+  position: relative;
+  background: var(--glass-fill);
+  border-radius: var(--r-lg);
+  box-shadow:
+    /* specular top edge */
+    inset 0 1px 0 0 var(--glass-edge),
+    /* darker hairline along the bottom */
+    inset 0 -1px 0 0 var(--glass-under),
+    var(--shadow-2);
+  /* Concentric radius: nested children consume this, so it cannot be wrong. */
+  --r-inner: max(var(--r-sm), calc(var(--r-lg) - var(--pad-card)));
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .glass {
+    backdrop-filter: blur(var(--blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.4);
+  }
+}
+
+/* The opaque fallback, at the same measured contrast. Test it by disabling the
+   feature, never by trusting it. */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass { background: var(--glass-opaque); }
+}
+
+/* Reduced transparency gets the opaque fallback too. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--glass-opaque);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* --- the content counterpart -------------------------------------------------
+   Solid surface, glass-edged rim. This is what holds prices, forms, tables and
+   long copy. Same visual family, nothing blurred behind the words.
+   -------------------------------------------------------------------------- */
+.solid-panel {
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--pad-card);
+  --r-inner: max(var(--r-xs), calc(var(--r-lg) - var(--pad-card)));
+}
+
+.solid-panel > .inner,
+.glass > .inner { border-radius: var(--r-inner); }
+
+/* Muted text is banned on glass. Only --ink at full strength. */
+.glass, .glass * { color: var(--ink); }
+
+/* Depth behind the glass. Glass over a flat single colour is a grey box, so any
+   glass surface must sit over real depth: a baked image, or OVERLAPPING SHAPES.
+   The one glass surface on this site is the header where it crosses the hero,
+   and the hero takes the second option: a navy field with two blurred light
+   sources and a diagonal shaft, all screen-blended, built in the hero's own
+   scoped CSS.
+   There is deliberately no generic `.depth` helper here any more. It existed to
+   hold a full-bleed background photograph, and this hero has none: the
+   photograph is an inset figure in the layout instead. A helper class kept
+   around for a pattern the site no longer uses is just a trap for the next
+   person. */
+
+@media print {
+  .glass, .solid-panel {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #999 !important;
+  }
+}

@@ -1,0 +1,261 @@
+---
+import { site, serviceLines } from '../data/site';
+const year = new Date().getFullYear();
+---
+{/*
+  The only dark region on the page, which is what lets it end the document
+  rather than compete with a band further up. The 3px rule across the top edge
+  is the one flourish, and it is the B's own gradient: blue into orange into
+  gold, left to right.
+
+  The structure is a MASTHEAD, not a sidebar: the brand and the two ways of
+  reaching the firm sit together on one full-width strip, and the navigation
+  runs underneath in equal columns. Putting the phone number and the address in
+  the widest, highest part of the footer is also the right call on merit — they
+  are what people scroll to the bottom of a professional-services site to find.
+*/}
+<footer class="site-footer on-invert">
+  <div class="container">
+
+    <div class="masthead">
+      <div class="mast-brand">
+        <a class="brand link-plain" href="/" aria-label={`${site.shortName}, home`}>
+          <picture>
+            <source srcset="/brand/mark-light-64.webp 82w, /brand/mark-light-128.webp 165w" type="image/webp" sizes="56px" />
+            <img src="/brand/mark-light-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
+          </picture>
+          <span class="brand-name" aria-hidden="true">
+            <span class="brand-a">Reliance</span>
+            <span class="brand-b">Business Partners</span>
+          </span>
+        </a>
+        <p class="tagline">{site.tagline}</p>
+      </div>
+
+      <div class="mast-reach">
+        <a class="reach link-plain tnum" href={site.phoneHref}>{site.phone}</a>
+        <a class="reach reach--sm link-plain" href={`mailto:${site.email}`}>{site.email}</a>
+        <a class="btn btn--primary mast-cta" href="/contact/">Start an enquiry</a>
+      </div>
+    </div>
+
+    <div class="cols">
+      <nav aria-label="Services">
+        <h2>Services</h2>
+        <ul>
+          {serviceLines.map((s) => (
+            <li><a class="link-plain" href={`/services/${s.slug}/`}>{s.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav aria-label="Company">
+        <h2>Company</h2>
+        <ul>
+          <li><a class="link-plain" href="/packages/">Incorporation packages</a></li>
+          <li><a class="link-plain" href="/#estimate">Fee estimator</a></li>
+          <li><a class="link-plain" href="/about/">About</a></li>
+          <li><a class="link-plain" href="/contact/">Contact</a></li>
+          <li><a class="link-plain" href="/privacy/">Privacy</a></li>
+          <li><a class="link-plain" href="/terms/">Terms</a></li>
+        </ul>
+      </nav>
+
+      <div class="office">
+        <h2>Office</h2>
+        <address>
+          {site.address.street}<br />
+          {site.address.locality}<br />
+          Sri Lanka
+        </address>
+        {/* The link and the punctuation after it sit on ONE line. A newline
+            between them is whitespace, and it renders as "Synergy Advisors ." */}
+        <p class="assoc">
+          Tax and assurance work is conducted through{' '}
+          {site.associates.map((a, i) => (
+            <Fragment><a class="link-plain" href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '.'}</Fragment>
+          ))}
+        </p>
+      </div>
+    </div>
+
+    <div class="base">
+      <p class="colophon">
+        &copy; {year} {site.legalName}. Figures shown on this site are the firm's published
+        fee structure. Nothing here is a quotation, and nothing on it is accounting,
+        tax or legal advice for your particular circumstances.
+      </p>
+      <ul class="meta">
+        <li><a class="link-plain" href={site.social.linkedin} rel="noopener">LinkedIn</a></li>
+      </ul>
+      <p class="powered">
+        Powered by <a href="https://ceylailabs.com" rel="noopener">Ceylailabs.com</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    padding-block: var(--space-7);
+    padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  }
+  /* The mark's own gradient, as a rule. A border cannot carry a gradient, so it
+     is a 3px band pinned to the top edge instead. */
+  .site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--brand-ramp);
+  }
+
+  /* --- masthead ------------------------------------------------------------ */
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5) var(--space-6);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .brand { display: flex; align-items: center; gap: var(--space-3); line-height: 0; }
+  .brand img { width: auto; height: 44px; }
+  .brand-name { display: grid; gap: 1px; line-height: 1; }
+  .brand-a {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-invert);
+  }
+  .brand-b {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--muted-invert);
+  }
+
+  /* The deck's own cover line. It is the firm's tagline, so it belongs on the
+     firm's site rather than only in the JSON-LD. */
+  .tagline {
+    margin-top: var(--space-3);
+    color: var(--accent);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+  }
+
+  .mast-reach {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+  }
+  @media (min-width: 48rem) { .mast-reach { justify-items: end; } }
+
+  /* The phone number is set at heading size. It is the single most-wanted piece
+     of information down here, and a 15px link in a column of six is not that. */
+  .reach {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-size: var(--text-h4);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-invert);
+  }
+  .reach--sm { font-size: var(--text-sm); font-weight: 600; color: var(--muted-invert); }
+  .reach:hover { color: var(--accent); }
+  .mast-cta { margin-top: var(--space-2); }
+
+  /* --- columns -------------------------------------------------------------- */
+  .cols {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-6);
+  }
+  @media (min-width: 34rem) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 56rem) { .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--space-8); } }
+
+  .site-footer h2 {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);   /* the logo orange, 6.00:1 on this ground */
+    margin-bottom: var(--space-4);
+  }
+
+  .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+  /* :not(.btn) is load-bearing. `.site-footer a` is (0,1,1) and `.btn--primary`
+     is (0,1,0), so without it this rule wins and paints the accent button's
+     label --ink-invert: near-white on orange, 2.90:1, under AA. check-contrast
+     proves token PAIRS and cannot see a cascade putting the wrong pair
+     together, so the exclusion has to be written here. The same trap applies to
+     the hover rule, which would otherwise turn the label accent-on-accent. */
+  .site-footer a:not(.btn) { color: var(--ink-invert); font-size: var(--text-sm); }
+  .site-footer a:not(.btn):hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+  }
+  .site-footer .reach { font-size: var(--text-h4); }
+  .site-footer .reach--sm { font-size: var(--text-sm); }
+
+  address {
+    font-style: normal;
+    color: var(--muted-invert);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+  .assoc {
+    color: var(--muted-invert);
+    font-size: var(--text-sm);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line-invert);
+    line-height: 1.6;
+    max-width: 42ch;
+  }
+  .assoc a { text-decoration: underline; text-underline-offset: 0.2em; }
+
+  /* --- lower band --------------------------------------------------------- */
+  .base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-6);
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .colophon {
+    color: var(--muted-invert);
+    font-size: var(--text-xs);
+    max-width: 62ch;
+    flex: 1 1 22rem;
+    line-height: 1.6;
+  }
+
+  .site-footer ul.meta { display: flex; gap: var(--space-5); flex: none; }
+  .meta a { font-size: var(--text-xs); }
+
+  .powered {
+    color: var(--muted-invert);
+    font-size: var(--text-xs);
+    flex: none;
+  }
+  .powered a {
+    color: var(--muted-invert);
+    font-size: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .powered a:hover { color: var(--accent); }
+</style>
