@@ -1,42 +1,54 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Legal from '../components/Legal.astro';
 import { site } from '../data/site';
 const title = 'Terms — Reliance Business Partners';
 const description =
   'The terms this website is provided on: the published fees are a fee structure, not a quotation, and nothing here is advice on your situation.';
+
+const toc = [
+  { id: 'advice', label: 'This site is not advice' },
+  { id: 'prices', label: 'Prices and the estimator' },
+  { id: 'engage', label: 'Contacting us does not engage us' },
+  { id: 'associates', label: 'Associate practices' },
+  { id: 'photos', label: 'Photographs' },
+  { id: 'accuracy', label: 'Accuracy' },
+];
 ---
-<Base title={title} description={description}>
-  <section class="section">
-    <div class="container prose stack">
-      <p class="eyebrow">Terms</p>
-      <h1>Terms of use</h1>
-      <h2>This site is not advice</h2>
-      <p>
-        Everything here is general information about what the firm does. It is not accounting, tax, audit or company-law advice on your situation, and you should not act on it as though it were. Advice comes after we have understood your circumstances.
-      </p>
-      <h2>Prices are a fee structure, not a quotation</h2>
-      <p>
-        The package prices and the per-director rates on this site are the firm's published fee structure and are stated exactly. They are not an offer, and the estimator produces an estimate rather than a quotation. Starting prices marked &ldquo;from&rdquo; depend on scope. Government charges, and the charges of any third party, are separate unless a package says otherwise.
-      </p>
-      <h2>Contacting us does not engage us</h2>
-      <p>
-        Calling or e-mailing does not by itself create a professional engagement. That begins only when we have agreed in writing to act for you and you have accepted the scope and the fee.
-      </p>
-      <h2>Work carried out by associate practices</h2>
-      <p>
-        Tax and assurance work is conducted through {site.associates.map((a) => a.name).join(' and ')}. Where your matter is carried out by an associate practice, you are told so before the work begins.
-      </p>
-      <h2>Accuracy</h2>
-      <p>
-        We keep this site current, but fees, law and procedure change. If something here matters to a decision you are about to make, ask us to confirm it rather than relying on the page.
-      </p>
-      <h2>Contact</h2>
-      <p>
-        {site.legalName}, {site.address.street}, {site.address.locality}, Sri Lanka.
-      </p>
-    </div>
-  </section>
+<Base title={title} description={description} overHero>
+  <PageHero
+    variant="plain"
+    eyebrow="Terms"
+    title="Terms of <em>use.</em>"
+    lede="What this website is, and what it is not. Short, because a fee structure and a phone number should not need much small print."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Terms' }]}
+  />
+
+  <Legal toc={toc}>
+    <h2 id="advice">This site is not advice</h2>
+    <p>
+      Everything here is general information about what the firm does. It is not accounting, tax, audit or company-law advice on your situation, and you should not act on it as though it were. Advice comes after we have understood your circumstances.
+    </p>
+    <h2 id="prices">Prices are a fee structure, not a quotation</h2>
+    <p>
+      The package prices and the per-director rates on this site are the firm's published fee structure and are stated exactly. They are not an offer, and the estimator produces an estimate rather than a quotation. Starting prices marked &ldquo;from&rdquo; depend on scope. Government charges, and the charges of any third party, are separate unless a package says otherwise.
+    </p>
+    <h2 id="engage">Contacting us does not engage us</h2>
+    <p>
+      Calling or e-mailing does not by itself create a professional engagement. That begins only when we have agreed in writing to act for you and you have accepted the scope and the fee.
+    </p>
+    <h2 id="associates">Work carried out by associate practices</h2>
+    <p>
+      Tax and assurance work is conducted through {site.associates.map((a) => a.name).join(' and ')}. Where your matter is carried out by an associate practice, you are told so before the work begins.
+    </p>
+    <h2 id="photos">Photographs</h2>
+    <p>
+      The photographs on this site are used under open licences and set the scene only. They do not show the firm's office, staff or clients. Who took each one, and the licence it is used under, is on the <a href="/credits/">image credits</a> page.
+    </p>
+    <h2 id="accuracy">Accuracy</h2>
+    <p>
+      We keep this site current, but fees, law and procedure change. If something here matters to a decision you are about to make, ask us to confirm it rather than relying on the page.
+    </p>
+  </Legal>
 </Base>
-<style>
-  h2 { font-size: var(--text-h3); margin-top: var(--space-5); }
-</style>

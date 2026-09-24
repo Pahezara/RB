@@ -1,120 +1,131 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { serviceLines, site } from '../../data/site';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Img from '../../components/Img.astro';
+import Icon from '../../components/Icon.astro';
+import { serviceLines, engagement, packages } from '../../data/site';
+
 const title = 'Services — Reliance Business Partners';
 const description =
-  'Accounting and BPO, tax and assurance, business advisory, payroll, Power BI and corporate secretarial, from a firm in Nugegoda, Colombo.';
+  'Accounting and BPO, tax and assurance, business advisory, payroll, Power BI and corporate secretarial, from one firm of professionals in Nugegoda, Colombo.';
+const money = (n: number) => n.toLocaleString('en-US');
 ---
-<Base title={title} description={description}>
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Services</p>
-        <h1>What we work on.</h1>
-        <p>
-          Six areas. Most clients use more than one of them, which is the point of
-          having them in the same firm: the ledger the accountant keeps is the
-          ledger the tax computation is built from.
-        </p>
-      </div>
+<Base title={title} description={description} overHero>
+  <PageHero
+    eyebrow="Services"
+    title="Six disciplines. <em>One firm.</em>"
+    lede="Most clients start with one of these and end up with three. That is the point of having them under one roof: the ledger the accountant keeps is the ledger the tax computation is built from."
+    image="ind-professional"
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services' }]}
+  >
+    <a class="btn btn--primary btn--lg" href="/contact/">Talk to the team <Icon name="arrow-right" size={18} stroke={2} /></a>
+    <a class="btn btn--ghost btn--lg" href="/packages/">Incorporation packages</a>
+  </PageHero>
 
-      {/* The same numbered ledger as the home page, one column wider so each
-          entry can carry what it actually covers rather than only a blurb. */}
-      <ol class="ledger">
+  {/* One editorial row per line, photograph alternating sides. */}
+  <section class="section" aria-label="The six services">
+    <div class="container">
+      <ol class="lines">
         {serviceLines.map((s, i) => (
-          <li>
-            <a class="lg-row link-plain" href={`/services/${s.slug}/`}>
-              <span class="lg-n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              <span class="lg-body">
-                <span class="lg-title">{s.title}</span>
-                <span class="lg-blurb">{s.blurb}</span>
-                {/* The character, not the entity. Inside an expression Astro
-                    escapes the text, so "&middot;" would print literally. */}
-                <span class="lg-covers">{s.covers.slice(0, 3).join(' · ')}</span>
-              </span>
-              <span class="lg-go" aria-hidden="true"></span>
+          <li class:list={['line', i % 2 === 1 && 'line--flip']} id={s.slug}>
+            <a class="media line-media hoverable" href={`/services/${s.slug}/`} tabindex="-1" aria-hidden="true">
+              <Img slug={s.image} sizes="(min-width: 64rem) 36rem, 100vw" alt="" />
             </a>
+            <div class="line-body">
+              <div class="line-top">
+                <span class="icon-tile"><Icon name={s.icon} /></span>
+                <span class="line-n tnum">{String(i + 1).padStart(2, '0')} / 06</span>
+              </div>
+              <h2 class="line-h"><a class="link-plain" href={`/services/${s.slug}/`}>{s.title}</a></h2>
+              <p class="line-lead">{s.lead}</p>
+              <ul class="ticks line-covers">
+                {s.covers.map((c) => <li>{c}</li>)}
+              </ul>
+              {'note' in s && s.note && <p class="line-note"><Icon name="scale" size={18} />{s.note}</p>}
+              <div class="row line-actions">
+                {/* Never lowercased: the titles carry acronyms (BPO, Power BI). */}
+                <a class="link-arrow" href={`/services/${s.slug}/`}>Explore this service <Icon name="arrow-right" size={16} stroke={2} /></a>
+                {'packagesHref' in s && s.packagesHref && (
+                  <a class="price-chip link-plain" href={s.packagesHref}>From LKR {money(packages[0].price)}</a>
+                )}
+              </div>
+            </div>
           </li>
         ))}
       </ol>
-
-      <div class="cta-panel">
-        <div>
-          <h2 class="cta-h">Registering a company?</h2>
-          <p>
-            Corporate secretarial is the one service with published prices. All
-            three incorporation packages, and everything in them, are on the
-            packages page.
-          </p>
-        </div>
-        <div class="row">
-          <a class="btn btn--primary btn--lg" href="/packages/">See the packages</a>
-          <a class="btn btn--secondary btn--lg tnum" href={site.phoneHref}>{site.phone}</a>
-        </div>
-      </div>
     </div>
   </section>
+
+  {/* How any engagement starts. */}
+  <section class="section band" aria-labelledby="eng-h">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">How we start</p>
+          <h2 id="eng-h">Three steps, and the fee is <em>in writing</em> before the first piece of work.</h2>
+        </div>
+        <p class="intro">
+          The same way in for every one of the six lines. For a company
+          incorporation, the packages page has the whole sequence and every fee.
+        </p>
+      </div>
+      <ol class="steps steps--3">
+        {engagement.map((e) => (
+          <li class="step">
+            <span class="step-n">{e.n}</span>
+            <h3>{e.title}</h3>
+            <p>{e.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand />
 </Base>
+
 <style>
-  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-
-  .lg-row {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: start;
-    gap: var(--space-4) var(--space-5);
-    padding-block: var(--space-5);
-    border-bottom: 1px solid var(--line);
-    color: var(--ink);
-    transition: background-color var(--dur-hover) var(--ease-out);
+  .lines { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(4rem, 3rem + 4vw, 7.5rem); }
+  .line { display: grid; gap: var(--space-6); align-items: center; scroll-margin-top: calc(var(--header-h) + 2rem); }
+  @media (min-width: 64rem) {
+    .line { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-9); }
+    .line--flip .line-media { order: 2; }
   }
-  .lg-n {
-    font-size: var(--text-sm);
-    font-weight: 700;
-    letter-spacing: var(--tracking-eyebrow);
-    color: var(--accent-ink);
-    padding-top: 0.25em;
-  }
-  .lg-body { display: grid; gap: var(--space-2); max-width: var(--measure); }
-  .lg-title {
-    font-size: var(--text-h3);
-    font-weight: 700;
-    letter-spacing: var(--tracking-tight);
-    line-height: var(--leading-snug);
-  }
-  .lg-blurb { color: var(--ink-soft); font-size: var(--text-sm); }
-  .lg-covers {
-    color: var(--muted);
-    font-size: var(--text-xs);
-    letter-spacing: 0.01em;
-  }
-
-  /* A chevron drawn from two borders, so there is no icon file and no SVG. */
-  .lg-go {
-    align-self: center;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-top: 2px solid var(--accent-ink);
-    border-right: 2px solid var(--accent-ink);
-    transform: rotate(45deg);
-    transition: transform var(--dur-hover) var(--ease-out);
-  }
-  .lg-row:hover { background: var(--accent-tint); }
-  .lg-row:hover .lg-go { transform: rotate(45deg) translate3d(2px, -2px, 0); }
-
-  .cta-panel {
+  .line-media { display: block; aspect-ratio: 5 / 4; border-radius: var(--r-lg); }
+  .line-media :global(picture) { height: 100%; }
+  .line-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-5); }
+  .line-n { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+  .line-h { font-size: var(--text-h2); }
+  .line-h a { color: var(--ink); }
+  .line-h a:hover { color: var(--accent-ink); }
+  .line-lead { margin-top: var(--space-4); color: var(--ink-soft); font-size: var(--text-lede); line-height: 1.55; }
+  .line-covers { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--line); }
+  @media (min-width: 40rem) { .line-covers { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-6); } }
+  .line-note {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
-    align-items: center;
-    justify-content: space-between;
-    margin-top: var(--space-7);
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
+    gap: var(--space-3);
+    align-items: flex-start;
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    border-radius: var(--r-sm);
+    background: var(--accent-tint);
+    font-size: var(--text-sm);
   }
-  .cta-h { font-size: var(--text-h3); max-width: 18ch; }
-  .cta-panel p { color: var(--ink-soft); margin-top: var(--space-3); max-width: 46ch; }
-  .cta-panel .row { gap: var(--space-3); }
+  .line-note :global(svg) { flex: none; color: var(--accent-ink); margin-top: 2px; }
+  .line-actions { margin-top: var(--space-6); gap: var(--space-5); }
+  .price-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    border-radius: var(--r-pill);
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+  .price-chip:hover { background: var(--surface-invert-2); color: var(--ink-invert); }
+
+  @media (min-width: 68rem) { .steps--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); --cols: 3; } }
 </style>

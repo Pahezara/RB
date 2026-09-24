@@ -1,240 +1,316 @@
 ---
 import Base from '../layouts/Base.astro';
 import Estimator from '../components/Estimator.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
 import {
-  site, serviceLines, steps, audiences, faqs, sectors, team, packages,
+  site, serviceLines, steps, faqs, packages, industries, pillars, platforms,
+  credentials, directors, team,
 } from '../data/site';
 
 const title = 'Reliance Business Partners — accountants in Colombo';
 const description =
-  'Accounting, tax, payroll, advisory, Power BI and company secretarial from one firm in Nugegoda, Colombo. Incorporation from LKR 36,000.';
+  'Accounting, tax, payroll, advisory, Power BI and company secretarial from one firm in Nugegoda, Colombo. Incorporation from LKR 36,000, every fee published.';
 
-/* Three facts, each one sourced. Nothing here is a claim the firm has not
-   already made in its own profile or its own fee sheet. */
-const heroFacts = [
-  { label: 'A firm since', value: String(site.founded) },
-  { label: 'Professionals', value: `${team.total} across four grades` },
-  { label: 'Incorporation from', value: `LKR ${packages[0].price.toLocaleString('en-US')}` },
-];
+const money = (n: number) => n.toLocaleString('en-US');
+const svc = (slug: string) => serviceLines.find((s) => s.slug === slug)!;
+
+/* The bento order. Secretarial leads because it is the one line with a
+   published price, and the price is the strongest thing this site can say. */
+const bento = ['secretarial', 'accounting', 'tax', 'advisory', 'payroll', 'analytics'].map(svc);
+
+/* "Mr. J. M. N. Sanjeewa" -> "JS": first given initial, then the surname. */
+const initials = (name: string) => {
+  const parts = name.replace(/^Mr\.?\s*/, '').replace(/\./g, ' ').trim().split(/\s+/);
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
 ---
 <Base title={title} description={description} overHero>
 
-  {/*
-    1. Hero.
-
-    Deliberately NOT a full-bleed photograph with the copy laid over it. The
-    ground here is built rather than shot: the navy field, two soft brand-hued
-    light sources, and one hard diagonal that repeats the leg of the R in the
-    mark. That is "overlapping shapes", which is what glass.css requires behind
-    a glass surface, so the header above it is still real glass rather than a
-    frost over a flat colour.
-
-    The photograph is still here, but as an OBJECT in the layout — an inset
-    panel on the right with the mark's own gradient along its top edge —
-    instead of the background the words sit on.
-  */}
+  {/* ================================================================== 1. HERO
+      The night skyline carries a baked, MEASURED scrim (6.41:1 for the light
+      ink across the copy column; see src/data/images.json). The copy sits
+      bottom-left; the incorporation card sits bottom-right on desktop, which
+      puts a real price in the first screen of the site. */}
   <section class="hero" aria-labelledby="hero-h">
-    <div class="hero-field" aria-hidden="true">
-      <span class="glow glow--warm"></span>
-      <span class="glow glow--deep"></span>
-      <span class="leg"></span>
+    <div class="hero-bg" aria-hidden="true">
+      <Img slug="colombo-night" sizes="100vw" alt="" loading="eager" fetchpriority="high" />
     </div>
 
     <div class="container hero-grid">
       <div class="hero-copy on-invert">
-        <p class="eyebrow hero-eyebrow">Nugegoda &middot; Colombo &middot; Since {site.founded}</p>
-        <h1 id="hero-h">One firm for the accounts, the tax and the company itself.</h1>
-        <p class="hero-lede">
-          Accounting and BPO, tax and assurance, payroll, business advisory, Power BI
-          reporting and corporate secretarial work &mdash; all of it under one
-          umbrella, and priced in the open.
+        <p class="eyebrow"><span><span class="eb-wide">A firm of professionals &middot; </span>Colombo &middot; Since {site.founded}</span></p>
+        <h1 id="hero-h" class="hero-h">
+          <span class="line"><span>Your business,</span></span>
+          <span class="line"><span><em>in trusted hands.</em></span></span>
+        </h1>
+        <p class="lede hero-lede">
+          Accounting, tax, payroll, advisory, Power BI reporting and company
+          secretarial work &mdash; six disciplines under one umbrella, with the
+          fees published in the open.
         </p>
         <div class="row hero-actions">
-          <a class="btn btn--primary btn--lg" href="#estimate">Price an incorporation</a>
-          <a class="btn btn--ghost btn--lg" href="#services">See what we do</a>
+          <a class="btn btn--primary btn--lg" href="#estimate">Estimate your fees <Icon name="arrow-right" size={18} stroke={2} /></a>
+          <a class="btn btn--ghost btn--lg" href="#services">Explore services</a>
         </div>
-
-        <dl class="hero-facts">
-          {heroFacts.map((f) => (
-            <div>
-              <dt>{f.label}</dt>
-              <dd>{f.value}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
 
-      <div class="hero-figure on-invert">
-        <figure class="shot">
-          <picture>
-            <source type="image/avif" srcset="/hero/hero-panel-640.avif 640w, /hero/hero-panel-900.avif 900w" sizes="(min-width: 62rem) 29rem, 100vw" />
-            <source type="image/webp" srcset="/hero/hero-panel-640.webp 640w, /hero/hero-panel-900.webp 900w" sizes="(min-width: 62rem) 29rem, 100vw" />
-            <img src="/hero/hero-panel-900.webp" width="900" height="1350" alt="" loading="eager" fetchpriority="high" decoding="async" />
-          </picture>
-        </figure>
-        <p class="shot-tag">
-          <span class="shot-tag-k">Registered office</span>
-          <span class="shot-tag-v">{site.address.locality}</span>
-        </p>
-      </div>
+      <a class="hero-card link-plain" href="/packages/">
+        <span class="hc-top">
+          <span class="icon-tile"><Icon name="file-signature" /></span>
+          <span class="hc-kicker">Company incorporation</span>
+        </span>
+        <span class="hc-price display"><span class="hc-cur">LKR</span> {money(packages[0].price)}</span>
+        <span class="hc-note">
+          Basic package, one director: name approval, certificate of incorporation,
+          TIN certificate and bank resolutions, first-year retainer included.
+        </span>
+        <span class="link-arrow">Compare all three packages <Icon name="arrow-right" size={16} stroke={2} /></span>
+      </a>
+    </div>
+
+    <div class="container">
+      <dl class="creds on-invert">
+        {credentials.map((c) => (
+          <div class="cred">
+            <dt class="visually-hidden">{c.label}</dt>
+            <dd class="stat">
+              <span class="stat-n tnum" data-count={c.count ? c.n : undefined}>{c.n}</span>
+              <span class="stat-l" aria-hidden="true">{c.label}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
     </div>
   </section>
 
-  <!-- 2. The estimator, lifted out of the hero. -->
+  {/* ================================================================== 2. ESTIMATOR */}
   <Estimator />
 
-  {/*
-    3. Services.
-
-    A numbered ledger, not a grid of cards. Six items in a card grid is the
-    default shape every professional-services site reaches for, and the row form
-    suits this content better anyway: the reader is scanning a list of things
-    the firm does, in order, and the index numeral gives them a place to be.
-  */}
-  <section id="services" class="section band" aria-labelledby="services-h">
+  {/* ================================================================== 3. SERVICES
+      A bento of the six lines. Photograph above, words below on the card:
+      none of these images carries a measured scrim, so none carries type. */}
+  <section id="services" class="section" aria-labelledby="services-h">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">What we do</p>
-        <h2 id="services-h">Six service areas, one set of people.</h2>
-        <p>
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">What we do</p>
+          <h2 id="services-h">Six disciplines. <em>One set of books.</em></h2>
+        </div>
+        <p class="intro">
           Most clients start with one of these and end up with three. Because it is
           the same firm, the ledger the accountant keeps is the ledger the tax
           computation is built from.
         </p>
       </div>
 
-      <ol class="ledger">
-        {serviceLines.map((s, i) => (
-          <li>
-            <a class="lg-row link-plain" href={`/services/${s.slug}/`}>
-              <span class="lg-n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              <span class="lg-body">
-                <span class="lg-title">{s.title}</span>
-                <span class="lg-blurb">{s.blurb}</span>
+      <div class="bento">
+        {bento.map((s, i) => (
+          <a class:list={['tile', 'link-plain', `tile--${i}`]} href={`/services/${s.slug}/`}>
+            <div class="media tile-media">
+              <Img slug={s.image} sizes={i === 0 ? '(min-width: 64rem) 52rem, 100vw' : '(min-width: 64rem) 26rem, (min-width: 40rem) 50vw, 100vw'} alt="" />
+              {'packagesHref' in s && s.packagesHref && (
+                <span class="tile-badge">From LKR {money(packages[0].price)}</span>
+              )}
+            </div>
+            <div class="tile-body">
+              <span class="tile-top">
+                <span class="icon-tile"><Icon name={s.icon} /></span>
+                <span class="tile-n tnum">{String(i + 1).padStart(2, '0')}</span>
               </span>
-              <span class="lg-go" aria-hidden="true"></span>
-            </a>
-          </li>
+              <h3>{s.title}</h3>
+              <p>{s.blurb}</p>
+              <span class="link-arrow">What this covers <Icon name="arrow-right" size={16} stroke={2} /></span>
+            </div>
+          </a>
         ))}
-      </ol>
+        <div class="tile tile--cta on-invert">
+          <p class="eyebrow">Not sure where to start?</p>
+          <p class="tile-cta-h display">Describe it in your own words. We will place it.</p>
+          <a class="btn btn--primary" href="/contact/">Talk to the team <Icon name="arrow-right" size={18} stroke={2} /></a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 4. How it works. The section that removes fear. -->
+  {/* ================================================================== 4. WHY RELIANCE */}
+  <section class="section band--dark why on-invert" aria-labelledby="why-h">
+    <div class="why-glow" aria-hidden="true"></div>
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Why Reliance</p>
+          <h2 id="why-h">Everything a growing company needs, <em>under one umbrella.</em></h2>
+        </div>
+        <p class="intro">
+          Established in {site.founded} as a limited liability company, with a team
+          of {team.total} and a board of qualified professionals. Four things
+          follow from that, and each of them can be checked.
+        </p>
+      </div>
+
+      <ul class="pillars">
+        {pillars.map((p, i) => (
+          <li class={`pillar reveal reveal-${Math.min(i + 1, 4)}`}>
+            <span class="icon-tile"><Icon name={p.icon} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      <div class="values">
+        <p class="values-label">The values the firm holds itself to</p>
+        <ul class="chips">
+          {site.values.map((v) => <li>{v}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ================================================================== 5. HOW IT WORKS */}
   <section id="how" class="section" aria-labelledby="how-h">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Incorporating a company</p>
-        <h2 id="how-h">Four steps, and you knew the price at step zero.</h2>
-        <p>
-          Most people registering a company have never done it before. This is the
-          whole sequence, with nothing hidden in the middle of it.
-        </p>
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Incorporating a company</p>
+          <h2 id="how-h">Four steps, <em>priced before the first.</em></h2>
+        </div>
+        <div>
+          <p class="intro">
+            Most people registering a company have never done it before. This is the
+            whole sequence, with nothing hidden in the middle of it.
+          </p>
+          <a class="link-arrow how-link" href="/packages/">See exactly what each package includes <Icon name="arrow-right" size={16} stroke={2} /></a>
+        </div>
       </div>
 
       <ol class="steps">
         {steps.map((s, i) => (
           <li class={`step reveal reveal-${Math.min(i + 1, 4)}`}>
-            <span class="step-n">{String(s.n).padStart(2, '0')}</span>
+            <span class="step-n">{s.n}</span>
             <h3>{s.title}</h3>
             <p>{s.detail}</p>
             <p class="step-meta">{s.who}</p>
           </li>
         ))}
       </ol>
-
-      <p class="closing-line">
-        What you end up holding is a Certificate of Incorporation, a TIN certificate,
-        your seals, and the resolutions a bank needs to open the account.{' '}
-        <a href="/packages/">See exactly what is in each package</a>.
-      </p>
     </div>
   </section>
 
-  <!-- 5. The firm. Numbers and values, both from the profile. -->
-  <section id="firm" class="section band" aria-labelledby="firm-h">
+  {/* ================================================================== 6. INDUSTRIES */}
+  <section id="industries" class="section band" aria-labelledby="ind-h">
     <div class="container">
-      <div class="two-col">
-        <div class="section-head">
-          <p class="eyebrow">The firm</p>
-          <h2 id="firm-h">Seventeen people, four directors, one umbrella.</h2>
-          <p>
-            Reliance Business Partners was established in {site.founded} as a limited
-            liability company, to put business services a growing company needs in
-            one place instead of four.
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Sectorial expertise</p>
+          <h2 id="ind-h">Fourteen sectors the firm <em>already knows.</em></h2>
+        </div>
+        <div>
+          <p class="intro">
+            Not a client list: the industries whose books, filings and seasons the
+            firm has worked in, grouped into six families.
           </p>
-          <p class="vision">&ldquo;{site.vision}&rdquo;</p>
-          <a class="btn btn--secondary firm-cta" href="/about/">Meet the board</a>
+          <a class="link-arrow how-link" href="/industries/">How we work with each <Icon name="arrow-right" size={16} stroke={2} /></a>
         </div>
+      </div>
 
-        <div class="firm-panels">
-          <div class="solid-panel">
-            <h3>Who is here</h3>
-            <dl class="rows team-rows">
-              {team.rows.map((r) => (
-                <div>
-                  <dt>{r.role}</dt>
-                  <dd class="tnum">{r.n}</dd>
-                </div>
-              ))}
-              <div class="total-row">
-                <dt>Total</dt>
-                <dd class="tnum">{team.total}</dd>
+      <ul class="ind-grid">
+        {industries.map((ind) => (
+          <li>
+            <a class="ind link-plain" href={`/industries/#${ind.slug}`}>
+              <div class="media ind-media">
+                <Img slug={ind.image} sizes="(min-width: 64rem) 26rem, (min-width: 40rem) 50vw, 100vw" alt="" />
               </div>
-            </dl>
-          </div>
-          <div class="solid-panel">
-            <h3>What we hold to</h3>
-            <ul class="ticks">
-              {site.values.map((v) => <li>{v}</li>)}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. Sectors. A flat chip field, no cards. -->
-  <section id="sectors" class="section" aria-labelledby="sectors-h">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Sectorial expertise</p>
-        <h2 id="sectors-h">Fourteen sectors we already know the shape of.</h2>
-        <p>
-          Not a client list. These are the industries whose books, filings and
-          seasonality the firm has worked in before.
-        </p>
-      </div>
-      <ul class="chips">
-        {sectors.map((s) => <li>{s}</li>)}
+              <div class="ind-body">
+                <h3>{ind.title}</h3>
+                <p class="ind-sectors">{ind.sectors.join(' · ')}</p>
+              </div>
+              <span class="ind-go" aria-hidden="true"><Icon name="arrow-up-right" size={20} stroke={2} /></span>
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   </section>
 
-  <!-- 7. Who this is for. Hairline rows, no cards. -->
-  <section id="who" class="section band" aria-labelledby="who-h">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Where to start</p>
-        <h2 id="who-h">Four ways people arrive here.</h2>
-      </div>
-      <div class="rows routes">
-        {audiences.map((a) => (
-          <a class="route link-plain" href={a.to}>
-            <span class="row-label">{a.title}</span>
-            <span class="row-value">{a.detail}</span>
-          </a>
-        ))}
-      </div>
+  {/* ================================================================== 7. PLATFORMS
+      Set as TYPE, never as the vendors' logos: the firm works in these tools,
+      it is not their partner. The track is duplicated for a seamless loop; the
+      copy is hidden from assistive technology so the list is read once. */}
+  <section class="platforms" aria-labelledby="plat-h">
+    <div class="container plat-head">
+      <h2 id="plat-h" class="plat-title">Your books stay in the software <em>you already use.</em></h2>
+    </div>
+    <div class="marquee">
+      <ul class="marquee-track">
+        {platforms.map((p) => <li>{p}</li>)}
+        {platforms.map((p) => <li aria-hidden="true">{p}</li>)}
+      </ul>
+      <ul class="marquee-track" aria-hidden="true">
+        {platforms.map((p) => <li>{p}</li>)}
+        {platforms.map((p) => <li>{p}</li>)}
+      </ul>
     </div>
   </section>
 
-  <!-- 8. FAQ. details/summary, no JS. -->
-  <section id="faq" class="section" aria-labelledby="faq-h">
+  {/* ================================================================== 8. THE BOARD
+      No photographs of the directors exist, and no stock face will ever stand
+      in for one. Each is set as a monogram and their credentials. */}
+  <section class="section" aria-labelledby="board-h">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Board of directors</p>
+          <h2 id="board-h">Qualified people, <em>answerable for the work.</em></h2>
+        </div>
+        <div>
+          <p class="intro">
+            Chartered Accountants, Chartered Management Accountants and Registered
+            Company Secretaries, leading a team of {team.total}.
+          </p>
+          <a class="link-arrow how-link" href="/about/">Read about the firm <Icon name="arrow-right" size={16} stroke={2} /></a>
+        </div>
+      </div>
+
+      <ul class="board">
+        {directors.map((d) => (
+          <li class="director">
+            <span class="monogram display" aria-hidden="true">{initials(d.name)}</span>
+            <h3>{d.name}</h3>
+            <p class="creds-line">{d.creds}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ================================================================== 9. VISION
+      The dusk skyline carries a measured scrim (6.71:1 across the quote). */}
+  <section class="vision on-invert" aria-labelledby="vision-h">
+    <div class="vision-bg" aria-hidden="true">
+      <Img slug="colombo-dusk" sizes="100vw" alt="" />
+    </div>
+    <div class="container vision-inner">
+      <p class="eyebrow eyebrow--center" id="vision-h">Vision 2030</p>
+      <blockquote class="vision-quote display">
+        <p>&ldquo;{site.vision}&rdquo;</p>
+      </blockquote>
+      <p class="vision-by">{site.legalName}</p>
+    </div>
+  </section>
+
+  {/* ================================================================== 10. FAQ */}
+  <section id="faq" class="section" aria-labelledby="faq-h">
+    <div class="container faq-grid">
+      <div class="faq-side">
         <p class="eyebrow">Questions</p>
-        <h2 id="faq-h">The things people ask first.</h2>
+        <h2 id="faq-h">The things people <em>ask first.</em></h2>
+        <p class="lede faq-lede">Anything not answered here is one call away.</p>
+        <div class="row faq-actions">
+          <a class="btn btn--dark" href="/contact/">Ask us directly <Icon name="arrow-right" size={18} stroke={2} /></a>
+        </div>
       </div>
       <div class="faq">
         {faqs.map((f) => (
@@ -247,347 +323,464 @@ const heroFacts = [
     </div>
   </section>
 
-  <!-- 9. Contact and CTA -->
-  <section id="contact" class="section band" aria-labelledby="contact-h">
-    <div class="container">
-      <div class="cta-panel">
-        <div class="cta-copy">
-          <h2 id="contact-h">Tell us what you are setting up.</h2>
-          <p>
-            Describe it in your own words. You get the scope and the fee in writing
-            before any work begins, and making contact costs nothing.
-          </p>
-        </div>
-        <div class="row cta-actions">
-          <a class="btn btn--primary btn--lg" href="/contact/">Start an enquiry</a>
-          <a class="btn btn--secondary btn--lg tnum" href={site.phoneHref}>{site.phone}</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  {/* ================================================================== 11. CTA */}
+  <CtaBand />
 </Base>
 
+<script>
+  /* Counts the credential numerals up from zero the first time they scroll into
+     view. The real number is already in the HTML, so with this script blocked,
+     or under reduced motion, the page simply shows it. */
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (nums.length && !reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const end = Number(el.dataset.count);
+        const t0 = performance.now();
+        const dur = 1100;
+        const tick = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur);
+          el.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.6 });
+    nums.forEach((n) => io.observe(n));
+  }
+</script>
+
 <style>
-  /* --- hero -------------------------------------------------------------
-     A built ground, not a photographed one. See the note on the markup. */
+  /* ================================================================== HERO */
   .hero {
     position: relative;
     isolation: isolate;
-    background: var(--surface-invert);
-    margin-top: calc((var(--header-h) + var(--header-inset)) * -1);
-    padding-block: calc(var(--header-h) + var(--space-7)) calc(var(--space-8) + var(--space-6));
     overflow: hidden;
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    margin-top: calc((var(--header-h) + var(--header-inset)) * -1);
+    padding-top: calc(var(--header-h) + clamp(4rem, 2rem + 8vw, 9rem));
+    min-height: min(56rem, 100svh);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .hero-bg { position: absolute; inset: 0; z-index: -1; }
+  .hero-bg :global(picture), .hero-bg :global(img) { width: 100%; height: 100%; }
+  .hero-bg :global(img) {
+    object-fit: cover;
+    transform-origin: 70% 50%;
+    animation: hero-settle 2.4s var(--ease-out) both;
+  }
+  @keyframes hero-settle {
+    from { transform: scale(1.08); }
+    to   { transform: scale(1); }
   }
 
-  /* The depth the glass header needs: two soft light sources and one hard
-     diagonal, all in the mark's own colours. */
-  .hero-field { position: absolute; inset: 0; z-index: -1; }
+  .hero-grid { display: grid; gap: var(--space-7); align-items: end; }
+  @media (min-width: 64rem) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr) 22rem; gap: var(--space-8); }
+  }
+  .hero-copy { max-width: 46rem; }
 
-  /* mix-blend-mode: screen, not a translucent overlay. A low-alpha warm colour
-     laid over navy averages toward olive, which is the one colour this brand
-     does not contain. Screen is how light actually behaves: it adds, so a dim
-     amber over navy lifts to warm amber and never passes through green. The
-     sources are therefore DARK — they are light being added, not paint. */
-  .glow {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    mix-blend-mode: screen;
+  .hero-h {
+    font-size: var(--text-display);
+    line-height: 0.98;
+    letter-spacing: var(--tracking-display);
+    font-weight: 380;
+    color: var(--ink-invert);
+    max-width: none;
   }
-  /* Both sources are centred OFF the canvas, so what reaches the page is the
-     falloff rather than the hot core. The header is glass and samples whatever
-     is under it; a bright source near the top edge turns the whole bar tan. */
-  /* Sized for the viewport, not fixed. A 40rem source pushed 13rem off the
-     right edge is a corner accent at 1440px and a wash across the entire bar at
-     390px, where it turns the glass header tan end to end. */
-  .glow--warm {
-    width: 24rem; height: 18rem;
-    top: -12rem; right: -9rem;
-    background: oklch(35% 0.075 68);
+  /* Each line rises out of a mask on load. Transform only: the text is never
+     invisible, so a browser that skips the animation shows it in place. */
+  .hero-h .line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+  .hero-h .line > span { display: inline-block; animation: rise 1.1s var(--ease-out) both; }
+  .hero-h .line:nth-child(2) > span { animation-delay: 0.12s; }
+  @keyframes rise {
+    from { transform: translate3d(0, 105%, 0); }
+    to   { transform: none; }
   }
-  @media (min-width: 62rem) {
-    .glow--warm { width: 40rem; height: 28rem; top: -17rem; right: -13rem; }
-  }
-  .glow--deep {
-    width: 52rem; height: 40rem;
-    bottom: -24rem; left: -18rem;
-    background: oklch(36% 0.072 245);
-  }
-  /* The leg of the R, at the R's own angle. It sits to the RIGHT of the copy
-     column so it frames the figure rather than cutting across the headline, and
-     it is blurred: a hard-edged band reads as a rendering artefact, a soft one
-     reads as light. */
-  .leg {
-    position: absolute;
-    right: 2%;
-    top: -30%;
-    width: 30rem;
-    height: 170%;
-    transform: rotate(24deg);
-    transform-origin: top right;
-    filter: blur(10px);
-    background: linear-gradient(
-      100deg,
-      transparent 0 44%,
-      oklch(100% 0 0 / 0.04) 44% 56%,
-      transparent 56%
-    );
-  }
+  .hero-h em { color: var(--accent-lift); }
 
-  .hero-grid { display: grid; gap: var(--space-7); align-items: center; }
-  @media (min-width: 62rem) {
-    .hero-grid { grid-template-columns: minmax(0, 1fr) 25rem; gap: var(--space-8); }
-  }
-  @media (min-width: 74rem) {
-    .hero-grid { grid-template-columns: minmax(0, 1fr) 29rem; }
-  }
+  /* ONLY the light ink sits on the photograph. The scrim was measured for
+     --ink-invert (and, under the italic line, for --accent-lift as large text);
+     the muted and accent inks used elsewhere on the dark band were never
+     measured against city lights, so they are not allowed here. The eyebrow's
+     rule stays orange: it is a 2px bar, not text. */
+  .hero :is(.eyebrow, .lede, .stat-l) { color: var(--ink-invert); }
 
-  .hero-copy { max-width: 40rem; }
-  .hero-eyebrow { color: var(--accent); }  /* the logo orange, 6.00:1 on the hero */
-  .hero h1 { color: var(--ink-invert); max-width: 16ch; }
-  .hero-lede {
-    color: var(--muted-invert);
-    font-size: clamp(1.0625rem, 0.5vw + 1rem, 1.1875rem);
-    max-width: 46ch;
-    margin-top: var(--space-5);
-  }
+  .hero-lede { margin-top: var(--space-6); max-width: 46ch; }
+  @media (max-width: 39.99rem) { .eb-wide { display: none; } }
   .hero-actions { margin-top: var(--space-6); gap: var(--space-3); }
 
-  /* Facts as three orange-ruled columns rather than one bordered block. */
-  .hero-facts {
-    display: grid;
-    gap: var(--space-4) var(--space-6);
-    margin-top: var(--space-7);
-  }
-  @media (min-width: 40rem) {
-    .hero-facts { grid-template-columns: repeat(3, auto); justify-content: start; }
-  }
-  .hero-facts > div { padding-top: var(--space-3); border-top: 2px solid var(--accent); }
-  .hero-facts dt {
-    font-size: var(--text-eyebrow);
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--muted-invert);
-    margin-bottom: var(--space-1);
-  }
-  .hero-facts dd { color: var(--ink-invert); margin: 0; font-size: var(--text-sm); font-weight: 600; }
-
-  /* --- the photograph, as an object ---------------------------------------- */
-  .hero-figure { position: relative; }
-  .shot {
-    margin: 0;
-    position: relative;
-    border-radius: var(--r-xl);
-    overflow: hidden;
+  .hero-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--surface-raised);
+    color: var(--ink);
+    border-radius: var(--r-lg);
     box-shadow: var(--shadow-3);
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--dur-control) var(--ease-out);
+    animation: rise-card 1.2s var(--ease-out) 0.25s both;
   }
-  /* The mark's own gradient across the top edge of the panel. */
-  .shot::before {
+  @keyframes rise-card {
+    from { transform: translate3d(0, 24px, 0); }
+    to   { transform: none; }
+  }
+  .hero-card::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
     height: 4px;
-    z-index: 1;
     background: var(--brand-ramp);
   }
-  .shot img {
-    width: 100%;
-    height: clamp(13rem, 32vw, 24rem);
-    object-fit: cover;
-    object-position: 50% 28%;
-  }
-  @media (min-width: 62rem) { .shot img { height: 29rem; } }
+  .hero-card:hover { transform: translate3d(0, -4px, 0); color: var(--ink); }
+  .hc-top { display: flex; align-items: center; gap: var(--space-3); }
+  .hc-kicker { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--muted); }
+  .hc-price { font-size: clamp(2.4rem, 2rem + 1.4vw, 3.1rem); line-height: 1; letter-spacing: var(--tracking-display); color: var(--ink); }
+  .hc-cur { font-family: var(--font-sans); font-size: max(0.8rem, 0.34em); font-weight: 700; letter-spacing: 0.06em; color: var(--muted); vertical-align: 0.6em; }
+  .hc-note { font-size: var(--text-sm); color: var(--ink-soft); line-height: 1.5; }
 
-  .shot-tag {
+  /* The credentials rail along the foot of the hero. */
+  .creds {
     display: grid;
-    gap: 2px;
-    margin-top: var(--space-4);
-    padding-inline-start: var(--space-4);
-    border-inline-start: 2px solid var(--accent);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: clamp(3rem, 2rem + 4vw, 5.5rem);
+    border-top: 1px solid var(--line-invert);
   }
-  .shot-tag-k {
-    font-size: var(--text-eyebrow);
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--muted-invert);
+  @media (min-width: 52rem) { .creds { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .cred {
+    padding: var(--space-5) var(--space-4) var(--space-5) 0;
   }
-  .shot-tag-v { color: var(--ink-invert); font-size: var(--text-sm); font-weight: 600; }
+  /* Room for the estimator panel, which rises 4rem over the foot of the hero. */
+  .hero { padding-bottom: calc(4rem + var(--space-6)); }
+  .cred + .cred { padding-left: var(--space-5); border-left: 1px solid var(--line-invert); }
+  @media (max-width: 51.99rem) {
+    .cred:nth-child(3) { padding-left: 0; border-left: 0; }
+    .cred:nth-child(n + 3) { border-top: 1px solid var(--line-invert); }
+  }
+  .creds dd { margin: 0; }
 
-  /* --- services: a numbered ledger ------------------------------------------
-     Rules between the rows, no boxes. The numeral is the only ornament and it
-     is doing a job: it tells you how many of these there are and where you are
-     in them. */
-  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-  @media (min-width: 62rem) {
-    .ledger {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: var(--space-8);
-    }
-    /* With two columns the top rule would only sit above the first two rows. */
-    .ledger > li:nth-child(-n+2) { border-top: 0; }
-    .ledger > li { border-top: 1px solid var(--line); }
-    .ledger > li:nth-child(2n) { margin-top: 0; }
-  }
-
-  .lg-row {
+  /* ================================================================== SERVICES */
+  .bento {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: start;
     gap: var(--space-4);
-    padding-block: var(--space-5);
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 40rem) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) {
+    .bento { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+    .tile--0 { grid-column: span 2; }
+    .tile--0 .tile-media { aspect-ratio: 16 / 7.6; }
+    .tile--5 { grid-column: span 2; }
+  }
+  .tile {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
     color: var(--ink);
-    transition: background-color var(--dur-hover) var(--ease-out);
+    transition: transform var(--dur-control) var(--ease-out), box-shadow var(--dur-control) var(--ease-out), border-color var(--dur-hover);
   }
-  .lg-n {
-    font-size: var(--text-sm);
-    font-weight: 700;
-    letter-spacing: var(--tracking-eyebrow);
-    color: var(--accent-ink);
-    padding-top: 0.25em;
-    transition: color var(--dur-hover) var(--ease-out);
-  }
-  .lg-body { display: grid; gap: var(--space-2); }
-  .lg-title {
-    font-size: var(--text-h4);
-    font-weight: 700;
-    letter-spacing: var(--tracking-tight);
-  }
-  .lg-blurb { color: var(--muted); font-size: var(--text-sm); }
-
-  /* A chevron drawn from two borders, so there is no icon file and no SVG. */
-  .lg-go {
-    align-self: center;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-top: 2px solid var(--accent-ink);
-    border-right: 2px solid var(--accent-ink);
-    transform: rotate(45deg);
-    transition: transform var(--dur-hover) var(--ease-out);
-  }
-  .lg-row:hover { background: var(--accent-tint); }
-  .lg-row:hover .lg-go { transform: rotate(45deg) translate3d(2px, -2px, 0); }
-
-  /* --- how it works ------------------------------------------------------ */
-  .closing-line {
-    margin-top: var(--space-8);
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--line);
-    max-width: var(--measure);
-    color: var(--ink-soft);
-  }
-
-  /* --- the firm ---------------------------------------------------------- */
-  .two-col { display: grid; gap: var(--space-6); align-items: start; }
-  @media (min-width: 52rem) { .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); } }
-  .two-col .section-head { margin-bottom: 0; }
-  .vision {
-    margin-top: var(--space-5);
-    padding-inline-start: var(--space-4);
-    border-inline-start: 3px solid var(--accent);
+  a.tile:hover { transform: translate3d(0, -4px, 0); box-shadow: var(--shadow-2); border-color: var(--line-strong); color: var(--ink); }
+  .tile-media { aspect-ratio: 16 / 10; border-radius: 0; }
+  .tile-media :global(picture) { height: 100%; }
+  .tile-badge {
+    position: absolute;
+    left: var(--space-4);
+    bottom: var(--space-4);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--r-pill);
+    background: var(--surface-raised);
     color: var(--ink);
-    font-style: italic;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    box-shadow: var(--shadow-2);
   }
-  .firm-cta { margin-top: var(--space-5); }
+  .tile-body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--pad-card); flex: 1; }
+  .tile-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-1); }
+  .tile-n { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+  .tile h3 { font-size: var(--text-h3); }
+  .tile-body p { color: var(--muted); font-size: var(--text-sm); }
+  .tile .link-arrow { margin-top: auto; padding-top: var(--space-3); }
+  /* The analytics tile runs as a row on desktop: photograph left, words right.
+     It is written after .tile on purpose; at equal specificity the later rule
+     wins, and .tile sets the column direction. */
+  @media (min-width: 64rem) {
+    .tile.tile--5 { flex-direction: row; }
+    .tile--5 .tile-media { aspect-ratio: auto; flex: 0 0 55%; }
+    .tile--5 .tile-body { justify-content: center; padding: var(--space-6); }
+  }
 
-  .firm-panels { display: grid; gap: var(--space-4); }
-  .firm-panels h3 { font-size: var(--text-h4); margin-bottom: var(--space-4); }
-  .team-rows { border-top: 0; margin: 0; }
-  .team-rows > *:first-child { padding-top: 0; }
-  .team-rows > *:last-child { border-bottom: 0; padding-bottom: 0; }
-  .total-row dt, .total-row dd { font-weight: 700; color: var(--ink); }
+  .tile--cta {
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--surface-invert);
+    border-color: transparent;
+    color: var(--ink-invert);
+    position: relative;
+  }
+  .tile--cta::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--brand-ramp); }
+  .tile--cta .eyebrow { margin-bottom: 0; }
+  .tile-cta-h { font-size: clamp(1.5rem, 1.25rem + 0.9vw, 1.95rem); line-height: 1.15; color: var(--ink-invert); letter-spacing: var(--tracking-tight); }
+  .tile--cta .btn { align-self: flex-start; }
+  @media (min-width: 40rem) and (max-width: 63.99rem) { .tile--cta { grid-column: span 2; } }
 
-  /* --- sectors ------------------------------------------------------------ */
-  .chips {
+  /* ================================================================== WHY */
+  .why { position: relative; isolation: isolate; overflow: hidden; }
+  .why-glow {
+    position: absolute;
+    z-index: -1;
+    width: 46rem;
+    height: 30rem;
+    left: -20rem;
+    top: -12rem;
+    border-radius: 50%;
+    background: oklch(30% 0.06 245);
+    filter: blur(120px);
+    mix-blend-mode: screen;
+  }
+  .pillars {
     list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 40rem) { .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 72rem) { .pillars { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pillar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--pad-card);
+    background: var(--surface-invert-2);
+    border: 1px solid var(--line-invert);
+    border-radius: var(--r-md);
+  }
+  .pillar h3 { font-size: var(--text-h3); color: var(--ink-invert); }
+  .pillar p { color: var(--muted-invert); font-size: var(--text-sm); }
+  .values {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+    margin-top: var(--space-7);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line-invert);
+  }
+  .values-label { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--muted-invert); }
+
+  /* ================================================================== HOW */
+  .how-link { margin-top: var(--space-5); }
+
+  /* ================================================================== INDUSTRIES */
+  .ind-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 40rem) { .ind-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .ind-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); } }
+  .ind {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    color: var(--ink);
+    transition: transform var(--dur-control) var(--ease-out), box-shadow var(--dur-control) var(--ease-out);
+  }
+  .ind:hover { transform: translate3d(0, -4px, 0); box-shadow: var(--shadow-2); color: var(--ink); }
+  .ind-media { aspect-ratio: 3 / 2; border-radius: 0; }
+  .ind-media :global(picture) { height: 100%; }
+  .ind-body { padding: var(--space-5) var(--pad-card) var(--pad-card); display: grid; gap: var(--space-2); }
+  .ind-body h3 { font-size: var(--text-h3); padding-right: var(--space-7); }
+  .ind-sectors { font-size: var(--text-sm); color: var(--muted); }
+  .ind-go {
+    position: absolute;
+    right: var(--space-4);
+    top: calc(66.6% - 1.4rem);
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    color: var(--ink-on-accent);
+    box-shadow: var(--shadow-2);
+    transition: transform var(--dur-control) var(--ease-out);
+  }
+  .ind:hover .ind-go { transform: rotate(45deg); }
+
+  /* ================================================================== PLATFORMS */
+  .platforms {
+    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .plat-head { margin-bottom: var(--space-6); }
+  .plat-title { font-size: var(--text-h3); max-width: 30ch; }
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    list-style: none;
+    margin: 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    flex: none;
+    gap: clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
+    padding-right: clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
+    animation: marquee 38s linear infinite;
   }
-  .chips li {
-    padding: var(--space-2) var(--space-4);
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    border-radius: var(--r-pill);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--ink-soft);
-  }
-
-  /* --- routes ------------------------------------------------------------- */
-  .routes { max-width: var(--measure); }
-  .route {
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-track li {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3.6rem);
+    font-weight: 350;
+    letter-spacing: var(--tracking-display);
     color: var(--ink);
-    transition: padding-inline-start var(--dur-hover) var(--ease-out);
-  }
-  .route:hover { padding-inline-start: var(--space-2); }
-  .route .row-value { color: var(--muted); }
-  /* .rows right-aligns its value, which is right for a two-word figure and
-     wrong for a sentence: once it wraps, a right-aligned ragged-left block
-     appears in the middle of the page. Above the fold-in width these read as
-     two proper columns instead. */
-  @media (min-width: 40rem) {
-    .routes .row-label { flex: 0 0 13rem; }
-    .routes .row-value { flex: 1; text-align: start; }
-  }
-
-  /* --- closing panel --------------------------------------------------------
-     Light, because the footer immediately below is the dark region and two dark
-     blocks in a row read as two endings.
-
-     It was accent-tinted for one iteration and that was wrong: the accent
-     button sitting on its own tint measures about 1.5:1 between fill and
-     ground, so the control had no visible edge, which is exactly what WCAG
-     1.4.11 asks for at 3:1. The mark's gradient along the top edge marks the
-     panel instead. It is the same device as the footer rule and the hero
-     figure's edge — one brand gesture used in three places is a system, not
-     decoration. */
-  .cta-panel {
-    position: relative;
-    overflow: hidden;
+    white-space: nowrap;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
     align-items: center;
-    justify-content: space-between;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    gap: clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
+  }
+  .marquee-track li::after {
+    content: "";
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+  }
+  @keyframes marquee { to { transform: translate3d(-100%, 0, 0); } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { mask-image: none; }
+    .marquee-track { animation: none; flex-wrap: wrap; }
+    .marquee-track[aria-hidden] { display: none; }
+  }
+
+  /* ================================================================== BOARD */
+  .board {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 40rem) { .board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .board { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); } }
+  .director {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--pad-card);
     background: var(--surface-raised);
     border: 1px solid var(--line);
-    border-radius: var(--r-lg);
+    border-radius: var(--r-md);
   }
-  .cta-panel::before {
+  .monogram {
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    margin-bottom: var(--space-2);
+    border-radius: var(--r-pill);
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+    position: relative;
+  }
+  .monogram::after {
     content: "";
     position: absolute;
-    inset: 0 0 auto 0;
-    height: 3px;
-    background: var(--brand-ramp);
+    inset: -4px;
+    border-radius: inherit;
+    border: 1px solid var(--line-strong);
   }
-  .cta-copy h2 { max-width: 16ch; }
-  .cta-copy p {
-    color: var(--ink-soft);
-    margin-top: var(--space-4);
-    max-width: 40ch;
-  }
-  .cta-actions { gap: var(--space-3); }
+  .director h3 { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: 0; }
+  .creds-line { font-size: var(--text-sm); color: var(--muted); }
 
-  /* The photograph drifts a little against the field as you scroll. One
-     transform, guarded, off entirely under reduced motion. */
-  @supports (animation-timeline: scroll()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .shot img {
-        animation: drift linear both;
-        animation-timeline: scroll();
-        animation-range: 0 80svh;
-      }
-    }
+  /* ================================================================== VISION */
+  .vision {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    padding-block: clamp(5.5rem, 3.5rem + 8vw, 11rem);
+    text-align: center;
   }
-  @keyframes drift {
-    from { transform: translate3d(0, 0, 0) scale(1.08); }
-    to   { transform: translate3d(0, -3%, 0) scale(1.08); }
+  .vision-bg { position: absolute; inset: 0; z-index: -1; }
+  .vision-bg :global(picture), .vision-bg :global(img) { width: 100%; height: 100%; }
+  .vision-bg :global(img) { object-fit: cover; }
+  .vision-inner { max-width: 62rem; }
+  .vision-quote { margin: 0; }
+  .vision-quote p {
+    font-size: clamp(1.75rem, 1.1rem + 2.8vw, 3.35rem);
+    line-height: 1.16;
+    letter-spacing: var(--tracking-tight);
+    font-weight: 350;
+    color: var(--ink-invert);
+    text-wrap: balance;
+  }
+  .vision-by {
+    margin-top: var(--space-6);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-invert);
+  }
+  /* Light ink only, on the photograph: see the note on the hero. */
+  .vision .eyebrow { color: var(--ink-invert); }
+
+  /* ================================================================== FAQ */
+  .faq-grid { display: grid; gap: var(--space-7); }
+  @media (min-width: 64rem) { .faq-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--space-9); align-items: start; } }
+  .faq-side h2 { max-width: 12ch; }
+  .faq-lede { margin-top: var(--space-5); }
+  .faq-actions { margin-top: var(--space-6); }
+  @media (min-width: 64rem) { .faq-side { position: sticky; top: calc(var(--header-h) + var(--space-6)); } }
+
+  /* --- the hero on a phone ------------------------------------------------------
+     The photograph becomes a box across the top, served as its own phone crop
+     with its own scrim (see src/data/images.json, colombo-night.portrait). The
+     copy starts 6.5rem above the box's foot, inside the band that scrim fades to
+     navy and that make-images measured: 10.11:1 for the light ink, 6.71:1 for
+     the italic accent. Everything below the box sits on the solid dark band. */
+  @media (max-width: 47.99rem) {
+    .hero {
+      --hero-media-h: min(88vw, 26rem);
+      min-height: 0;
+      justify-content: flex-start;
+      padding-top: calc(var(--hero-media-h) - 6.5rem);
+    }
+    .hero-bg { bottom: auto; height: var(--hero-media-h); }
+    .hero-bg :global(img) { animation: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bg :global(img), .hero-h .line > span, .hero-card { animation: none; }
   }
 </style>

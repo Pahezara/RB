@@ -84,17 +84,33 @@ supplied, so none of it appears on the site or in the structured data:
   named on `/about/` in their place. For a firm in this category these numbers are
   the strongest remaining trust signal, and they are worth obtaining.
 
-## D5 — No testimonials, no stock photography
-No proof section ships without real, attributed reviews, and no stock photograph
-stands in for a real office or a real person. The board section on `/about/` is
-therefore set as type — hairline-topped blocks with names, qualifications and
-bios — rather than as a grid of empty photo cards.
+## D5 — No testimonials; stock photography only as scenery
+No proof section ships without real, attributed reviews.
 
-## D6 — One typeface, and tabular figures only where they help
-Schibsted Grotesk, self-hosted as one variable 400–900 latin file plus a real
-italic file, with a metric-matched fallback carrying `size-adjust`.
-`font-display: optional`, so there is no swap and no CLS. There is deliberately no
-monospace: a fee and the sentence around it are the same typeface.
+**Amended 2026-09-24.** SAJ asked for stock imagery in the redesign, so the site now
+carries seventeen openly licensed photographs (D9). The original rule survives in
+its narrower, load-bearing form: **no stock photograph stands in for the firm's
+own office, people or clients.** The photographs are cityscapes, desks, documents
+and sector scenes, and the site says so in words on `/credits/` and `/terms/`. The
+board is still set as type — monograms, names, qualifications and bios — because
+no photograph of a director exists, and a stock face in that slot would be a lie
+about a real person.
+
+## D6 — Two typefaces, and tabular figures only where they help
+Schibsted Grotesk for text, self-hosted as one variable 400–900 latin file plus a
+real italic file, with a metric-matched fallback carrying `size-adjust`.
+
+**Amended 2026-09-24: a display serif joins it.** Newsreader (Production Type,
+OFL 1.1) sets h1–h3, prices and the large figures. Each headline carries one
+italic accent phrase, in `--accent-ink` on paper and `--accent-lift` on navy. The
+serif is what separates this site from the geometric-sans template most
+consultancy sites in the region share, and it is the register of the documents
+the firm actually produces. It is **cut down at build time** by
+`scripts/make-fonts.py` (fontTools `instancer`) to the optical sizes 20–72 and
+weights 300–600 the site uses.
+
+Both faces are `font-display: optional`, so there is no swap and no CLS. There is
+deliberately no monospace: a fee and the sentence around it are the same family.
 
 **Tabular figures are withheld from currency.** Under `tnum` this face gives the
 grouping comma a full digit advance and centres it in that slot, so every price
@@ -161,28 +177,38 @@ cannot clear 3:1 on the dark band. That guard earns its keep: as drawn, the mark
 reaches **1.44:1** there — its navy half simply vanishes — and the lifted variant
 reaches **5.97:1**.
 
-## D9 — The hero photograph
-Unsplash photo `1742277712272-aecf17e3accb` by Zoshua Colah, free under the
-Unsplash License. Source kept at `brand/hero-source.jpg`.
+## D9 — Photography: sourced, licensed, measured
+**Amended 2026-09-24.** The single Unsplash hero and `scripts/make-hero.mjs` are
+retired. Every photograph now comes from **Wikimedia Commons**, through one
+manifest (`src/data/images.json`) and one script (`scripts/make-images.mjs`).
 
-**It is cropped, not used whole.** The original is a street-level frame carrying
-Nippon Paint, Union Assurance and Hilton signage. Putting third-party brands
-behind this firm's headline would imply an association that does not exist, so
-`scripts/make-hero.mjs` crops to the tower line, which drops every readable brand
-mark, the traffic signals and the shopfronts.
+- **Licences are read, not typed.** The script asks the Commons API for each
+  file's author, licence and source page on every run and writes them back into
+  the manifest. Anything not CC0, public domain, CC BY or CC BY-SA stops the build.
+  `/credits/` renders from the same file, and so does `<Img>`, so an image cannot
+  reach a page without being credited. The script spaces its requests and backs
+  off when Commons rate-limits it.
+- **Type on a photograph is measured.** Where type sits on an image, the scrim is
+  baked into the file and every text region is measured at its 95th-percentile
+  luminance against the ink that will actually be there. That includes the
+  transparent header: `colombo-golden` measured **2.73:1** under the header, over
+  bright sky, and passes at **7.03:1** once its scrim carries weight along the top.
+- **Only `--ink-invert` sits on a photograph**, plus the italic accent at display
+  size, held to the 3:1 large-text minimum. Muted text never does, so the header's
+  second line switches to `--ink-invert` in its transparent state.
+- **Phones get their own crop.** A landscape scrim measured for a copy column on
+  the left says nothing about a phone, so hero images declare a `portrait` variant
+  with its own crop, scrim and regions, served below 48rem.
+- **Everything else is type-free.** Service, sector and card photographs carry no
+  text; where a label must sit on one (the industries mosaic) it sits on its own
+  solid chip.
+- **No identifiable people who did not pose.** A Commons photograph of a tea
+  plucker at work was declined: a working person photographed on the job did not
+  agree to advertise an accounting firm.
 
-It is then mapped to a **navy duotone**, not tinted. Blending a colour photograph
-toward a saturated navy in sRGB leaves the red channel alive in the midtones and
-the whole frame reads violet; mapping luminance through a two-point ramp with a
-highlight whose green clearly leads its red gives a clean navy. The script
-measures the 95th-percentile luminance of the regions type occupies and fails the
-build under 4.5:1, and a cast check fails it again if the result drifts violet at
-any sampled point.
-
-Three treatments are written from the same crop. `hero-*` and `hero-portrait-*`
-carry the heavy scrim, because type sits on them — they are the OG card
-backgrounds. `hero-panel-*` carries almost none, because the hero's inset figure
-has no type on it and the scrim would only be throwing away the architecture.
+Sources are cached in `brand/stock/`, so the build is reproducible offline once
+fetched. The OG cards (`scripts/make-og.mjs`) use the home hero's night skyline,
+whose scrim is already measured.
 
 ## D10 — The enquiry is direct actions, not a form
 There is no form. The contact page offers the phone and a `mailto:` **link**
@@ -210,44 +236,36 @@ Until SAJ chooses, option 3 is what ships, because it is the only one of the thr
 that is working right now.
 
 ## D11 — How the page is composed
-Five choices that shape the silhouette of the site rather than only its colour.
+**Rewritten 2026-09-24 for the redesign.** The brief was to out-class
+infomateworld.com and the rest of the field. Those sites lead with slogans, stock
+handshakes, client-logo walls and round-number claims. This one leads with what can
+be checked, and sets it with more care.
 
-1. **The hero is built, not photographed.** Copy on the left of a navy field with
-   two blurred light sources and one diagonal at the angle of the R's leg; the
-   photograph is an inset figure on the right with the mark's gradient along its
-   top edge. The glows are `mix-blend-mode: screen`, not translucent overlays: a
-   20%-alpha warm tone laid over navy averages toward olive, a colour this brand
-   does not contain, whereas screen adds light and never passes through green.
-   Both sources are centred off-canvas, and the warm one is sized per breakpoint —
-   a 40rem source is a corner accent at 1440px and a wash across the entire glass
-   header at 390px.
-   `glass.css` allows "a baked image, **or overlapping shapes**" behind glass, so
-   the header over this hero is still real glass.
+1. **The home hero is a photograph, and the estimator overlaps it.** Colombo at
+   night, scrimmed and measured, with the incorporation price on a solid card and
+   the credentials rail (2018, 17, 4, 14, every one a count from `[PROFILE]`)
+   along its foot. The estimator rises over the hero's edge, so the first scroll
+   lands on the one thing no competitor offers: the fee, computed.
+2. **Inner pages open on navy.** `PageHero` has three variants: `photo` (only for
+   images with a measured scrim; passing any other image throws), `split` (type on
+   navy, the photograph inset beside it with the brand ramp along its top) and
+   `plain`. A `figure` slot takes anything else, such as the industries mosaic.
+3. **Services are a bento, then editorial rows.** On the home page, six tiles of
+   unequal weight and a dark "not sure where to start" tile; on `/services/`,
+   alternating photograph-and-text rows; on each service page, the covers list as
+   numbered cards laid out for their count (D15).
+4. **Trust is shown, not claimed.** Published prices, a qualified board set as
+   monograms with credentials in full, associate practices named, platforms set as
+   type rather than logos (the firm works in these tools, it is not their
+   partner), and fourteen sectors grouped into six families with no client implied.
+5. **One closing band everywhere.** `CtaBand`: a full-bleed architectural
+   photograph with the type on a solid navy card, never on the image.
+6. **A hairline before a border, a border before a box, a box before a shadow.**
+   Glass is still the chrome, never the content.
 
-2. **Services is a numbered ledger, not a card grid.** Six cards in a three-column
-   grid is the default shape of every professional-services site, and rows suit
-   the content better: the reader is scanning an ordered list, and the index
-   numeral gives them a place to be.
-
-3. **The footer is a masthead.** The brand and the two ways of reaching the firm
-   share one full-width strip, with the phone number set at heading size, and the
-   navigation runs underneath in equal columns. This is also better on merit: the
-   phone number and the address are what people scroll to the bottom of a
-   professional-services site to find.
-
-4. **Buttons are softened rectangles, not pills**, and every eyebrow opens with a
-   short accent rule.
-
-5. **A hairline before a border, a border before a box, a box before a shadow.**
-   Most sections are type on a ground with rules between the items. Glass is the
-   chrome, never the content: it never carries a price, a form field or a table.
-
-**One thing tried and reverted.** The closing panel was accent-tinted for an
-iteration. The accent button sitting on an accent tint measures about 1.5:1
-between fill and ground, so the control had no visible edge — precisely what WCAG
-1.4.11 asks for at 3:1. `check-contrast` could not have caught it: it proves token
-pairs, not what the cascade puts next to what. The brand gradient marks the panel
-edge instead.
+**One thing tried and reverted.** An accent-tinted closing panel put the accent
+button on an accent ground at about 1.5:1, so the control had no visible edge. The
+brand gradient marks panel edges instead.
 
 ## D12 — The mobile contract goes down to 320px
 `check-mobile` runs at **320x568**, **360x640**, **390x844** and **844x390**. 320
@@ -298,3 +316,22 @@ The policy is verified rather than assumed. `dist/` is served behind the exact
 headers `vercel.json` declares, five routes are loaded in a real browser, and the
 estimator is driven under the policy to confirm it still computes. A header nobody
 has loaded the site behind is a guess.
+
+## D14 — Every page earns its place in the navigation
+Added in the redesign: `/industries/` (the fourteen `[PROFILE]` sectors in six
+editorial families, each with the three service lines that usually carry the
+weight there) and `/credits/` (required by the CC BY and BY-SA licences, and linked
+from every footer). The family titles, short labels, blurbs and service mappings
+are editorial and say so in `site.ts`; none of them claims a client or an
+engagement.
+
+Legal pages share `Legal.astro`: the prose beside a sticky index of its sections,
+and a contact block at the foot. No "last reviewed" date is printed, because nobody
+at the firm has reviewed the text yet, and a date would say they had.
+
+## D15 — Grids are laid out for their count
+A three-column grid holding four or five items ends on an orphan, and several lists
+here are exactly those lengths: payroll covers four items, and five sectors lean on
+accounting. Service pages pick a layout from the count: fours in fours, five as two
+over three on a six-column track, the rest in threes. Two related sectors run as
+two wide cards rather than two-thirds of an empty row.

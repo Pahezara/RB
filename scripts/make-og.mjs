@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // make-og.mjs
-// One OG image per page, 1200x630, built from the hero photograph, the mark in
-// its dark-ground variant, and the firm's name as type.
+// One OG image per page, 1200x630, built from the home hero photograph (the
+// Colombo skyline at night, its navy scrim already baked and measured by
+// scripts/make-images.mjs), the mark in its dark-ground variant, and the
+// firm's name as type. Run make-images first.
 //
 // The stacked lockup is NOT used here for the same reason it is not used in the
 // header: its wordmark is one line at roughly 24:1 and would be unreadable at
@@ -70,7 +72,7 @@ function wrap(text, perLine) {
   return lines;
 }
 
-const bg = await sharp('public/hero/hero-1600.webp')
+const bg = await sharp('public/img/colombo-night-1280.webp')
   .resize(W, H, { fit: 'cover', position: 'left' })
   .toBuffer();
 
@@ -95,10 +97,10 @@ const chrome = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}"
       <stop offset="100%" stop-color="#fbc704"/>
     </linearGradient>
   </defs>
-  <text x="${NAME_X}" y="92" fill="#fbfdff"
+  <text x="${NAME_X}" y="92" fill="#fcfbf8"
         font-family='${SANS}' font-size="30" font-weight="800"
         letter-spacing="-0.6">Reliance</text>
-  <text x="${NAME_X}" y="118" fill="#a9b9ca"
+  <text x="${NAME_X}" y="118" fill="#aebccd"
         font-family='${SANS}' font-size="20" font-weight="600">Business Partners</text>
   <rect x="0" y="${H - 8}" width="${W}" height="8" fill="url(#ramp)"/>
 </svg>`);
@@ -111,7 +113,7 @@ for (const page of pages) {
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
     <style>
-      .t { fill: #fbfdff; font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+      .t { fill: #fcfbf8; font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
            font-size: ${size}px; font-weight: 700; letter-spacing: -1.2px; }
     </style>
     ${lines.map((l, i) => `<text class="t" x="72" y="${startY + i * (size + 12)}">${esc(l)}</text>`).join('\n    ')}

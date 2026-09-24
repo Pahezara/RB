@@ -1,0 +1,587 @@
+{
+  "_note": "Every photograph on the site. Written by hand: slug, file, use, widths, focus, scrim, alt. Filled in by scripts/make-images.mjs straight from the Wikimedia Commons API, never by hand: author, authorUrl, license, licenseUrl, page, width, height. The /credits/ page and every <Img> read this file.",
+  "images": [
+    {
+      "slug": "colombo-night",
+      "file": "Stunning Night View of Colombo City Skyline.jpg",
+      "use": "Home hero",
+      "widths": [
+        800,
+        1280,
+        1920,
+        2560
+      ],
+      "focus": "50% 55%",
+      "alt": "The Colombo skyline at night, seen from above",
+      "author": "Thilina Alagiyawanna",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Stunning_Night_View_of_Colombo_City_Skyline.jpg",
+      "width": 2560,
+      "height": 1707,
+      "scrim": {
+        "kind": "left",
+        "strength": 0.9,
+        "reach": 0.82,
+        "foot": 0.74,
+        "footStrength": 0.62
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.06,
+            0.26,
+            0.52,
+            0.8
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 8.91
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.06,
+            0.42,
+            0.52,
+            0.54
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the italic accent line is set at display size, 42px and up",
+          "measured": 4.07
+        },
+        {
+          "name": "rail",
+          "box": [
+            0.05,
+            0.87,
+            0.97,
+            0.985
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 10.67
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 13.66
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.2,
+          0,
+          0.96,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.28,
+          "from": 0.42,
+          "to": 0.95,
+          "strength": 0.7
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 10.11
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the italic accent line is set at display size, 42px and up",
+            "measured": 6.71
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 7.19
+          }
+        ],
+        "width": 1946,
+        "height": 1707
+      },
+      "authorUrl": ""
+    },
+    {
+      "slug": "colombo-dusk",
+      "file": "A view of Colombo's dramatic skyline at dusk.jpg",
+      "use": "Vision statement band",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "50% 60%",
+      "alt": "",
+      "author": "Thilina Alagiyawanna",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:A_view_of_Colombo%27s_dramatic_skyline_at_dusk.jpg",
+      "width": 2560,
+      "height": 1707,
+      "scrim": {
+        "kind": "center",
+        "strength": 0.62
+      },
+      "regions": [
+        {
+          "name": "quote",
+          "box": [
+            0.12,
+            0.22,
+            0.88,
+            0.78
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 6.98
+        }
+      ],
+      "authorUrl": ""
+    },
+    {
+      "slug": "colombo-golden",
+      "file": "Colombo sunset skyline Jul 2016.jpg",
+      "use": "About page hero",
+      "widths": [
+        800,
+        1280,
+        1920,
+        2560
+      ],
+      "focus": "55% 55%",
+      "alt": "Colombo at golden hour, with the Lotus Tower on the skyline",
+      "author": "dronepicr",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Colombo_sunset_skyline_Jul_2016.jpg",
+      "width": 1577,
+      "height": 717,
+      "crop": [
+        0.29,
+        0,
+        0.906,
+        1
+      ],
+      "scrim": {
+        "kind": "left",
+        "strength": 0.86,
+        "reach": 0.8,
+        "foot": 0.8,
+        "footStrength": 0.3,
+        "top": 0.62,
+        "topReach": 0.3
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.04,
+            0.3,
+            0.58,
+            0.95
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 5.32
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.04,
+            0.45,
+            0.58,
+            0.72
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the italic accent line is set at display size, 42px and up",
+          "measured": 3.39
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 7.03
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.42,
+          0,
+          0.74,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.26,
+          "from": 0.42,
+          "to": 0.95,
+          "strength": 0.72,
+          "top": 0.66,
+          "topReach": 0.36
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 12.89
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the italic accent line is set at display size, 42px and up",
+            "measured": 6.72
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 6.08
+          }
+        ],
+        "width": 819,
+        "height": 717
+      },
+      "authorUrl": ""
+    },
+    {
+      "slug": "orange-arch",
+      "file": "Orange reflective architecture (Unsplash).jpg",
+      "use": "Closing call to action (type sits on a solid card, not on the photograph)",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "50% 50%",
+      "alt": "",
+      "author": "Alex wong",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Orange_reflective_architecture_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707,
+      "authorUrl": "https://unsplash.com/@killerfvith"
+    },
+    {
+      "slug": "svc-accounting",
+      "file": "Man typing on laptop (Unsplash).jpg",
+      "use": "Accounting and BPO",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "40% 55%",
+      "alt": "Hands typing on a laptop on a wooden desk",
+      "author": "Alejandro Escamilla",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Man_typing_on_laptop_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707,
+      "authorUrl": "https://unsplash.com/@alejandroescamilla"
+    },
+    {
+      "slug": "svc-tax",
+      "file": "Writing with a fountain pen (Unsplash).jpg",
+      "use": "Tax and assurance",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "40% 50%",
+      "alt": "A fountain pen writing on lined paper",
+      "author": "Aaron Burden",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Writing_with_a_fountain_pen_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1922,
+      "authorUrl": "https://unsplash.com/@aaronburden"
+    },
+    {
+      "slug": "svc-advisory",
+      "file": "Discussing business strategy (Unsplash).jpg",
+      "use": "Business advisory",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "45% 45%",
+      "alt": "Two people discussing figures on a laptop",
+      "author": "rawpixel.com",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Discussing_business_strategy_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1709,
+      "authorUrl": "https://unsplash.com/@rawpixel"
+    },
+    {
+      "slug": "svc-payroll",
+      "file": "Crunching the numbers (Unsplash).png",
+      "use": "Payroll",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "55% 50%",
+      "alt": "Printed charts and a phone on a desk",
+      "author": "William Iven",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Crunching_the_numbers_(Unsplash).png",
+      "width": 2560,
+      "height": 1700,
+      "authorUrl": "https://unsplash.com/@firmbee"
+    },
+    {
+      "slug": "svc-analytics",
+      "file": "Statistics on a laptop (Unsplash).jpg",
+      "use": "Data analytics and Power BI",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "40% 45%",
+      "alt": "A dashboard of charts open on a laptop",
+      "author": "Carlos Muza",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Statistics_on_a_laptop_(Unsplash).jpg",
+      "width": 2426,
+      "height": 1728,
+      "authorUrl": "https://unsplash.com/@kmuza"
+    },
+    {
+      "slug": "svc-secretarial",
+      "file": "Legal Contract & Signature - Warm Tones.jpg",
+      "use": "Corporate secretarial",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "55% 45%",
+      "alt": "A pen resting on a signed contract",
+      "author": "Blogtrepreneur",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Legal_Contract_%26_Signature_-_Warm_Tones.jpg",
+      "width": 2560,
+      "height": 1920,
+      "authorUrl": ""
+    },
+    {
+      "slug": "ind-trade",
+      "file": "An ariel view of the Port of Colombo from the Lotus Tower.jpg",
+      "use": "Industries: trade and distribution",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "40% 60%",
+      "alt": "The Port of Colombo from the air, with cranes and containers",
+      "author": "Mohamed Ansaf",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:An_ariel_view_of_the_Port_of_Colombo_from_the_Lotus_Tower.jpg",
+      "width": 2560,
+      "height": 1922,
+      "authorUrl": ""
+    },
+    {
+      "slug": "ind-hospitality",
+      "file": "Rice and curry at Liberty Mall food court.jpg",
+      "use": "Industries: hospitality",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "50% 50%",
+      "alt": "Sri Lankan rice and curry served on a banana leaf",
+      "author": "Syced",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Rice_and_curry_at_Liberty_Mall_food_court.jpg",
+      "width": 2560,
+      "height": 1920,
+      "authorUrl": "https://commons.wikimedia.org/wiki/User:Syced"
+    },
+    {
+      "slug": "ind-industry",
+      "file": "Tea Factory Ii (195470003).jpeg",
+      "use": "Industries: manufacturing, construction and energy",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "50% 50%",
+      "alt": "Machinery on the floor of a Sri Lankan tea factory",
+      "author": "Eebrius",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Tea_Factory_Ii_(195470003).jpeg",
+      "width": 2048,
+      "height": 1366,
+      "authorUrl": "https://500px.com/eebrius"
+    },
+    {
+      "slug": "ind-agriculture",
+      "file": "Tea plantation Haputale.jpg",
+      "use": "Industries: agriculture",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "50% 60%",
+      "alt": "A tea plantation in the hills of Haputale",
+      "author": "Adbar",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Tea_plantation_Haputale.jpg",
+      "width": 2560,
+      "height": 1714,
+      "authorUrl": "https://commons.wikimedia.org/wiki/User:Adbar"
+    },
+    {
+      "slug": "ind-professional",
+      "file": "Office buildings under clouds (Unsplash).jpg",
+      "use": "Services page opening; industries: professional and financial services",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "50% 60%",
+      "alt": "Office towers seen from street level, looking up",
+      "author": "Anthony DELANOIX",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Office_buildings_under_clouds_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707,
+      "authorUrl": "https://unsplash.com/@anthonydelanoix"
+    },
+    {
+      "slug": "ind-digital",
+      "file": "Shopping for gifts (Unsplash).jpg",
+      "use": "Industries: online commerce",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "55% 60%",
+      "alt": "Parcels being wrapped beside a laptop",
+      "author": "rawpixel.com",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Shopping_for_gifts_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1831,
+      "authorUrl": "https://unsplash.com/@rawpixel"
+    },
+    {
+      "slug": "contact",
+      "file": "Casual Meeting Room (Unsplash).jpg",
+      "use": "Contact page",
+      "widths": [
+        480,
+        800,
+        1280,
+        1920
+      ],
+      "focus": "70% 60%",
+      "alt": "",
+      "author": "Dan Gold",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Casual_Meeting_Room_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1441,
+      "authorUrl": "https://unsplash.com/@danielcgold"
+    }
+  ]
+}

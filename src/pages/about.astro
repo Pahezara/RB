@@ -1,172 +1,292 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, directors, team, sectors, serviceLines } from '../data/site';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { site, directors, team, sectors, serviceLines, credentials } from '../data/site';
+
 const title = 'About — Reliance Business Partners';
 const description =
   'Reliance Business Partners (Pvt) Ltd is a firm of professionals established in 2018 in Gangodawila, Nugegoda, rendering business services under one umbrella.';
+
+/* The five values from the profile, each with the icon that stands for it. */
+const valueIcons: Record<string, string> = {
+  'Integrity': 'shield-check',
+  'Accountability': 'scale',
+  'Strengthening the client relationship': 'handshake',
+  'Professionalism': 'badge-check',
+  'Confidentiality': 'lock',
+};
+
+const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+
+const initials = (name: string) => {
+  const parts = name.replace(/^Mr\.?\s*/, '').replace(/\./g, ' ').trim().split(/\s+/);
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
 ---
-<Base title={title} description={description}>
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">About</p>
-        <h1>A firm of professionals, under one umbrella.</h1>
+<Base title={title} description={description} overHero>
+  <PageHero
+    variant="photo"
+    image="colombo-golden"
+    eyebrow="About the firm"
+    title="A firm of professionals, <em>under one umbrella.</em>"
+    lede={`${site.legalName} was established in ${site.founded} as a limited liability company, to render the business services a growing company needs from one place rather than four.`}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
+  />
+
+  {/* ------------------------------------------------------------ THE FIRM */}
+  <section class="section" aria-labelledby="firm-h">
+    <div class="container story">
+      <div>
+        <p class="eyebrow">Who we are</p>
+        <h2 id="firm-h" class="story-h">One firm, so the numbers only have to be <em>right once.</em></h2>
+      </div>
+      <div class="story-body">
+        {/* Each link and the punctuation after it sit on ONE line: a newline
+            between them is whitespace and renders as "payroll , analytics".
+            And the titles are never lowercased: they carry acronyms. */}
+        <p class="lede">
+          The firm covers {words[serviceLines.length] ?? serviceLines.length} areas of work:{' '}
+          {serviceLines.map((s, i) => {
+            const sep = i < serviceLines.length - 2 ? ', ' : i === serviceLines.length - 2 ? ' and ' : '.';
+            return <Fragment><a href={`/services/${s.slug}/`}>{s.title}</a>{sep}</Fragment>;
+          })}
+        </p>
         <p>
-          {site.legalName} was established in {site.founded} as a limited liability
-          company. The idea was, and is, to render the business services a company
-          needs from one place rather than four.
+          Keeping them in one firm is not a convenience. The ledger the accountant
+          keeps is the ledger the tax computation is built from, the payroll feeds
+          the same books, and the company secretary files against the same records.
+        </p>
+        <p>
+          Tax and assurance work is conducted through{' '}
+          {site.associates.map((a, i) => (
+            <Fragment><a href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '. '}</Fragment>
+          ))}
+          They are named here rather than left to be discovered, because a client is
+          entitled to know which practice signs the audit.
         </p>
       </div>
+    </div>
 
-      <div class="split">
-        <div class="prose stack">
-          {/* Two things here, both easy to get wrong.
-              1. Each link and the punctuation after it sit on ONE line. A newline
-                 between them is whitespace, and renders as "payroll , analytics".
-              2. The titles are NOT lowercased. They are service names carrying
-                 acronyms, and .toLowerCase() turned "Accounting and BPO" into
-                 "accounting and bpo" and "Power BI" into "power bi". */}
-          <p>
-            That covers {serviceLines.length} areas of work:{' '}
-            {serviceLines.map((s, i) => {
-              const sep = i < serviceLines.length - 2 ? ', '
-                : i === serviceLines.length - 2 ? ' and ' : '.';
-              return <Fragment><a href={`/services/${s.slug}/`}>{s.title}</a>{sep}</Fragment>;
-            })}
-          </p>
-          <p>
-            Tax and assurance work is conducted through{' '}
-            {site.associates.map((a, i) => (
-              <Fragment><a href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '. '}</Fragment>
+    <div class="container">
+      <dl class="figures">
+        {credentials.map((c) => (
+          <div class="stat">
+            <dt class="visually-hidden">{c.label}</dt>
+            <dd>
+              <span class="stat-n tnum">{c.n}</span>
+              <span class="stat-l" aria-hidden="true">{c.label}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ VISION + VALUES */}
+  <section class="section band--dark on-invert vv" aria-labelledby="vision-h">
+    <div class="container">
+      <div class="vv-grid">
+        <div>
+          <p class="eyebrow">Vision 2030</p>
+          <h2 id="vision-h" class="visually-hidden">Vision</h2>
+          <blockquote class="vv-quote display"><p>&ldquo;{site.vision}&rdquo;</p></blockquote>
+        </div>
+        <div>
+          <p class="eyebrow">Values</p>
+          <ul class="values">
+            {site.values.map((v) => (
+              <li>
+                <span class="icon-tile"><Icon name={valueIcons[v] ?? 'badge-check'} /></span>
+                <span>{v}</span>
+              </li>
             ))}
-            We name them here rather than leaving it to be discovered, because a
-            client is entitled to know which practice signs the audit.
-          </p>
-
-          <h2>Vision</h2>
-          <blockquote class="vision">{site.vision}</blockquote>
-
-          <h2>Values</h2>
-          <ul class="ticks">
-            {site.values.map((v) => <li>{v}</li>)}
           </ul>
         </div>
-
-        <div class="side">
-          <div class="solid-panel">
-            <h2>The team</h2>
-            <dl class="rows team-rows">
-              {team.rows.map((r) => (
-                <div>
-                  <dt>{r.role}</dt>
-                  <dd class="tnum">{r.n}</dd>
-                </div>
-              ))}
-              <div class="total-row">
-                <dt>Total</dt>
-                <dd class="tnum">{team.total}</dd>
-              </div>
-            </dl>
-          </div>
-          <div class="solid-panel">
-            <h2>Where we are</h2>
-            <address>
-              <span>{site.address.street}</span>
-              <span>{site.address.locality}</span>
-              <span>Sri Lanka</span>
-            </address>
-            <div class="stack office-actions">
-              <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
-              <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
-  <section class="section band" aria-labelledby="board-h">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Board of directors</p>
-        <h2 id="board-h">Who is answerable for the work.</h2>
-        <p>
-          Four directors, between them Chartered Accountants, Chartered Management
-          Accountants and Registered Company Secretaries.
+  {/* ------------------------------------------------------------ THE TEAM
+      A single stacked bar, drawn to scale from the profile's own counts. The
+      numbers are also in the list beside it, so the bar is decoration for
+      anyone who cannot see it and loses nothing for them. */}
+  <section class="section" aria-labelledby="team-h">
+    <div class="container team">
+      <div>
+        <p class="eyebrow">The team</p>
+        <h2 id="team-h">{team.total} people, <em>four grades.</em></h2>
+        <p class="lede team-lede">
+          Qualified accountants at the core, supported by managers and associates.
         </p>
       </div>
-      <div class="grid grid--people">
-        {directors.map((d) => (
-          <article class="person">
-            <h3>{d.name}</h3>
-            <p class="creds">{d.creds}</p>
-            <p class="bio">{d.bio}</p>
-          </article>
-        ))}
+      <div class="team-viz">
+        <div class="team-bar" aria-hidden="true">
+          {team.rows.map((r, i) => (
+            <span class={`seg seg-${i}`} style={`flex-grow:${r.n}`}><span class="seg-n">{r.n}</span></span>
+          ))}
+        </div>
+        <dl class="rows team-rows">
+          {team.rows.map((r, i) => (
+            <div>
+              <dt><span class={`key key-${i}`} aria-hidden="true"></span>{r.role}</dt>
+              <dd class="tnum">{r.n}</dd>
+            </div>
+          ))}
+          <div class="total-row">
+            <dt>Total</dt>
+            <dd class="tnum">{team.total}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="sect-h">
+  {/* ------------------------------------------------------------ THE BOARD
+      No photographs of the directors exist, and no stock face will stand in
+      for one. Each is set as a monogram, with their credentials in full. */}
+  <section class="section band" aria-labelledby="board-h">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Sectorial expertise</p>
-        <h2 id="sect-h">Industries the firm has already worked in.</h2>
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Board of directors</p>
+          <h2 id="board-h">Who is <em>answerable</em> for the work.</h2>
+        </div>
+        <p class="intro">
+          Four directors, between them Chartered Accountants, Chartered Management
+          Accountants, Registered Company Secretaries and Investment Advisors.
+        </p>
       </div>
-      <ul class="chips">
+      <ul class="board">
+        {directors.map((d) => (
+          <li class="director">
+            <div class="d-head">
+              <span class="monogram display" aria-hidden="true">{initials(d.name)}</span>
+              <div>
+                <h3>{d.name}</h3>
+                <p class="d-creds">{d.creds}</p>
+              </div>
+            </div>
+            <p class="d-bio">{d.bio}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ SECTORS */}
+  <section class="section" aria-labelledby="sect-h">
+    <div class="container sect">
+      <div>
+        <p class="eyebrow">Sectorial expertise</p>
+        <h2 id="sect-h">Fourteen sectors the firm <em>already knows.</em></h2>
+        <a class="link-arrow sect-link" href="/industries/">See how we work with each <Icon name="arrow-right" size={16} stroke={2} /></a>
+      </div>
+      <ul class="chips sect-chips">
         {sectors.map((s) => <li>{s}</li>)}
       </ul>
     </div>
   </section>
+
+  <CtaBand />
 </Base>
 
 <style>
-  .split { display: grid; gap: var(--space-7); align-items: start; }
-  @media (min-width: 56rem) { .split { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--space-8); } }
-  .split h2 { font-size: var(--text-h3); margin-top: var(--space-5); }
-  .split .side h2 { margin-top: 0; font-size: var(--text-h4); margin-bottom: var(--space-4); }
+  /* ------------------------------------------------------------ story */
+  .story { display: grid; gap: var(--space-6); }
+  @media (min-width: 64rem) { .story { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-9); } }
+  .story-h { max-width: 16ch; }
+  .story-body { display: grid; gap: var(--space-5); color: var(--ink-soft); }
+  .story-body .lede { color: var(--ink); max-width: none; }
 
-  .vision {
-    margin: 0;
-    padding-inline-start: var(--space-4);
-    border-inline-start: 3px solid var(--accent);
-    color: var(--ink);
-    font-style: italic;
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-5);
+    margin: clamp(3rem, 2rem + 3vw, 5rem) 0 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 52rem) { .figures { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .figures dd { margin: 0; display: grid; gap: var(--space-2); }
+
+  /* ------------------------------------------------------------ vision + values */
+  .vv-grid { display: grid; gap: var(--space-8); }
+  @media (min-width: 64rem) { .vv-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: var(--space-9); align-items: start; } }
+  .vv-quote { margin: 0; }
+  .vv-quote p { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem); line-height: 1.16; letter-spacing: var(--tracking-tight); color: var(--ink-invert); font-weight: 350; }
+  .values { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+  .values li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--r-sm);
+    background: var(--surface-invert-2);
+    border: 1px solid var(--line-invert);
+    font-weight: 600;
+    color: var(--ink-invert);
   }
 
-  .side { display: grid; gap: var(--space-4); }
-  address { font-style: normal; display: grid; gap: var(--space-1); }
-  .office-actions { margin-top: var(--space-5); }
-  .team-rows { border-top: 0; margin: 0; }
-  .team-rows > *:first-child { padding-top: 0; }
-  .team-rows > *:last-child { border-bottom: 0; padding-bottom: 0; }
+  /* ------------------------------------------------------------ team */
+  .team { display: grid; gap: var(--space-7); align-items: center; }
+  @media (min-width: 64rem) { .team { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-9); } }
+  .team-lede { margin-top: var(--space-5); }
+  .team-bar {
+    display: flex;
+    height: 4.5rem;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    margin-bottom: var(--space-6);
+    box-shadow: var(--shadow-1);
+  }
+  .seg { display: flex; align-items: flex-end; padding: var(--space-2) var(--space-3); min-width: 0; }
+  .seg + .seg { border-left: 2px solid var(--surface); }
+  .seg-n { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; }
+  /* Four steps of the brand, darkest for the most senior grade. Each label is
+     measured against its own fill in check-contrast's registry: ink-invert on
+     the two navies, ink-on-accent on the orange, ink on the tint. */
+  .seg-0, .key-0 { background: var(--surface-invert); color: var(--ink-invert); }
+  .seg-1, .key-1 { background: var(--surface-invert-2); color: var(--ink-invert); }
+  .seg-2, .key-2 { background: var(--accent); color: var(--ink-on-accent); }
+  .seg-3, .key-3 { background: var(--accent-tint); color: var(--ink); }
+  .team-rows dt { display: flex; align-items: center; gap: var(--space-3); }
+  .key { width: 0.9rem; height: 0.9rem; border-radius: 3px; flex: none; }
+  .key-3 { box-shadow: inset 0 0 0 1px var(--line-strong); }
   .total-row dt, .total-row dd { font-weight: 700; color: var(--ink); }
 
-  /* --- board ---------------------------------------------------------------
-     Hairline-topped blocks rather than cards. There are no photographs, and a
-     card with nothing in it but text is a box drawn for its own sake. */
-  .grid--people { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
-  @media (min-width: 46rem) { .grid--people { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .person { border-top: 2px solid var(--ink); padding-top: var(--space-4); }
-  .person h3 { font-size: var(--text-h4); }
-  .creds {
-    margin-top: var(--space-2);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--accent-ink);
-  }
-  .bio { margin-top: var(--space-3); color: var(--ink-soft); font-size: var(--text-sm); }
-
-  .chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .chips li {
-    padding: var(--space-2) var(--space-4);
+  /* ------------------------------------------------------------ board */
+  .board { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
+  @media (min-width: 52rem) { .board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .director {
+    display: grid;
+    gap: var(--space-5);
+    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
     background: var(--surface-raised);
     border: 1px solid var(--line);
-    border-radius: var(--r-pill);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--ink-soft);
+    border-radius: var(--r-lg);
   }
+  .d-head { display: flex; gap: var(--space-5); align-items: center; }
+  .monogram {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: var(--r-pill);
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    font-size: 1.55rem;
+    position: relative;
+  }
+  .monogram::after { content: ""; position: absolute; inset: -5px; border-radius: inherit; border: 1px solid var(--line-strong); }
+  .director h3 { font-family: var(--font-sans); font-size: var(--text-h4); font-weight: 700; letter-spacing: 0; }
+  .d-creds { margin-top: var(--space-1); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); line-height: 1.5; }
+  .d-bio { color: var(--ink-soft); font-size: var(--text-sm); }
+
+  /* ------------------------------------------------------------ sectors */
+  .sect { display: grid; gap: var(--space-6); align-items: start; }
+  @media (min-width: 64rem) { .sect { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-9); } }
+  .sect-link { margin-top: var(--space-5); }
 </style>

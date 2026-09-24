@@ -1,41 +1,43 @@
 ---
-import { site, serviceLines } from '../data/site';
+import { site, serviceLines, industries } from '../data/site';
+import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 ---
 {/*
-  The only dark region on the page, which is what lets it end the document
-  rather than compete with a band further up. The 3px rule across the top edge
-  is the one flourish, and it is the B's own gradient: blue into orange into
-  gold, left to right.
+  The footer ends every page on the dark band, under the mark's own gradient.
 
-  The structure is a MASTHEAD, not a sidebar: the brand and the two ways of
-  reaching the firm sit together on one full-width strip, and the navigation
-  runs underneath in equal columns. Putting the phone number and the address in
-  the widest, highest part of the footer is also the right call on merit — they
-  are what people scroll to the bottom of a professional-services site to find.
+  The masthead puts the two ways of reaching the firm at display size, because
+  a phone number and an address are what people scroll to the bottom of a
+  professional-services site to find. The link columns follow the same order
+  as the header, and the bottom row carries the legal pages and the image
+  credits the photographs' licences require.
 */}
 <footer class="site-footer on-invert">
   <div class="container">
-
     <div class="masthead">
       <div class="mast-brand">
         <a class="brand link-plain" href="/" aria-label={`${site.shortName}, home`}>
-          <picture>
-            <source srcset="/brand/mark-light-64.webp 82w, /brand/mark-light-128.webp 165w" type="image/webp" sizes="56px" />
-            <img src="/brand/mark-light-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
-          </picture>
+          <img src="/brand/mark-light-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
           <span class="brand-name" aria-hidden="true">
             <span class="brand-a">Reliance</span>
             <span class="brand-b">Business Partners</span>
           </span>
         </a>
-        <p class="tagline">{site.tagline}</p>
+        <p class="tagline display">{site.tagline}.</p>
+        <p class="blurb">
+          Accounting, tax, payroll, advisory, analytics and corporate secretarial
+          services under one umbrella. A firm of professionals since {site.founded}.
+        </p>
       </div>
 
       <div class="mast-reach">
+        <p class="reach-label">Talk to us</p>
         <a class="reach link-plain tnum" href={site.phoneHref}>{site.phone}</a>
         <a class="reach reach--sm link-plain" href={`mailto:${site.email}`}>{site.email}</a>
-        <a class="btn btn--primary mast-cta" href="/contact/">Start an enquiry</a>
+        <p class="reach-addr">
+          <Icon name="map-pin" size={18} />
+          <span>{site.address.street}, {site.address.locality}, Sri Lanka</span>
+        </p>
       </div>
     </div>
 
@@ -49,25 +51,28 @@ const year = new Date().getFullYear();
         </ul>
       </nav>
 
-      <nav aria-label="Company">
-        <h2>Company</h2>
+      <nav aria-label="Industries">
+        <h2>Industries</h2>
         <ul>
-          <li><a class="link-plain" href="/packages/">Incorporation packages</a></li>
-          <li><a class="link-plain" href="/#estimate">Fee estimator</a></li>
-          <li><a class="link-plain" href="/about/">About</a></li>
-          <li><a class="link-plain" href="/contact/">Contact</a></li>
-          <li><a class="link-plain" href="/privacy/">Privacy</a></li>
-          <li><a class="link-plain" href="/terms/">Terms</a></li>
+          {industries.map((i) => (
+            <li><a class="link-plain" href={`/industries/#${i.slug}`}>{i.title}</a></li>
+          ))}
         </ul>
       </nav>
 
-      <div class="office">
-        <h2>Office</h2>
-        <address>
-          {site.address.street}<br />
-          {site.address.locality}<br />
-          Sri Lanka
-        </address>
+      <nav aria-label="The firm">
+        <h2>The firm</h2>
+        <ul>
+          <li><a class="link-plain" href="/about/">About Reliance</a></li>
+          <li><a class="link-plain" href="/packages/">Incorporation packages</a></li>
+          <li><a class="link-plain" href="/#estimate">Fee estimator</a></li>
+          <li><a class="link-plain" href="/contact/">Contact</a></li>
+          <li><a class="link-plain" href={site.social.linkedin} rel="noopener">LinkedIn</a></li>
+        </ul>
+      </nav>
+
+      <div class="assoc-col">
+        <h2>Tax and assurance</h2>
         {/* The link and the punctuation after it sit on ONE line. A newline
             between them is whitespace, and it renders as "Synergy Advisors ." */}
         <p class="assoc">
@@ -76,17 +81,20 @@ const year = new Date().getFullYear();
             <Fragment><a class="link-plain" href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '.'}</Fragment>
           ))}
         </p>
+        <a class="btn btn--primary foot-cta" href="/contact/">Start an enquiry <Icon name="arrow-right" size={18} stroke={2} /></a>
       </div>
     </div>
 
     <div class="base">
       <p class="colophon">
-        &copy; {year} {site.legalName}. Figures shown on this site are the firm's published
+        &copy; {year} {site.legalName}. Figures on this site are the firm's published
         fee structure. Nothing here is a quotation, and nothing on it is accounting,
         tax or legal advice for your particular circumstances.
       </p>
       <ul class="meta">
-        <li><a class="link-plain" href={site.social.linkedin} rel="noopener">LinkedIn</a></li>
+        <li><a class="link-plain" href="/privacy/">Privacy</a></li>
+        <li><a class="link-plain" href="/terms/">Terms</a></li>
+        <li><a class="link-plain" href="/credits/">Image credits</a></li>
       </ul>
       <p class="powered">
         Powered by <a href="https://ceylailabs.com" rel="noopener">Ceylailabs.com</a>
@@ -100,11 +108,11 @@ const year = new Date().getFullYear();
     position: relative;
     background: var(--surface-invert);
     color: var(--ink-invert);
-    padding-block: var(--space-7);
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem) var(--space-6);
     padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
+    overflow: hidden;
   }
-  /* The mark's own gradient, as a rule. A border cannot carry a gradient, so it
-     is a 3px band pinned to the top edge instead. */
+  /* The mark's own gradient, as a rule across the top edge. */
   .site-footer::before {
     content: "";
     position: absolute;
@@ -113,149 +121,125 @@ const year = new Date().getFullYear();
     background: var(--brand-ramp);
   }
 
-  /* --- masthead ------------------------------------------------------------ */
+  /* --- masthead ---------------------------------------------------------------- */
   .masthead {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-5) var(--space-6);
-    padding-bottom: var(--space-6);
+    display: grid;
+    gap: var(--space-7);
+    padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
     border-bottom: 1px solid var(--line-invert);
   }
+  @media (min-width: 56rem) {
+    .masthead { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: end; }
+  }
 
-  .brand { display: flex; align-items: center; gap: var(--space-3); line-height: 0; }
-  .brand img { width: auto; height: 44px; }
-  .brand-name { display: grid; gap: 1px; line-height: 1; }
-  .brand-a {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: var(--tracking-tight);
+  .brand { display: inline-flex; align-items: center; gap: var(--space-3); line-height: 0; }
+  .brand img { width: auto; height: 46px; }
+  .brand-name { display: grid; gap: 3px; line-height: 1; }
+  .brand-a { font-family: var(--font-display); font-size: 1.6rem; font-weight: 500; color: var(--ink-invert); }
+  .brand-b { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-invert); }
+
+  .tagline {
+    margin-top: var(--space-6);
+    font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
     color: var(--ink-invert);
   }
-  .brand-b {
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+  .blurb {
+    margin-top: var(--space-4);
     color: var(--muted-invert);
+    font-size: var(--text-sm);
+    max-width: 44ch;
   }
 
-  /* The deck's own cover line. It is the firm's tagline, so it belongs on the
-     firm's site rather than only in the JSON-LD. */
-  .tagline {
-    margin-top: var(--space-3);
-    color: var(--accent);
-    font-size: var(--text-xs);
+  .mast-reach { display: grid; gap: var(--space-2); justify-items: start; }
+  @media (min-width: 56rem) { .mast-reach { justify-items: end; text-align: right; } }
+  .reach-label {
+    font-size: var(--text-eyebrow);
     font-weight: 700;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
+    color: var(--accent-lift);
   }
-
-  .mast-reach {
-    display: grid;
-    justify-items: start;
-    gap: var(--space-2);
-  }
-  @media (min-width: 48rem) { .mast-reach { justify-items: end; } }
-
-  /* The phone number is set at heading size. It is the single most-wanted piece
-     of information down here, and a 15px link in a column of six is not that. */
   .reach {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     min-height: var(--tap-min);
-    font-size: var(--text-h4);
-    font-weight: 700;
-    letter-spacing: var(--tracking-tight);
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     color: var(--ink-invert);
+    transition: color var(--dur-hover) var(--ease-out);
   }
-  .reach--sm { font-size: var(--text-sm); font-weight: 600; color: var(--muted-invert); }
-  .reach:hover { color: var(--accent); }
-  .mast-cta { margin-top: var(--space-2); }
+  .reach--sm { font-family: var(--font-sans); font-size: var(--text-body); font-weight: 600; color: var(--muted-invert); }
+  .reach:hover { color: var(--accent-lift); }
+  .reach-addr {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    margin-top: var(--space-2);
+    color: var(--muted-invert);
+    font-size: var(--text-sm);
+    max-width: 34ch;
+  }
+  .reach-addr :global(svg) { flex: none; margin-top: 3px; color: var(--accent-lift); }
 
-  /* --- columns -------------------------------------------------------------- */
+  /* --- columns ------------------------------------------------------------------ */
   .cols {
     display: grid;
-    gap: var(--space-6);
-    padding-block: var(--space-6);
+    gap: var(--space-7) var(--space-6);
+    padding-block: clamp(2.5rem, 2rem + 2vw, 4rem);
   }
-  @media (min-width: 34rem) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 56rem) { .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--space-8); } }
+  @media (min-width: 36rem) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .cols { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.3fr); } }
 
   .site-footer h2 {
+    font-family: var(--font-sans);
     font-size: var(--text-eyebrow);
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     font-weight: 700;
-    color: var(--accent);   /* the logo orange, 6.00:1 on this ground */
-    margin-bottom: var(--space-4);
+    color: var(--accent-lift);
+    margin-bottom: var(--space-5);
   }
-
-  .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+  .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
   /* :not(.btn) is load-bearing. `.site-footer a` is (0,1,1) and `.btn--primary`
-     is (0,1,0), so without it this rule wins and paints the accent button's
-     label --ink-invert: near-white on orange, 2.90:1, under AA. check-contrast
-     proves token PAIRS and cannot see a cascade putting the wrong pair
-     together, so the exclusion has to be written here. The same trap applies to
-     the hover rule, which would otherwise turn the label accent-on-accent. */
+     is (0,1,0), so without it this rule would win and paint the accent button's
+     label near-white on orange, 2.90:1. check-contrast proves token PAIRS and
+     cannot see a cascade putting the wrong pair together. */
   .site-footer a:not(.btn) { color: var(--ink-invert); font-size: var(--text-sm); }
-  .site-footer a:not(.btn):hover {
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 0.22em;
+  .site-footer ul a:not(.btn) {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    color: oklch(100% 0 0 / 0.82);
+    transition: color var(--dur-hover) var(--ease-out);
   }
-  .site-footer .reach { font-size: var(--text-h4); }
-  .site-footer .reach--sm { font-size: var(--text-sm); }
+  .site-footer a:not(.btn):hover { color: var(--accent-lift); }
+  /* Written against the .site-footer a:not(.btn) rule above, which would
+     otherwise shrink the phone number to link size. */
+  .site-footer a.reach:not(.btn) { font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); color: var(--ink-invert); }
+  .site-footer a.reach--sm:not(.btn) { font-size: var(--text-body); color: var(--muted-invert); }
+  .site-footer a.reach:not(.btn):hover { color: var(--accent-lift); }
 
-  address {
-    font-style: normal;
-    color: var(--muted-invert);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-  }
-  .assoc {
-    color: var(--muted-invert);
-    font-size: var(--text-sm);
-    margin-top: var(--space-4);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--line-invert);
-    line-height: 1.6;
-    max-width: 42ch;
-  }
+  .assoc { color: var(--muted-invert); font-size: var(--text-sm); line-height: 1.6; max-width: 40ch; }
   .assoc a { text-decoration: underline; text-underline-offset: 0.2em; }
+  .foot-cta { margin-top: var(--space-5); }
 
-  /* --- lower band --------------------------------------------------------- */
+  /* --- lower band --------------------------------------------------------------- */
   .base {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-4) var(--space-6);
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     padding-top: var(--space-5);
     border-top: 1px solid var(--line-invert);
   }
-
-  .colophon {
-    color: var(--muted-invert);
-    font-size: var(--text-xs);
-    max-width: 62ch;
-    flex: 1 1 22rem;
-    line-height: 1.6;
-  }
-
-  .site-footer ul.meta { display: flex; gap: var(--space-5); flex: none; }
-  .meta a { font-size: var(--text-xs); }
-
-  .powered {
-    color: var(--muted-invert);
-    font-size: var(--text-xs);
-    flex: none;
-  }
-  .powered a {
-    color: var(--muted-invert);
-    font-size: inherit;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-  .powered a:hover { color: var(--accent); }
+  .colophon { color: var(--muted-invert); font-size: var(--text-xs); max-width: 62ch; flex: 1 1 22rem; line-height: 1.6; }
+  .site-footer ul.meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+  .site-footer .meta a { font-size: var(--text-xs); min-height: var(--tap-min); }
+  .powered { color: var(--muted-invert); font-size: var(--text-xs); flex: none; }
+  .powered a { color: var(--muted-invert); font-size: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
 </style>

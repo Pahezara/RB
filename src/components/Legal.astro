@@ -1,0 +1,88 @@
+---
+/*
+ * The body of a legal page: the prose, and beside it on wide screens a short
+ * index of its sections that stays in view. Each entry in `toc` must match the
+ * id of an h2 in the slot.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  toc: { id: string; label: string }[];
+}
+const { toc } = Astro.props;
+---
+<section class="section">
+  <div class="container legal">
+    <aside class="legal-aside">
+      <nav aria-label="On this page">
+        <p class="legal-k">On this page</p>
+        <ol>
+          {toc.map((t) => <li><a class="link-plain" href={`#${t.id}`}>{t.label}</a></li>)}
+        </ol>
+      </nav>
+    </aside>
+    <div class="legal-body">
+      <slot />
+      <div class="legal-contact">
+        <p class="legal-k">Questions about this page</p>
+        <p>
+          Write to <a href={`mailto:${site.email}`}>{site.email}</a>, or call{' '}
+          <a class="tnum" href={site.phoneHref}>{site.phone}</a>.
+        </p>
+        <p class="legal-addr">{site.legalName}, {site.address.street}, {site.address.locality}, Sri Lanka.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .legal { display: grid; gap: var(--space-7); }
+  @media (min-width: 64rem) {
+    .legal { grid-template-columns: 15rem minmax(0, 46rem); gap: var(--space-9); }
+    .legal-aside { position: sticky; top: calc(var(--header-h) + var(--space-6)); align-self: start; }
+  }
+  .legal-k {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--space-3);
+  }
+  .legal-aside ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+  .legal-aside a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding-left: var(--space-4);
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--ink-soft);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+  .legal-aside a:hover { color: var(--ink); border-left-color: var(--accent); }
+  @media (max-width: 63.99rem) {
+    .legal-aside { padding: var(--space-5); background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--r-md); }
+  }
+
+  .legal-body :global(h2) {
+    font-size: var(--text-h3);
+    scroll-margin-top: calc(var(--header-h) + var(--space-6));
+    padding-top: var(--space-6);
+    margin-top: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  .legal-body :global(h2:first-child) { margin-top: 0; padding-top: 0; border-top: 0; }
+  .legal-body :global(p) { margin-top: var(--space-4); color: var(--ink-soft); font-size: 1.0625rem; line-height: 1.7; }
+  .legal-body :global(ul) { margin-top: var(--space-4); }
+  .legal-contact {
+    margin-top: var(--space-8);
+    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+    background: var(--accent-tint);
+    border-radius: var(--r-md);
+  }
+  .legal-body .legal-contact p { margin-top: var(--space-2); color: var(--ink); }
+  .legal-body .legal-contact .legal-addr { font-size: var(--text-sm); }
+  .legal-body .legal-contact .legal-k { color: var(--accent-ink); margin-top: 0; }
+</style>

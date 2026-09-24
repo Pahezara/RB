@@ -1,36 +1,45 @@
 ---
-import { site } from '../data/site';
-interface Props { overHero?: boolean }
+import { site, serviceLines, packages } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** The page opens on a dark hero, so the bar may start transparent over it. */
+  overHero?: boolean;
+}
 const { overHero = false } = Astro.props;
 
 const nav = [
-  { label: 'Services', href: '/services/' },
+  { label: 'Industries', href: '/industries/' },
   { label: 'Packages', href: '/packages/' },
   { label: 'About', href: '/about/' },
   { label: 'Contact', href: '/contact/' },
 ];
 
 const path = Astro.url.pathname;
-const isCurrent = (href: string) =>
-  href.startsWith('/#') ? false : href === '/' ? path === '/' : path.startsWith(href);
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const money = (n: number) => n.toLocaleString('en-US');
 ---
 {/*
-  A full-width bar. Glass where it sits over the hero photograph, solid with a
-  hairline everywhere else, because a light frost over a flat light ground is
-  not glass.
+  THE HEADER HAS THREE STATES, and the safe one is the default.
 
-  The brand is the MONOGRAM plus the firm's name as real text, never a
-  rasterised lockup. The supplied lockup sets the name on one line at roughly
-  24:1, which at the 130px this bar has to spare would be three-pixel letters.
-  See the note at the top of scripts/prepare-brand.mjs.
+  1. SOLID. Paper ground, navy ink, hairline under it. This is what renders
+     with no JavaScript, on every page, always legible over anything.
+  2. OVER THE HERO. Transparent, light ink, light mark — but only when the page
+     has a dark hero AND the script has confirmed we are at the top. If the
+     script never runs, the bar never goes transparent, so it can never end up
+     as white text over a white page.
+  3. SCROLLED. The one glass surface on the site: paper at 86% with the single
+     site-wide blur, over whatever is scrolling underneath.
+
+  The Services mega-menu opens on hover and on focus-within with no script at
+  all; the chevron button exists so keyboard and touch users can open it
+  without first navigating to /services/, and it carries aria-expanded.
 */}
-<header class:list={['site-header', overHero ? 'over-hero glass' : 'on-ground']}>
+<header class="site-header" data-hero={overHero ? 'dark' : undefined}>
   <div class="container bar">
     <a class="brand link-plain" href="/" aria-label={`${site.shortName}, home`}>
-      <picture>
-        <source srcset="/brand/mark-64.webp 82w, /brand/mark-128.webp 165w" type="image/webp" sizes="42px" />
-        <img src="/brand/mark-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
-      </picture>
+      <img class="mark mark--dark" src="/brand/mark-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
+      <img class="mark mark--light" src="/brand/mark-light-128.png" width="165" height="128" alt="" loading="lazy" decoding="async" />
       <span class="brand-name" aria-hidden="true">
         <span class="brand-a">Reliance</span>
         <span class="brand-b">Business Partners</span>
@@ -38,35 +47,116 @@ const isCurrent = (href: string) =>
     </a>
 
     <nav class="nav" aria-label="Primary">
-      <ul>
+      <ul class="nav-list">
+        <li class="has-mega">
+          <a class="nav-link link-plain" href="/services/" aria-current={isCurrent('/services/') ? 'page' : undefined}>Services</a>
+          <button class="mega-toggle" type="button" aria-expanded="false" aria-controls="mega-services">
+            <Icon name="chevron-down" size={16} stroke={2} />
+            <span class="visually-hidden">Show the six services</span>
+          </button>
+          <div class="mega" id="mega-services">
+            <div class="mega-inner">
+              <ul class="mega-grid">
+                {serviceLines.map((s) => (
+                  <li>
+                    <a class="mega-item link-plain" href={`/services/${s.slug}/`}>
+                      <span class="icon-tile"><Icon name={s.icon} /></span>
+                      <span class="mega-text">
+                        <span class="mega-title">{s.title}</span>
+                        <span class="mega-blurb">{s.blurb}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a class="mega-feature link-plain" href="/packages/">
+                <span class="mega-kicker">Company incorporation</span>
+                <span class="mega-price display">from LKR {money(packages[0].price)}</span>
+                <span class="mega-note">Three packages, every item listed, every fee published.</span>
+                <span class="link-arrow">Compare packages <Icon name="arrow-right" size={16} stroke={2} /></span>
+              </a>
+            </div>
+          </div>
+        </li>
         {nav.map((item) => (
           <li>
-            <a class="link-plain" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+            <a class="nav-link link-plain" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
           </li>
         ))}
       </ul>
     </nav>
 
     <div class="actions">
-      <a class="tel link-plain tnum" href={site.phoneHref}>{site.phone}</a>
-      <a class="btn btn--primary cta" href="/contact/">Start an enquiry</a>
+      <a class="tel link-plain tnum" href={site.phoneHref}>
+        <Icon name="phone" size={16} stroke={2} />
+        {site.phone}
+      </a>
+      <a class="btn btn--primary cta" href="/#estimate">Estimate your fees</a>
 
       <details class="menu">
         <summary aria-label="Menu"><span class="bars" aria-hidden="true"></span></summary>
         <div class="menu-panel">
-          <ul>
-            {nav.map((item) => (
-              <li><a class="link-plain" href={item.href}>{item.label}</a></li>
-            ))}
-            <li><a class="link-plain" href="/#estimate">Fee estimator</a></li>
-          </ul>
-          <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
-          <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+          <div class="container menu-inner">
+            <p class="menu-label">Services</p>
+            <ul class="menu-services">
+              {serviceLines.map((s) => (
+                <li><a class="link-plain" href={`/services/${s.slug}/`}><Icon name={s.icon} size={20} />{s.title}</a></li>
+              ))}
+            </ul>
+            <ul class="menu-main">
+              <li><a class="link-plain" href="/">Home</a></li>
+              {nav.map((item) => <li><a class="link-plain" href={item.href}>{item.label}</a></li>)}
+            </ul>
+            <div class="menu-actions">
+              <a class="btn btn--primary btn--block btn--lg" href="/#estimate">Estimate your fees</a>
+              <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+              <a class="btn btn--secondary btn--block" href={`mailto:${site.email}`}>{site.email}</a>
+            </div>
+          </div>
         </div>
       </details>
     </div>
   </div>
 </header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  if (header) {
+    // --- state 2 and 3: transparent at the top of a dark hero, glass once scrolled.
+    const hero = header.dataset.hero === 'dark';
+    const setState = () => {
+      const top = window.scrollY < 12;
+      header.classList.toggle('is-top', hero && top);
+      header.classList.toggle('is-scrolled', !top);
+    };
+    setState();
+    window.addEventListener('scroll', setState, { passive: true });
+
+    // --- the mega-menu toggle, for keyboard and touch -------------------------------
+    const toggle = header.querySelector<HTMLButtonElement>('.mega-toggle');
+    const item = header.querySelector<HTMLElement>('.has-mega');
+    if (toggle && item) {
+      const set = (open: boolean) => {
+        item.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+      };
+      toggle.addEventListener('click', () => set(!item.classList.contains('is-open')));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); } });
+      document.addEventListener('click', (e) => { if (!item.contains(e.target as Node)) set(false); });
+    }
+
+    // --- the mobile menu: close on navigation or Escape, lock the page behind it ---
+    const menu = header.querySelector<HTMLDetailsElement>('.menu');
+    if (menu) {
+      menu.addEventListener('toggle', () => {
+        document.documentElement.classList.toggle('menu-open', menu.open);
+        header.classList.toggle('is-menu', menu.open);
+      });
+      menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => { menu.open = false; }));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open) menu.open = false; });
+    }
+  }
+</script>
 
 <style>
   .site-header {
@@ -74,26 +164,60 @@ const isCurrent = (href: string) =>
     top: 0;
     z-index: 100;
     padding-top: env(safe-area-inset-top);
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--dur-control) var(--ease-out),
+                border-color var(--dur-control) var(--ease-out),
+                box-shadow var(--dur-control) var(--ease-out);
   }
 
-  /* Off the hero the bar is a solid ground with a hairline, not glass. */
-  .site-header.on-ground {
-    background: var(--surface-raised);
-    border-bottom: 1px solid var(--line);
+  /* 3. scrolled: the site's one glass surface. */
+  .site-header.is-scrolled {
+    background: var(--glass-fill);
+    border-bottom-color: transparent;
+    box-shadow: inset 0 -1px 0 0 var(--glass-under), var(--shadow-1);
   }
-  .site-header.glass { border-radius: 0; }
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .site-header.is-scrolled {
+      backdrop-filter: blur(var(--blur)) saturate(1.5);
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(1.5);
+    }
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .site-header.is-scrolled { background: var(--glass-opaque); }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .site-header.is-scrolled { background: var(--glass-opaque); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  }
+
+  /* 2. over the hero: transparent, light ink. */
+  .site-header.is-top:not(.is-menu) {
+    background: transparent;
+    border-bottom-color: oklch(100% 0 0 / 0.12);
+  }
+  .mark--light { display: none; }
+  .site-header.is-top:not(.is-menu) .mark--dark { display: none; }
+  .site-header.is-top:not(.is-menu) .mark--light { display: block; }
+  .site-header.is-top:not(.is-menu) :is(.brand-a, .nav-link, .tel, .mega-toggle) { color: var(--ink-invert); }
+  /* Only ink-invert over a photograph: it is the ink make-images measures there. */
+  .site-header.is-top:not(.is-menu) .brand-b { color: var(--ink-invert); }
+  .site-header.is-top:not(.is-menu) .bars,
+  .site-header.is-top:not(.is-menu) .bars::before,
+  .site-header.is-top:not(.is-menu) .bars::after { background: var(--ink-invert); }
+  .site-header.is-top:not(.is-menu) :focus-visible {
+    outline-color: var(--focus-ring-inner);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+  }
 
   .bar {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-5);
     height: var(--header-h);
   }
 
-  /* --- brand ------------------------------------------------------------ */
-  /* The mark is 30px tall here, so the LINK carries the touch target rather
-     than the image. Without the min-height the whole brand is a 30px tap
-     target on every page. */
+  /* --- brand ------------------------------------------------------------- */
   .brand {
     display: flex;
     align-items: center;
@@ -102,60 +226,181 @@ const isCurrent = (href: string) =>
     line-height: 0;
     min-height: var(--tap-min);
   }
-  .brand img { width: auto; height: 30px; }
-
-  /* Two lines, because the mark is 1.29:1 and a single line beside it leaves
-     the wordmark floating in the middle of a bar it does not fill. Stacked, the
-     name is the same height as the mark and the pair reads as one lockup. */
-  .brand-name {
-    display: grid;
-    gap: 1px;
-    line-height: 1;
-  }
+  .mark { width: auto; height: 32px; }
+  .brand-name { display: grid; gap: 2px; line-height: 1; }
   .brand-a {
-    font-size: 1.0625rem;
-    font-weight: 800;
-    letter-spacing: var(--tracking-tight);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--ink);
   }
   .brand-b {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--ink-soft);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
     white-space: nowrap;
   }
 
-  /* --- nav -------------------------------------------------------------- */
+  /* --- nav ----------------------------------------------------------------- */
   .nav { display: none; margin-inline: auto; }
-  .nav ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; }
-  .nav a {
+  .nav-list { display: flex; align-items: center; gap: var(--space-2); list-style: none; margin: 0; padding: 0; }
+  .nav-list > li { position: relative; display: flex; align-items: center; }
+  /* The Services item is NOT the positioning context for its panel: the bar
+     is. A panel hung off the menu item with a fixed offset runs past the right
+     edge at 1024px, and even while hidden it would widen the page. Anchored to
+     the bar, it spans exactly the content column at every width. */
+  .nav-list > li.has-mega { position: static; }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding-inline: var(--space-3);
     color: var(--ink-soft);
     font-size: var(--text-sm);
-    font-weight: 650;
-    padding-block: var(--space-2);
-    border-bottom: 2px solid transparent;
-    transition: color var(--dur-hover) var(--ease-out),
-                border-color var(--dur-hover) var(--ease-out);
+    font-weight: 600;
+    position: relative;
+    transition: color var(--dur-hover) var(--ease-out);
   }
-  /* accent-ink, the darkened accent: it marks where you are on a light ground,
-     where the accent itself is only 2.86:1 and could not be text. */
-  .nav a:hover { color: var(--ink); border-bottom-color: var(--accent-ink); }
-  .nav a[aria-current="page"] { color: var(--ink); font-weight: 700; border-bottom-color: var(--accent-ink); }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-control) var(--ease-out);
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-link:hover::after, .nav-link[aria-current="page"]::after { transform: scaleX(1); }
+  .nav-link[aria-current="page"] { color: var(--ink); }
 
-  /* --- actions ---------------------------------------------------------- */
+  .mega-toggle {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    min-height: var(--tap-min);
+    margin-inline-start: -8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .mega-toggle :global(svg) { transition: transform var(--dur-control) var(--ease-out); }
+  .has-mega:is(:hover, :focus-within, .is-open) .mega-toggle :global(svg) { transform: rotate(180deg); }
+
+  /* --- mega menu ------------------------------------------------------------ */
+  .mega {
+    position: absolute;
+    top: calc(100% - 6px);
+    left: max(var(--gutter), env(safe-area-inset-left));
+    right: max(var(--gutter), env(safe-area-inset-right));
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, -6px, 0);
+    transition: opacity var(--dur-control) var(--ease-out),
+                transform var(--dur-control) var(--ease-out),
+                visibility 0s linear var(--dur-control);
+  }
+  /* A bridge across the gap, so the pointer can travel from the link into the
+     panel without the hover ending halfway. */
+  .mega::before { content: ""; position: absolute; left: 0; right: 0; top: -28px; height: 28px; }
+  .has-mega:is(:hover, :focus-within, .is-open) .mega {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .mega-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 19rem;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-3);
+  }
+  .mega-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-1);
+  }
+  .mega-item {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    transition: background-color var(--dur-hover) var(--ease-out);
+  }
+  .mega-item:hover { background: var(--surface-sunken); color: var(--ink); }
+  .mega-text { display: grid; gap: 2px; }
+  .mega-title { font-weight: 700; font-size: var(--text-sm); }
+  .mega-blurb { font-size: var(--text-xs); color: var(--muted); line-height: 1.45; }
+
+  .mega-feature {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border-radius: var(--r-md);
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    position: relative;
+    overflow: hidden;
+  }
+  .mega-feature::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--brand-ramp);
+  }
+  .mega-kicker {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--muted-invert);
+  }
+  .mega-price { font-size: 1.9rem; line-height: 1.05; color: var(--ink-invert); }
+  .mega-note { font-size: var(--text-xs); color: var(--muted-invert); line-height: 1.5; margin-bottom: auto; }
+  .mega-feature .link-arrow { color: var(--accent-lift); margin-top: var(--space-4); }
+
+  /* --- actions -------------------------------------------------------------- */
   .actions {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-4);
     margin-inline-start: auto;
     flex: none;
   }
-  .tel { display: none; color: var(--ink); font-size: var(--text-sm); font-weight: 600; }
+  .tel {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    color: var(--ink);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+  .tel :global(svg) { color: var(--accent-ink); }
+  .site-header.is-top:not(.is-menu) .tel :global(svg) { color: var(--accent-lift); }
   .cta { display: none; }
 
-  /* --- mobile menu: <details>, so it works with no JavaScript ----------- */
-  .menu { position: relative; flex: none; }
+  /* --- mobile menu: <details>, so it works with no JavaScript ---------------- */
+  .menu { flex: none; }
   .menu summary {
     display: grid;
     place-items: center;
@@ -168,54 +413,76 @@ const isCurrent = (href: string) =>
   .menu summary::-webkit-details-marker { display: none; }
   .bars, .bars::before, .bars::after {
     display: block;
-    width: 20px;
+    width: 22px;
     height: 2px;
     background: var(--ink);
     border-radius: 2px;
+    transition: transform var(--dur-control) var(--ease-out), opacity var(--dur-hover);
   }
   .bars { position: relative; }
   .bars::before, .bars::after { content: ""; position: absolute; left: 0; }
-  .bars::before { top: -6px; }
-  .bars::after { top: 6px; }
+  .bars::before { top: -7px; }
+  .bars::after { top: 7px; }
+  .menu[open] .bars { background: transparent; }
+  .menu[open] .bars::before { transform: translateY(7px) rotate(45deg); }
+  .menu[open] .bars::after { transform: translateY(-7px) rotate(-45deg); }
 
   .menu-panel {
-    position: absolute;
+    position: fixed;
+    left: 0;
     right: 0;
-    top: calc(100% + var(--space-3));
-    width: min(18rem, calc(100vw - var(--gutter) * 2));
-    display: grid;
-    gap: var(--space-2);
-    padding: var(--space-3);
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-3);
-    --r-inner: max(var(--r-xs), calc(var(--r-lg) - var(--space-3)));
+    top: calc(var(--header-h) + env(safe-area-inset-top));
+    bottom: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    padding-block: var(--space-5) var(--space-8);
   }
-  .menu-panel ul { list-style: none; margin: 0 0 var(--space-2); padding: 0; display: grid; }
-  .menu-panel ul a {
+  .menu-inner { display: grid; gap: var(--space-6); }
+  .menu-label {
+    font-size: var(--text-eyebrow);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: calc(var(--space-4) * -1);
+  }
+  .menu-services, .menu-main { list-style: none; margin: 0; padding: 0; display: grid; }
+  .menu-services a {
     display: flex;
     align-items: center;
-    padding: var(--space-3);
-    border-radius: var(--r-inner);
+    gap: var(--space-3);
+    min-height: 52px;
+    border-bottom: 1px solid var(--line);
     color: var(--ink);
     font-weight: 600;
-    min-height: var(--tap-min);
   }
-  .menu-panel ul a:hover { background: var(--surface-sunken); }
-
-  /* Below 22rem the two-line name and the menu button start to fight. The name
-     shortens to its first line rather than the bar wrapping. */
-  @media (max-width: 22rem) {
-    .brand-b { display: none; }
+  .menu-services a :global(svg) { color: var(--accent-ink); flex: none; }
+  .menu-main a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
   }
+  .menu-actions { display: grid; gap: var(--space-3); }
 
-  @media (min-width: 56rem) {
-    .brand img { height: 38px; }
-    .brand-a { font-size: 1.25rem; }
-    .brand-b { font-size: 0.875rem; }
+  :global(html.menu-open) { overflow: hidden; }
+
+  /* Below 22rem the two-line name and the menu button start to fight. */
+  @media (max-width: 22rem) { .brand-b { display: none; } }
+
+  @media (min-width: 64rem) {
+    .mark { height: 38px; }
+    .brand-a { font-size: 1.5rem; }
     .nav { display: block; }
-    .tel, .cta { display: inline-flex; }
+    .cta { display: inline-flex; }
     .menu { display: none; }
+  }
+  @media (min-width: 80rem) {
+    .tel { display: inline-flex; }
   }
 </style>

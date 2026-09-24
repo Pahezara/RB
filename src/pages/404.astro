@@ -1,28 +1,67 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
 import { site } from '../data/site';
 const title = 'Page not found — Reliance Business Partners';
 const description =
   'That page does not exist. Here are the main parts of the Reliance Business Partners site, and how to reach the firm directly.';
+
+const routes = [
+  { href: '/packages/', icon: 'file-signature', label: 'Incorporation packages and prices' },
+  { href: '/#estimate', icon: 'calculator', label: 'The fee estimator' },
+  { href: '/services/', icon: 'layers', label: 'The six services' },
+  { href: '/industries/', icon: 'factory', label: 'Industries' },
+  { href: '/about/', icon: 'users', label: 'About the firm' },
+  { href: '/contact/', icon: 'phone', label: 'Contact' },
+];
 ---
-<Base title={title} description={description}>
-  <section class="section">
-    <div class="container prose stack">
-      <p class="eyebrow">404</p>
-      <h1>That page does not exist.</h1>
-      <p>
-        The link may be old, or the address may have a typo in it. These are the places most people are looking for.
-      </p>
-      <ul class="ticks">
-        <li><a href="/packages/">Incorporation packages and prices</a></li>
-        <li><a href="/#estimate">The fee estimator</a></li>
-        <li><a href="/services/">What we work on</a></li>
-        <li><a href="/about/">About the firm</a></li>
-        <li><a href="/contact/">Contact</a></li>
+<Base title={title} description={description} overHero>
+  <PageHero
+    variant="plain"
+    eyebrow="Error 404"
+    title="That page <em>does not exist.</em>"
+    lede="The link may be old, or the address may have a typo in it. These are the places most people are looking for."
+  >
+    <a class="btn btn--primary btn--lg" href="/">Back to the home page <Icon name="arrow-right" size={18} stroke={2} /></a>
+    <a class="btn btn--ghost btn--lg tnum" href={site.phoneHref}><Icon name="phone" size={18} stroke={2} /> {site.phone}</a>
+  </PageHero>
+
+  <section class="section" aria-labelledby="go-h">
+    <div class="container">
+      <h2 id="go-h" class="go-h">Where to <em>instead.</em></h2>
+      <ul class="go">
+        {routes.map((r) => (
+          <li>
+            <a class="go-a link-plain" href={r.href}>
+              <span class="icon-tile"><Icon name={r.icon} /></span>
+              <span>{r.label}</span>
+              <Icon name="arrow-right" size={16} stroke={2} class="go-arrow" />
+            </a>
+          </li>
+        ))}
       </ul>
-      <p>
-        Or call <a class="tnum" href={site.phoneHref}>{site.phone}</a> and tell us what you were looking for.
-      </p>
     </div>
   </section>
 </Base>
+
+<style>
+  .go-h { font-size: var(--text-h3); margin-bottom: var(--space-6); }
+  .go { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+  @media (min-width: 40rem) { .go { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .go { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); } }
+  .go-a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--surface-raised);
+    color: var(--ink);
+    font-weight: 600;
+    transition: border-color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
+  }
+  .go-a:hover { color: var(--ink); border-color: var(--ink); transform: translate3d(0, -2px, 0); }
+  .go-a :global(.go-arrow) { margin-left: auto; flex: none; color: var(--accent-ink); }
+</style>

@@ -10,11 +10,18 @@ npm run dev      # local dev server
 npm run verify   # build, then every check, in order
 ```
 
-**JavaScript.** The site ships exactly one script, and only on the home page: the fee
-estimator. Everything else — the nav, the mobile menu, the FAQ accordion, the page
-transitions — is HTML and CSS. The estimator's default state is rendered on the server
-with the arithmetic already done, so with the script blocked the page still shows the
-Basic package at its real price and all three packages in full.
+**JavaScript.** Three small inline scripts, and the site works with all of them blocked:
+
+- the **fee estimator**, on the home page and `/packages/`. Its default state is rendered
+  on the server with the arithmetic already done, so with the script blocked the page
+  still shows the Basic package at its real price and all three packages in full;
+- the **header**: the transparent-over-the-hero and scrolled states, and the Services
+  mega menu's `aria-expanded`, Escape and outside-click handling. Without it the header is
+  solid and the mega menu opens on hover and focus;
+- the **counters** on the home page's credentials rail, which count up once when they
+  come into view. The real numbers are in the HTML.
+
+The mobile menu, the FAQ accordion and the page transitions are HTML and CSS.
 
 ## Deploying to Vercel
 
@@ -58,7 +65,7 @@ npm run build && node scripts/make-og.mjs
 - **Security headers** are in `vercel.json`: `Content-Security-Policy`, HSTS,
   `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` and `Permissions-Policy`.
 - **Caching**: fonts and `/_astro/` are immutable for a year (both are content-hashed or
-  never change); `/hero/`, `/brand/` and `/og/` get a week; `robots.txt`, `sitemap.xml` and
+  never change); `/img/`, `/brand/` and `/og/` get a week; `robots.txt`, `sitemap.xml` and
   the manifest get an hour.
 - **`engines.node` is `>=20.3.0`**, the floor Astro 5 needs, so a build on an older Node
   fails clearly instead of confusingly.
@@ -143,18 +150,25 @@ still in it. Never use it for production.
 ```bash
 node scripts/extract-brand.mjs brand/rb-lockup.png   # -> brand/PALETTE.md
 node scripts/prepare-brand.mjs                       # mark, light mark, favicons, manifest
-node scripts/make-hero.mjs                           # hero crops, navy duotone, scrim
+node scripts/make-images.mjs                         # every photograph, from src/data/images.json
+python scripts/make-fonts.py                         # the display serif, cut to what the site uses
 npm run build && node scripts/make-og.mjs            # one OG image per page
 ```
 
-Run them in that order after any logo change. Two of them fail rather than shipping
-something wrong:
+Run them in that order after any logo or image change. Three of them fail rather than
+shipping something wrong:
 
-- `make-hero.mjs` fails if the hero type region cannot clear 4.5:1 against the photograph,
-  and again if the duotone drifts violet at any sampled point. It writes three treatments
-  of the same crop: `hero-*` and `hero-portrait-*` carry the heavy scrim because type sits
-  on them (the OG cards), and `hero-panel-*` carries almost none, because the hero's inset
-  figure has no type on it and the scrim would only throw away the architecture.
+- `make-images.mjs` reads each photograph's author, licence and source page from the
+  Wikimedia Commons API on every run and writes them into `src/data/images.json`, which
+  `/credits/` renders. It fails on any licence that is not CC0, public domain, CC BY or
+  CC BY-SA. Where type sits on a photograph, it bakes the scrim into the file and measures
+  every declared text region (including the transparent header) against the ink that will
+  sit there, and fails below the declared minimum. Sources are cached in `brand/stock/`.
+  To add a photograph, add an entry to the manifest with its Commons file name, where it is
+  used, its crop focus and its alt text, then run the script. See decision D9.
+- `make-fonts.py` needs Python with `fontTools` (`pip install fonttools brotli`). It
+  instances the Newsreader variable font from `@fontsource-variable/newsreader` to the
+  optical sizes and weights the site uses.
 - `prepare-brand.mjs` fails if the dark-ground variant of the mark cannot clear 3:1 on the
   dark band. As drawn, the mark reaches **1.44:1** there — its navy half would simply
   vanish — and the lifted variant reaches **5.97:1**.
@@ -168,9 +182,11 @@ still written to `public/brand/` for print and signatures. See decision D8.
 
 ## The palette and the type
 
-**One typeface, everywhere.** Schibsted Grotesk, self-hosted variable 400-900 in one file
-plus a real italic, with a metric-matched fallback. `font-display: optional`, so no swap
-and no CLS. There is deliberately no monospace. Files in `public/fonts/`.
+**Two typefaces.** Newsreader, a display serif, sets h1–h3, prices and large figures, with
+one italic accent phrase per headline. Schibsted Grotesk sets everything else, variable
+400–900 plus a real italic. Both are self-hosted with metric-matched fallbacks and
+`font-display: optional`, so no swap and no CLS. There is deliberately no monospace.
+Files in `public/fonts/`. See decision D6.
 
 Tabular figures are applied to phone numbers, dates and counts and **withheld from
 currency**: under `tnum` this face gives the grouping comma a full digit advance, and every
@@ -183,12 +199,12 @@ brand-coloured thing on the site.
 |---|---|---|
 | accent | `#f3771f` | primary button, text selection, selected package, slider, eyebrow and step rules, the estimate figure |
 | accent-deep | `#ec6100` | the hover state of an accent button, and only that |
-| accent-ink | `#ae4104` | the accent as text on light: index numerals, chevrons, the current-page underline, "see what this covers" |
-| accent-lift | `#f9953d` | the accent as text on the dark band |
-| accent-tint | `#ffebd5` | the selected package card, the ledger hover ground |
-| dark band | `#051e35` | hero field and footer |
-| ink | `#0a2036` | body and headings |
-| surface | `#f1f5f8` | the page ground |
+| accent-ink | `#ab3e00` | the accent as text on light: italic headline accents, index numerals, chevrons, "explore this service" |
+| accent-lift | `#f9953d` | the accent as text on navy, including the italic headline accent over a photograph |
+| accent-tint | `#ffead2` | the selected package card, icon tiles, notes |
+| dark band | `#04152a` | page heroes, dark panels, the footer |
+| ink | `#091e34` | body and headings |
+| surface | `#f9f6f1` | the page ground, a warm paper |
 
 **There is no gold in the interface.** The gold at the foot of the B survives in exactly two
 places, and both are the logo rather than the UI: the monogram itself, and `--brand-ramp`,
@@ -211,8 +227,10 @@ which would be a fill nobody could label. And the four raw brand values are kept
 with their hex in a comment, so `check-contrast` re-proves on every build that the palette
 still matches the logo's pixels.
 
-Everything, including the dark band, sits in hue family 250, the navy's own family. That is
-what makes the greys read as part of the mark rather than as generic slate.
+The ink, the dark band and the muted greys sit in hue family 250, the navy's own family,
+which is what makes them read as part of the mark rather than as generic slate. The page
+ground is the one deliberate exception: a warm paper (hue 84) rather than a cool grey, so
+the navy and the orange read as printed on it rather than lit on a screen.
 
 ---
 

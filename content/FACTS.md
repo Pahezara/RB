@@ -90,7 +90,16 @@ Advertising · Restaurants · Online e-commerce
 Published as *sectorial expertise*, which is what the deck calls it. It is not a
 client list and the page says so.
 
-## 9. The hero photograph
-Unsplash photo `1742277712272-aecf17e3accb` by Zoshua Colah, free under the Unsplash
-License. Source kept at `brand/hero-source.jpg`. It is cropped rather than used whole,
-for the reason recorded in DECISIONS D9.
+## 9. Photographs
+Seventeen photographs from Wikimedia Commons, each used under CC0, CC BY or CC BY-SA.
+The author, licence and source page of every one are read from the Commons API by
+`scripts/make-images.mjs`, written into `src/data/images.json`, and published on
+`/credits/`. They are scenery: none shows the firm's office, staff or clients, and the
+site says so on `/credits/` and `/terms/`. See DECISIONS D5 and D9.
+
+Editorial additions made for the redesign, none of which is a fact about the firm:
+the six industry families that group the fourteen sectors (section 8), their short
+labels, blurbs and "where the firm usually starts" service mappings, and each service
+line's icon, photograph and opening paragraph. All are marked editorial in
+`src/data/site.ts`, and each opening paragraph paraphrases the `covers` list beneath it
+without adding a claim.

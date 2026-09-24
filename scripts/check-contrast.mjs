@@ -13,28 +13,40 @@ const TOKENS_FILE = 'src/styles/tokens.css';
 // ---------------------------------------------------------------------------
 const PAIRS = [
   // fg token,            bg token,             min,  label
-  ['--ink',               '--surface',          4.5,  'body text on page ground'],
-  ['--ink',               '--surface-raised',   4.5,  'body text on raised card'],
-  ['--ink',               '--surface-sunken',   4.5,  'body text on sunken band'],
-  ['--ink-soft',          '--surface',          4.5,  'supporting prose on ground'],
-  ['--muted',             '--surface',          4.5,  'muted text on page ground'],
-  ['--muted',             '--surface-raised',   4.5,  'muted text on raised card'],
+  ['--ink',               '--surface',          4.5,  'body text on paper'],
+  ['--ink',               '--surface-raised',   4.5,  'body text on a card'],
+  ['--ink',               '--surface-sunken',   4.5,  'body text on a sunken band'],
+  ['--ink-soft',          '--surface',          4.5,  'supporting prose on paper'],
+  ['--ink-soft',          '--surface-sunken',   4.5,  'supporting prose on a sunken band'],
+  ['--ink-soft',          '--surface-raised',   4.5,  'supporting prose on a card'],
+  ['--muted',             '--surface',          4.5,  'muted text on paper'],
+  ['--muted',             '--surface-raised',   4.5,  'muted text on a card'],
+  ['--muted',             '--surface-sunken',   4.5,  'muted text on a sunken band'],
 
-  // the accent ramp. One warm family; every step it has is proved here.
+  // the accent ramp. The fill always takes the ink label.
   ['--ink-on-accent',     '--accent',           4.5,  'button label on the accent fill'],
-  ['--ink-on-accent',     '--accent-deep',      4.5,  'button label on the hovered accent'],
+  ['--ink-on-accent',     '--accent-deep',      4.5,  'button label on the pressed accent'],
   ['--ink',               '--accent-tint',      4.5,  'text on the accent tint'],
-  ['--accent',            '--surface-invert',   4.5,  'accent as text on the dark band'],
-  ['--accent-lift',       '--surface-invert',   4.5,  'the lifted accent on the dark band'],
-  ['--accent-ink',        '--surface',          4.5,  'accent as text on a light ground'],
+  ['--accent-ink',        '--surface',          4.5,  'accent as text on paper'],
   ['--accent-ink',        '--surface-raised',   4.5,  'accent as text on a card'],
+  ['--accent-ink',        '--surface-sunken',   4.5,  'accent as text on a sunken band'],
+  ['--accent-ink',        '--accent-tint',      4.5,  'accent as text on the accent tint'],
+  ['--accent',            '--surface-invert',   4.5,  'accent as text on the dark band'],
+  ['--accent',            '--surface-invert-2', 4.5,  'accent as text on a dark panel'],
+  ['--accent-lift',       '--surface-invert',   4.5,  'lifted accent on the dark band'],
+  ['--accent-lift',       '--surface-invert-2', 4.5,  'lifted accent on a dark panel'],
 
+  // the dark band and the panels that sit on it
   ['--ink-invert',        '--surface-invert',   4.5,  'text on the dark band'],
+  ['--ink-invert',        '--surface-invert-2', 4.5,  'text on a dark panel'],
+  ['--ink-invert',        '--ink',              4.5,  'label on the dark button'],
   ['--muted-invert',      '--surface-invert',   4.5,  'muted text on the dark band'],
+  ['--muted-invert',      '--surface-invert-2', 4.5,  'muted text on a dark panel'],
+
   ['--danger',            '--surface',          4.5,  'validation message'],
   ['--danger',            '--surface-raised',   4.5,  'validation message on a card'],
-  ['--focus-ring',        '--surface',          3.0,  'focus ring on ground (1.4.11)'],
-  ['--focus-ring',        '--accent',           3.0,  'focus ring on the gold fill (1.4.11)'],
+  ['--focus-ring',        '--surface',          3.0,  'focus ring on paper (1.4.11)'],
+  ['--focus-ring',        '--accent',           3.0,  'focus ring on the accent fill (1.4.11)'],
   ['--focus-ring-inner',  '--surface-invert',   3.0,  'focus halo on the dark band'],
   ['--line-strong',       '--surface',          3.0,  'form control border (1.4.11)'],
   ['--line-strong',       '--surface-raised',   3.0,  'form control border on a card'],

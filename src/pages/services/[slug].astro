@@ -1,127 +1,304 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { serviceLines, site, packages } from '../../data/site';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Img from '../../components/Img.astro';
+import Icon from '../../components/Icon.astro';
+import { serviceLines, site, packages, engagement, industries } from '../../data/site';
 
 export function getStaticPaths() {
   return serviceLines.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
 }
 
 const { service } = Astro.props;
+const index = serviceLines.findIndex((s) => s.slug === service.slug);
 const title = `${service.title} — Reliance Business Partners`;
 const description = `${service.blurb} From Reliance Business Partners, Nugegoda, Colombo.`;
 
 const others = serviceLines.filter((s) => s.slug !== service.slug);
+/* Editorial mapping from src/data/site.ts: which industry families this line
+   usually matters to. It claims no client in any of them. */
+const relevant = industries.filter((i) => (i.services as readonly string[]).includes(service.slug));
 const money = (n: number) => n.toLocaleString('en-US');
+const isSecretarial = 'packagesHref' in service && service.packagesHref;
+
+/* The covers grid is laid out for its count, so no line ends on an orphan:
+   four and eight sit in fours, five as two over three, the rest in threes. */
+const nCovers = service.covers.length;
+const coversLayout = nCovers === 5 ? 'covers--5' : nCovers % 4 === 0 ? 'covers--4' : 'covers--3';
 ---
-<Base title={title} description={description}>
-  <section class="section">
+<Base title={title} description={description} overHero>
+  <PageHero
+    eyebrow={`Service ${String(index + 1).padStart(2, '0')} of 06`}
+    title={service.title}
+    lede={service.lead}
+    image={service.image}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: service.title }]}
+  >
+    <a class="btn btn--primary btn--lg" href="/contact/">Start an enquiry <Icon name="arrow-right" size={18} stroke={2} /></a>
+    <a class="btn btn--ghost btn--lg tnum" href={site.phoneHref}><Icon name="phone" size={18} stroke={2} /> {site.phone}</a>
+  </PageHero>
+
+  {/* What is included: the `covers` list from the profile, one card each. */}
+  <section class="section" aria-labelledby="inc-h">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow"><a href="/services/">Services</a></p>
-        <h1>{service.title}</h1>
-        <p>{service.blurb}</p>
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">What this covers</p>
+          {/* Never lowercased: the titles carry acronyms (BPO, Power BI). */}
+          <h2 id="inc-h">{service.title}, <em>in full.</em></h2>
+        </div>
+        <p class="intro">{service.blurb}</p>
       </div>
 
-      <div class="split">
-        <div>
-          <h2>What this covers</h2>
-          <ul class="ticks">
-            {service.covers.map((c) => <li>{c}</li>)}
-          </ul>
+      <ul class:list={['covers', coversLayout]}>
+        {service.covers.map((c, i) => (
+          <li class="cover">
+            <span class="cover-n tnum">{String(i + 1).padStart(2, '0')}</span>
+            <span class="cover-t">{c}</span>
+          </li>
+        ))}
+      </ul>
 
-          {'note' in service && service.note && (
-            <p class="service-note">{service.note}</p>
-          )}
-
-          {'packagesHref' in service && service.packagesHref && (
-            <div class="prices">
-              <h2>Incorporation is priced in the open</h2>
-              <p>
-                Three packages, each priced for a company with one director, plus a
-                published rate for every additional director.
-              </p>
-              <ul class="price-list">
-                {packages.map((p) => (
-                  <li>
-                    <span class="pl-name">{p.name}</span>
-                    <span class="pl-price">LKR {money(p.price)}</span>
-                  </li>
-                ))}
-              </ul>
-              <a class="btn btn--primary" href={service.packagesHref}>
-                See what is in each package
-              </a>
-            </div>
-          )}
-
-          <h2 class="also-h">Also from the same firm</h2>
-          <ul class="also">
-            {others.map((s) => (
-              <li><a class="link-plain" href={`/services/${s.slug}/`}>{s.title}</a></li>
-            ))}
-          </ul>
-        </div>
-
-        <div class="solid-panel">
-          <h2>How to start</h2>
-          <p class="muted">
-            Describe what you need in your own words. You get the scope and the fee
-            in writing before any work begins.
-          </p>
-          <div class="stack">
-            <a class="btn btn--primary btn--block" href="/contact/">Start an enquiry</a>
-            <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
+      {'note' in service && service.note && (
+        <div class="assoc">
+          <span class="icon-tile"><Icon name="scale" /></span>
+          <div>
+            <p class="assoc-h">Delivered through associate practices</p>
+            <p>
+              {service.note} You are told which practice carries out your work before it begins,
+              because a client is entitled to know who signs the audit.
+            </p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   </section>
+
+  {isSecretarial && (
+    <section class="section band--dark on-invert" aria-labelledby="price-h">
+      <div class="container">
+        <div class="section-head section-head--split">
+          <div>
+            <p class="eyebrow">Incorporation, priced in the open</p>
+            <h2 id="price-h">Three packages, <em>every fee published.</em></h2>
+          </div>
+          <p class="intro">
+            Each priced for a company with one director, with a published rate for
+            every additional director. The estimator adds them up for you.
+          </p>
+        </div>
+        <ul class="mini-pkgs">
+          {packages.map((p, i) => (
+            <li class:list={['mini-pkg', i === packages.length - 1 && 'mini-pkg--top']}>
+              <p class="mp-name">{p.name}</p>
+              <p class="mp-price display"><span class="mp-cur">LKR</span> {money(p.price)}</p>
+              <p class="mp-meta">One director &middot; {p.includes.length} items included</p>
+              <p class="mp-add">+ LKR {money(p.perDirector)} per additional director</p>
+            </li>
+          ))}
+        </ul>
+        <div class="row mp-actions">
+          <a class="btn btn--primary btn--lg" href="/packages/">Compare the packages <Icon name="arrow-right" size={18} stroke={2} /></a>
+          <a class="btn btn--ghost btn--lg" href="/#estimate">Open the estimator</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* How any engagement starts. */}
+  <section class:list={['section', !isSecretarial && 'band']} aria-labelledby="start-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How we start</p>
+        <h2 id="start-h">The scope and the fee, <em>in writing first.</em></h2>
+      </div>
+      <ol class="steps steps--3">
+        {engagement.map((e) => (
+          <li class="step">
+            <span class="step-n">{e.n}</span>
+            <h3>{e.title}</h3>
+            <p>{e.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {relevant.length > 0 && (
+    <section class="section" aria-labelledby="rel-h">
+      <div class="container">
+        <div class="section-head section-head--split">
+          <div>
+            <p class="eyebrow">Where it tends to matter most</p>
+            <h2 id="rel-h">Sectors that lean <em>on this.</em></h2>
+          </div>
+          <p class="intro">From the fourteen sectors the firm lists as its expertise. A guide to where this line usually carries weight, not a client list.</p>
+        </div>
+        <ul class:list={['rel', `rel--${relevant.length}`]}>
+          {relevant.map((ind) => (
+            <li>
+              <a class="rel-card link-plain" href={`/industries/#${ind.slug}`}>
+                <div class="media rel-media"><Img slug={ind.image} sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw" alt="" /></div>
+                <div class="rel-body">
+                  <h3>{ind.title}</h3>
+                  <p>{ind.blurb}</p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {/* The other five lines. */}
+  <section class="section band" aria-labelledby="more-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">From the same firm</p>
+        <h2 id="more-h">The other <em>five disciplines.</em></h2>
+      </div>
+      <ul class="others">
+        {others.map((s) => (
+          <li>
+            <a class="card other link-plain" href={`/services/${s.slug}/`}>
+              <span class="icon-tile"><Icon name={s.icon} /></span>
+              <h3>{s.title}</h3>
+              <p>{s.blurb}</p>
+              <span class="link-arrow">Explore <Icon name="arrow-right" size={16} stroke={2} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
 </Base>
+
 <style>
-  .split { display: grid; gap: var(--space-6); align-items: start; }
-  @media (min-width: 52rem) { .split { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--space-8); } }
-  .split h2 { font-size: var(--text-h3); margin-bottom: var(--space-4); }
-  .split .stack { margin-top: var(--space-5); }
-
-  /* Where the deck says a service is delivered through an associate practice,
-     that is printed on the service's own page rather than only in the footer. */
-  .service-note {
-    margin-top: var(--space-5);
-    padding: var(--space-4);
-    background: var(--accent-tint);
-    border-radius: var(--r-sm);
-    color: var(--ink);
-    font-size: var(--text-sm);
-  }
-
-  .prices { margin-top: var(--space-7); }
-  .prices p { color: var(--ink-soft); max-width: var(--measure-tight); }
-  .price-list {
+  .covers {
     list-style: none;
+    margin: 0;
     padding: 0;
-    margin: var(--space-5) 0;
-    border-top: 1px solid var(--line);
-  }
-  .price-list li {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
     gap: var(--space-4);
-    padding-block: var(--space-3);
-    border-bottom: 1px solid var(--line);
   }
-  .pl-name { font-weight: 600; }
-  .pl-price { font-weight: 700; }
-
-  .also-h { margin-top: var(--space-7); font-size: var(--text-h4) !important; }
-  .also { list-style: none; padding: 0; display: grid; }
-  .also a {
+  @media (min-width: 40rem) { .covers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) {
+    .covers { gap: var(--space-5); }
+    .covers--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .covers--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .covers--5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .covers--5 .cover { grid-column: span 2; }
+    .covers--5 .cover:nth-child(-n + 2) { grid-column: span 3; }
+  }
+  .cover {
     display: flex;
-    align-items: center;
-    min-height: var(--tap-min);
-    font-weight: 600;
-    font-size: var(--text-sm);
-    color: var(--ink);
-    border-bottom: 1px solid var(--line);
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--pad-card);
+    min-height: 9.5rem;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    position: relative;
+    overflow: hidden;
   }
-  .also a:hover { color: var(--accent-ink); }
+  .cover::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--accent);
+    transform: scaleY(0.25);
+    transform-origin: top;
+    transition: transform var(--dur-control) var(--ease-out);
+  }
+  .cover:hover::before { transform: scaleY(1); }
+  .cover-n { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent-ink); line-height: 1; }
+  .cover-t { font-family: var(--font-display); font-size: var(--text-h3); line-height: 1.25; letter-spacing: var(--tracking-tight); margin-top: auto; }
+
+  .assoc {
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+    margin-top: var(--space-6);
+    padding: var(--pad-card);
+    background: var(--accent-tint);
+    border-radius: var(--r-md);
+    max-width: 52rem;
+  }
+  .assoc-h { font-weight: 700; margin-bottom: var(--space-2); }
+  .assoc p:not(.assoc-h) { color: var(--ink-soft); font-size: var(--text-sm); }
+
+  .mini-pkgs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 48rem) { .mini-pkgs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .mini-pkg {
+    padding: var(--pad-card);
+    background: var(--surface-invert-2);
+    border: 1px solid var(--line-invert);
+    border-radius: var(--r-md);
+    display: grid;
+    gap: var(--space-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .mini-pkg--top::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--brand-ramp); }
+  .mp-name { font-weight: 700; color: var(--ink-invert); }
+  .mp-price { font-size: clamp(2.2rem, 1.8rem + 1.4vw, 2.9rem); line-height: 1; color: var(--ink-invert); letter-spacing: var(--tracking-display); }
+  .mp-cur { font-family: var(--font-sans); font-size: max(0.8rem, 0.34em); font-weight: 700; letter-spacing: 0.06em; color: var(--muted-invert); vertical-align: 0.6em; }
+  .mp-meta { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--muted-invert); }
+  .mp-add { font-size: var(--text-sm); color: var(--muted-invert); margin-top: var(--space-2); }
+  .mp-actions { margin-top: var(--space-6); }
+
+  @media (min-width: 68rem) { .steps--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); --cols: 3; } }
+
+  .rel { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .rel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) {
+    .rel { gap: var(--space-5); }
+    .rel--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .rel--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .rel--5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .rel--5 > li { grid-column: span 2; }
+    .rel--5 > li:nth-child(-n + 2) { grid-column: span 3; }
+  }
+  /* Two sectors run the full width as two wide cards, image beside text. */
+  @media (min-width: 64rem) {
+    .rel--2 .rel-card { flex-direction: row; }
+    .rel--2 .rel-media { flex: 0 0 45%; aspect-ratio: auto; min-height: 15rem; }
+  }
+  .rel--1 { max-width: 40rem; }
+  .rel-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    color: var(--ink);
+    transition: transform var(--dur-control) var(--ease-out), box-shadow var(--dur-control) var(--ease-out);
+  }
+  .rel-card:hover { transform: translate3d(0, -4px, 0); box-shadow: var(--shadow-2); color: var(--ink); }
+  .rel-media { aspect-ratio: 16 / 10; border-radius: 0; }
+  .rel-media :global(picture) { height: 100%; }
+  .rel-body { padding: var(--pad-card); display: grid; gap: var(--space-2); }
+  .rel-body h3 { font-size: var(--text-h3); }
+  .rel-body p { color: var(--muted); font-size: var(--text-sm); }
+
+  .others { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .others { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .others { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  .other { height: 100%; }
+  .other h3 { font-size: 1.3rem; }
+  .other .link-arrow { margin-top: auto; padding-top: var(--space-3); }
 </style>

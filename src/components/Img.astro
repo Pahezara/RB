@@ -1,0 +1,67 @@
+---
+/*
+ * Every photograph on the site goes through here.
+ *
+ * It reads src/data/images.json — the same manifest scripts/make-images.mjs
+ * writes provenance and dimensions back into — so the width and height
+ * attributes are always the real ones (no layout shift), the crop focus is the
+ * one chosen when the image was picked, and an image cannot be placed on a page
+ * without also appearing on /credits/.
+ */
+import manifest from '../data/images.json';
+
+interface Props {
+  slug: string;
+  /** The sizes attribute. Say how wide the image will actually be rendered. */
+  sizes?: string;
+  /** Overrides the manifest's alt. Pass "" for an image that is decoration. */
+  alt?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+}
+
+const { slug, sizes = '100vw', alt, loading = 'lazy', fetchpriority, class: cls } = Astro.props;
+const img = manifest.images.find((i) => i.slug === slug);
+if (!img) throw new Error(`Img: there is no image "${slug}" in src/data/images.json`);
+if (!img.width || !img.height) {
+  throw new Error(`Img: "${slug}" has no dimensions yet. Run: node scripts/make-images.mjs`);
+}
+
+// make-images never upscales, so a requested width wider than the source comes
+// out at the source width. Two entries with the same descriptor make an invalid
+// srcset, so each file is described by the width it really has, and a width
+// that would repeat one already listed is dropped.
+const seen = new Set<number>();
+const steps = img.widths
+  .map((w) => ({ file: w, real: Math.min(w, img.width) }))
+  .filter(({ real }) => (seen.has(real) ? false : (seen.add(real), true)));
+
+const srcset = (fmt: string) => steps.map(({ file, real }) => `/img/${slug}-${file}.${fmt} ${real}w`).join(', ');
+const fallback = steps[Math.min(1, steps.length - 1)].file;
+
+// The phone variant, where one exists: its own crop and its own measured scrim,
+// because the landscape scrim was measured for a layout phones do not have.
+const p = 'portrait' in img ? (img as any).portrait : null;
+const pSrcset = p
+  ? (fmt: string) => p.widths.map((w: number) => `/img/${slug}-p-${w}.${fmt} ${Math.min(w, p.width)}w`).join(', ')
+  : null;
+const PHONE = '(max-width: 47.99rem)';
+---
+<picture>
+  {pSrcset && <source media={PHONE} type="image/avif" srcset={pSrcset('avif')} sizes="100vw" />}
+  {pSrcset && <source media={PHONE} type="image/webp" srcset={pSrcset('webp')} sizes="100vw" />}
+  <source type="image/avif" srcset={srcset('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={srcset('webp')} sizes={sizes} />
+  <img
+    src={`/img/${slug}-${fallback}.webp`}
+    width={img.width}
+    height={img.height}
+    alt={alt ?? img.alt}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    class={cls}
+    style={`object-position:${img.focus}`}
+  />
+</picture>

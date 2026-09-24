@@ -1,45 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Legal from '../components/Legal.astro';
 import { site } from '../data/site';
 const title = 'Privacy — Reliance Business Partners';
 const description =
   'How Reliance Business Partners handles the information you send through this website, what is stored, and how to ask for it to be removed.';
+
+const toc = [
+  { id: 'collects', label: 'What this site collects' },
+  { id: 'estimator', label: 'The fee estimator' },
+  { id: 'send', label: 'What you send us' },
+  { id: 'use', label: 'What we do with it' },
+  { id: 'remove', label: 'Asking us to remove it' },
+];
 ---
-<Base title={title} description={description}>
-  <section class="section">
-    <div class="container prose stack">
-      <p class="eyebrow">Privacy</p>
-      <h1>Privacy</h1>
-      <p>
-        This page describes what happens to information you send us through this website.
-      </p>
-      <h2>What this site collects</h2>
-      <p>
-        Nothing automatically. This site sets no cookies, runs no analytics and loads no third-party scripts. Nothing you do here is tracked.
-      </p>
-      <h2>The fee estimator</h2>
-      <p>
-        The estimator on the home page runs entirely in your own browser. What you select is never sent anywhere, never stored, and never reaches us. Close the tab and it is gone.
-      </p>
-      <h2>What you send us</h2>
-      <p>
-        The enquiry action opens your own e-mail application with the details you typed. Anything you then send reaches us as an ordinary e-mail, and is held in our e-mail system so we can reply and act on it.
-      </p>
-      <h2>What we do with it</h2>
-      <p>
-        We use it to answer you and to carry out work you instruct us to do. We do not sell it and we do not pass it to anyone else for marketing. Client information is held in confidence, which is one of the firm's stated values rather than a line added to a policy page.
-      </p>
-      <h2>Asking us to remove it</h2>
-      <p>
-        Write to <a href={`mailto:${site.email}`}>{site.email}</a> and ask. Where we are not required by law or by professional obligation to keep a record, we will delete it.
-      </p>
-      <h2>Contact</h2>
-      <p>
-        {site.legalName}, {site.address.street}, {site.address.locality}, Sri Lanka.
-      </p>
-    </div>
-  </section>
+<Base title={title} description={description} overHero>
+  <PageHero
+    variant="plain"
+    eyebrow="Privacy"
+    title="Nothing tracked. <em>Nothing sold.</em>"
+    lede="What happens to information you send us through this website, in plain terms."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]}
+  />
+
+  <Legal toc={toc}>
+    <h2 id="collects">What this site collects</h2>
+    <p>
+      Nothing automatically. This site sets no cookies, runs no analytics and loads no third-party scripts. Its fonts and photographs are served from this site too, so opening a page tells no one else that you did.
+    </p>
+    <h2 id="estimator">The fee estimator</h2>
+    <p>
+      The estimator runs entirely in your own browser. What you select is never sent anywhere, never stored, and never reaches us. Close the tab and it is gone.
+    </p>
+    <h2 id="send">What you send us</h2>
+    <p>
+      The enquiry actions open your own phone or e-mail application. Anything you then send reaches us as an ordinary call or e-mail, and e-mail is held in our e-mail system so we can reply and act on it.
+    </p>
+    <h2 id="use">What we do with it</h2>
+    <p>
+      We use it to answer you and to carry out work you instruct us to do. We do not sell it and we do not pass it to anyone else for marketing. Client information is held in confidence, which is one of the firm's stated values rather than a line added to a policy page.
+    </p>
+    <h2 id="remove">Asking us to remove it</h2>
+    <p>
+      Write to <a href={`mailto:${site.email}`}>{site.email}</a> and ask. Where we are not required by law or by professional obligation to keep a record, we will delete it.
+    </p>
+  </Legal>
 </Base>
-<style>
-  h2 { font-size: var(--text-h3); margin-top: var(--space-5); }
-</style>

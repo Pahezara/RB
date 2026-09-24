@@ -1,0 +1,76 @@
+---
+/*
+ * The closing call to action on every page.
+ *
+ * The orange-glass towers run full-bleed and full-strength; the words sit on a
+ * SOLID navy card laid over them rather than on the photograph. That is not a
+ * stylistic choice: with a scrim dark enough for light type, those towers
+ * measured 3.48:1 and went muddy, which is the photograph losing everything
+ * that made it worth using. A card keeps both.
+ */
+import { site } from '../data/site';
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+}
+const {
+  title = 'Tell us what you are <em>setting up.</em>',
+  text = 'Describe it in your own words. You get the scope and the fee in writing before any work begins, and making contact costs nothing.',
+  primaryLabel = 'Start an enquiry',
+  primaryHref = '/contact/',
+} = Astro.props;
+---
+<section class="cta-band" aria-labelledby="cta-h">
+  <div class="cta-bg" aria-hidden="true">
+    <Img slug="orange-arch" sizes="100vw" alt="" />
+  </div>
+  <div class="container">
+    <div class="cta-card on-invert">
+      <p class="eyebrow">Next step</p>
+      <h2 id="cta-h" set:html={title} />
+      <p class="cta-text">{text}</p>
+      <div class="cta-actions">
+        <a class="btn btn--primary btn--lg" href={primaryHref}>{primaryLabel} <Icon name="arrow-right" size={18} stroke={2} /></a>
+        <a class="btn btn--ghost btn--lg tnum" href={site.phoneHref}><Icon name="phone" size={18} stroke={2} /> {site.phone}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(5rem, 3rem + 8vw, 10rem);
+    background: var(--surface-invert);
+  }
+  .cta-bg { position: absolute; inset: 0; z-index: -1; }
+  .cta-bg :global(picture), .cta-bg :global(img) { width: 100%; height: 100%; }
+  .cta-bg :global(img) { object-fit: cover; }
+
+  .cta-card {
+    position: relative;
+    max-width: 40rem;
+    padding: clamp(1.75rem, 1.2rem + 2.5vw, 3.25rem);
+    background: var(--surface-invert);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-3);
+    overflow: hidden;
+  }
+  .cta-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: var(--brand-ramp);
+  }
+  .cta-card h2 { color: var(--ink-invert); max-width: 14ch; }
+  .cta-text { margin-top: var(--space-5); color: var(--muted-invert); font-size: var(--text-lede); line-height: 1.55; max-width: 42ch; }
+  .cta-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
+</style>

@@ -1,0 +1,38 @@
+---
+/*
+ * A Lucide line icon, inlined at build time.
+ *
+ * The SVG is read straight from the lucide-static package (ISC licence) and
+ * written into the HTML, so there is no icon font, no sprite request and no
+ * client code. It inherits currentColor, so an icon is always the colour of
+ * the text around it and cannot fall out of the contrast checks.
+ *
+ * Icons are decoration here: every one sits beside a text label that says the
+ * same thing, so each is aria-hidden.
+ */
+import { readFileSync } from 'node:fs';
+
+interface Props {
+  name: string;
+  size?: number;
+  stroke?: number;
+  class?: string;
+}
+const { name, size = 24, stroke = 1.75, class: cls } = Astro.props;
+
+let svg: string;
+try {
+  svg = readFileSync(`${process.cwd()}/node_modules/lucide-static/icons/${name}.svg`, 'utf8');
+} catch {
+  throw new Error(`Icon: lucide-static has no icon called "${name}"`);
+}
+
+svg = svg
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/\s(width|height)="24"/g, ` $1="${size}"`)
+  .replace(/stroke-width="2"/, `stroke-width="${stroke}"`)
+  .replace(/class="[^"]*"/, `class="icon${cls ? ' ' + cls : ''}" aria-hidden="true" focusable="false"`)
+  .replace(/\n\s*/g, ' ')
+  .trim();
+---
+<Fragment set:html={svg} />

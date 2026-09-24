@@ -86,6 +86,11 @@ export const site = {
 export const serviceLines = [
   {
     slug: 'accounting',
+    /** Editorial: the Lucide icon and the photograph used for this line. */
+    icon: 'calculator',
+    image: 'svc-accounting',
+    /** Editorial paraphrase of `covers` below, for the service page's opening. */
+    lead: 'Day-to-day book-keeping and reconciliations through to year-end financial statements, kept in the accounting software your business already runs on — or run for you end to end as a freelance finance function.',
     title: 'Accounting and BPO',
     blurb: 'Your books kept properly, in the software you already use, by people who do this all day.',
     covers: [
@@ -99,6 +104,11 @@ export const serviceLines = [
   },
   {
     slug: 'tax',
+    /** Editorial: the Lucide icon and the photograph used for this line. */
+    icon: 'landmark',
+    image: 'svc-tax',
+    /** Editorial paraphrase of `covers` below, for the service page's opening. */
+    lead: "Tax computations, administration and planning, and the full range of assurance work — statutory and internal audit, due diligence, system studies and asset verification — carried out through the firm's associate practices.",
     title: 'Tax and assurance',
     blurb: 'Computations, filings and audit, carried out through our associate practices.',
     covers: [
@@ -116,6 +126,11 @@ export const serviceLines = [
   },
   {
     slug: 'advisory',
+    /** Editorial: the Lucide icon and the photograph used for this line. */
+    icon: 'compass',
+    image: 'svc-advisory',
+    /** Editorial paraphrase of `covers` below, for the service page's opening. */
+    lead: 'For decisions that need a number behind them: what a business or its shares are worth, whether a project stands up on paper, and how the organisation around it should be structured.',
     title: 'Business advisory',
     blurb: 'What a business is worth, whether a plan holds up, and what the numbers say about both.',
     covers: [
@@ -128,6 +143,11 @@ export const serviceLines = [
   },
   {
     slug: 'payroll',
+    /** Editorial: the Lucide icon and the photograph used for this line. */
+    icon: 'wallet',
+    image: 'svc-payroll',
+    /** Editorial paraphrase of `covers` below, for the service page's opening. */
+    lead: 'The monthly payroll prepared, statutory payments processed, payslips issued and the annual T10 forms filed, so the payroll stops being a job someone in the business has to find time for.',
     title: 'Payroll',
     blurb: 'The monthly run, the statutory payments and the annual forms, off your desk.',
     covers: [
@@ -139,6 +159,11 @@ export const serviceLines = [
   },
   {
     slug: 'analytics',
+    /** Editorial: the Lucide icon and the photograph used for this line. */
+    icon: 'chart-column',
+    image: 'svc-analytics',
+    /** Editorial paraphrase of `covers` below, for the service page's opening. */
+    lead: 'Your own figures turned into dashboards that answer the questions you actually ask, and the Power BI training your team needs to keep building them.',
     title: 'Data analytics and Power BI',
     blurb: 'Your own figures, turned into something you can actually look at and act on.',
     covers: [
@@ -149,6 +174,11 @@ export const serviceLines = [
   },
   {
     slug: 'secretarial',
+    /** Editorial: the Lucide icon and the photograph used for this line. */
+    icon: 'file-signature',
+    image: 'svc-secretarial',
+    /** Editorial paraphrase of `covers` below, for the service page's opening. */
+    lead: "From incorporation to the recurring filings that keep a company in good standing: statutory forms, minute books, the share register and the board's compliance checklist.",
     title: 'Corporate secretarial',
     blurb: 'Incorporation, and the filings that keep the company in good standing afterwards.',
     covers: [
@@ -521,5 +551,150 @@ export const faqs = [
   {
     q: 'Do you take on the accounting after incorporation as well?',
     a: 'Yes, and most clients do. Book-keeping, reconciliations, financial statements, monthly payroll and the statutory payments are all in-house, alongside the secretarial work.',
+  },
+] as const;
+
+/**
+ * The fourteen sectors in [PROFILE] "Sectorial expertise", grouped into six
+ * families so each family can carry one photograph. Every one of the fourteen
+ * names appears, exactly as the deck spells it.
+ *
+ * The family titles (and their `short` forms, for the jump bar and the mosaic),
+ * the blurbs and the `services` mapping are EDITORIAL: they
+ * describe what tends to weigh on a business in that sector and which of the
+ * firm's six service lines usually answers it. None of them claims a client, a
+ * result or an engagement, and none should ever be edited into one.
+ */
+export const industries = [
+  {
+    slug: 'trade',
+    title: 'Trade and distribution',
+    short: 'Trade',
+    icon: 'ship',
+    image: 'ind-trade',
+    sectors: ['Import and export', 'Trading', 'Wholesale and retail'],
+    blurb: 'Stock, margins and landed costs move every week, and the books have to move with them.',
+    services: ['accounting', 'tax', 'payroll'],
+  },
+  {
+    slug: 'hospitality',
+    title: 'Hotels and restaurants',
+    short: 'Hospitality',
+    icon: 'utensils',
+    image: 'ind-hospitality',
+    sectors: ['Hotels', 'Restaurants'],
+    blurb: 'Seasonal staff, service charge and daily takings: payroll and reconciliations carry most of the weight.',
+    services: ['payroll', 'accounting', 'analytics'],
+  },
+  {
+    slug: 'industry',
+    title: 'Manufacturing, construction and energy',
+    short: 'Industry and energy',
+    icon: 'factory',
+    image: 'ind-industry',
+    sectors: ['Manufacturing', 'Construction', 'Power and energy'],
+    blurb: 'Capital projects, long contracts and asset registers, where a feasibility study and an asset verification both earn their fee.',
+    services: ['advisory', 'tax', 'accounting'],
+  },
+  {
+    slug: 'agriculture',
+    title: 'Agriculture',
+    short: 'Agriculture',
+    icon: 'wheat',
+    image: 'ind-agriculture',
+    sectors: ['Agriculture'],
+    blurb: 'Income that arrives by season and a workforce that grows at harvest, so cash-flow planning matters as much as the ledger.',
+    services: ['payroll', 'advisory', 'accounting'],
+  },
+  {
+    slug: 'professional',
+    title: 'Professional and financial services',
+    short: 'Professional services',
+    icon: 'briefcase-business',
+    image: 'ind-professional',
+    sectors: ['Professionals', 'Services', 'Insurance', 'Advertising'],
+    blurb: 'Businesses where time is the product, so payroll, compliance and clean monthly figures do most of the work.',
+    services: ['payroll', 'secretarial', 'analytics'],
+  },
+  {
+    slug: 'digital',
+    title: 'Online commerce',
+    short: 'Online commerce',
+    icon: 'shopping-bag',
+    image: 'ind-digital',
+    sectors: ['Online e-commerce'],
+    blurb: 'Many small transactions across several payment channels, reconciled into one set of figures you can trust.',
+    services: ['accounting', 'analytics', 'secretarial'],
+  },
+] as const;
+
+/**
+ * Why a business would choose this firm, stated only in terms the sources
+ * support. Each `basis` names the fact the pillar rests on, so a pillar cannot
+ * drift into a claim nobody can check.
+ */
+export const pillars = [
+  {
+    icon: 'layers',
+    title: 'Six disciplines, one set of books',
+    body: 'Accounting, tax, payroll, advisory, analytics and company secretarial work under one roof. The ledger the accountant keeps is the ledger the tax computation is built from.',
+    basis: '[PROFILE] About us: "business related services ... under one umbrella"',
+  },
+  {
+    icon: 'badge-check',
+    title: 'A qualified board',
+    body: 'Chartered Accountants, Chartered Management Accountants and Registered Company Secretaries sit on the board of directors.',
+    basis: '[PROFILE] Board of Directors',
+  },
+  {
+    icon: 'receipt-text',
+    title: 'Fees in the open',
+    body: 'Every incorporation package and per-director rate is published, and the estimator adds them up for you before you pick up the phone.',
+    basis: '[FEES] Sheet1',
+  },
+  {
+    icon: 'laptop',
+    title: 'Your software, not ours',
+    body: 'General ledgers kept in QuickBooks, Xero, Zoho, ERPNext and similar, so the books stay in the system your business already uses.',
+    basis: '[PROFILE] Our Services: "Maintenance of GLs through software (QB, Xero, Zoho, ERP next, etc.)"',
+  },
+] as const;
+
+/**
+ * [PROFILE] the four ledger packages named under Accounting & BPO, plus Power BI
+ * from the analytics line. Set as TYPE, never as the vendors' logos: the firm
+ * works in these tools, it is not their partner, and a row of logos would
+ * imply otherwise.
+ */
+export const platforms = ['QuickBooks', 'Xero', 'Zoho', 'ERPNext', 'Power BI'] as const;
+
+/** The credentials rail. Every number is a count from [PROFILE]. */
+export const credentials = [
+  { n: 2018, label: 'Year established', count: false },
+  { n: 17, label: 'Professionals on the team', count: true },
+  { n: 4, label: 'Directors on the board', count: true },
+  { n: 14, label: 'Sectors of expertise', count: true },
+] as const;
+
+/**
+ * How any engagement other than an incorporation starts. The promise in step
+ * two — scope and fee in writing before work begins — is the one the site has
+ * always made; nothing here adds a new one.
+ */
+export const engagement = [
+  {
+    n: 1,
+    title: 'Tell us what you need',
+    detail: 'By phone or e-mail, in your own words. You do not need the technical term for it.',
+  },
+  {
+    n: 2,
+    title: 'Scope and fee, in writing',
+    detail: 'You see what will be done and what it costs before any work begins, and nothing starts until you agree.',
+  },
+  {
+    n: 3,
+    title: 'The work, delivered',
+    detail: 'Monthly, annual or one-off, exactly as the written scope says, with you kept informed of where it stands.',
   },
 ] as const;
