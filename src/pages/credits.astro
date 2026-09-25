@@ -124,19 +124,20 @@ const description =
       </div>
       <ul class="kit">
         <li class="kit-card">
-          <p class="kit-sample kit-sample--serif" aria-hidden="true">Aa</p>
-          <h3>Newsreader</h3>
+          <p class="kit-sample kit-sample--accent" aria-hidden="true">Aa</p>
+          <h3>San Francisco</h3>
           <p>
-            The display serif, by Production Type. Used under the{' '}
-            <a href="https://openfontlicense.org/" rel="noopener license">SIL Open Font License 1.1</a>,
-            cut down to the sizes and weights this site uses and served from this site.
+            Apple's system typeface. On an iPhone, iPad or Mac the pages are set in
+            it directly, from the device itself: nothing is downloaded or served
+            from this site.
           </p>
         </li>
         <li class="kit-card">
           <p class="kit-sample" aria-hidden="true">Aa</p>
-          <h3>Schibsted Grotesk</h3>
+          <h3>Inter</h3>
           <p>
-            The text face, designed for Schibsted. Used under the{' '}
+            By Rasmus Andersson and the Inter Project Authors, used on every other
+            device. Used under the{' '}
             <a href="https://openfontlicense.org/" rel="noopener license">SIL Open Font License 1.1</a>,
             and served from this site.
           </p>
@@ -207,7 +208,7 @@ const description =
     align-content: start;
   }
   .kit-sample { font-family: var(--font-sans); font-size: 3.5rem; line-height: 1; color: var(--ink); height: 3.5rem; }
-  .kit-sample--serif { font-family: var(--font-display); font-style: italic; color: var(--accent-ink); }
+  .kit-sample--accent { font-family: var(--font-display); font-weight: 650; color: var(--accent-ink); }
   .kit-sample--icon { color: var(--accent-ink); display: flex; align-items: center; }
   .kit-card h3 { font-size: var(--text-h3); }
   .kit-card p:not(.kit-sample) { color: var(--ink-soft); font-size: var(--text-sm); }

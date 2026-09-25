@@ -26,13 +26,11 @@
 
    TYPE
    ----
-   Two families, one job each.
-     Newsreader (display)     headings h1-h3, the big figures, pull quotes.
-                              A variable serif with optical sizing, slimmed at
-                              build time to the 20-72pt range and 300-600
-                              weights the site actually uses.
-     Schibsted Grotesk (text) everything else: body, UI, navigation, labels,
-                              prices in tables.
+   One family, set the way Apple sets it: San Francisco on Apple devices (the
+   system face, nothing downloaded), Inter everywhere else (self-hosted, one
+   variable file with weight and optical size). --font-display and --font-sans
+   differ only in which San Francisco cut they name first; weight, tracking and
+   optical size do the rest.
 
    Contrast ratios in the comments are MEASURED and re-proved on every build by
    scripts/check-contrast.mjs. A comment that drifts fails the build.
@@ -131,37 +129,38 @@
     0 32px 64px -24px oklch(var(--shadow-tint) / 0.28);
 
   /* --- type -------------------------------------------------------------------------------- */
-  --font-sans: 'Schibsted Grotesk', 'Schibsted Fallback', system-ui,
-               -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Newsreader', 'Newsreader Fallback', Georgia, 'Times New Roman', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Inter Fallback',
+               'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Inter Fallback',
+               'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
-  --text-display: clamp(2.4rem, 1.4rem + 3.6vw, 4.5rem);
-  --text-h1:      clamp(2.2rem,  1.5rem + 2.6vw, 3.6rem);
-  --text-h2:      clamp(1.8rem,  1.3rem + 1.7vw, 2.75rem);
-  --text-h3:      clamp(1.25rem, 1.1rem + 0.55vw, 1.55rem);
-  --text-h4:      clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);
-  --text-lede:    clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
-  --text-body:    clamp(1rem, 0.97rem + 0.12vw, 1.0625rem);   /* 16px floor */
-  --text-sm:      clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --text-display: clamp(2.65rem, 1.35rem + 5vw, 5.75rem);
+  --text-h1:      clamp(2.4rem,  1.5rem + 3.4vw, 4.4rem);
+  --text-h2:      clamp(2rem,    1.35rem + 2.3vw, 3.4rem);
+  --text-h3:      clamp(1.35rem, 1.15rem + 0.8vw, 1.75rem);
+  --text-h4:      clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --text-lede:    clamp(1.125rem, 1.02rem + 0.4vw, 1.3125rem);
+  --text-body:    clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);   /* 17px floor */
+  --text-sm:      clamp(0.9375rem, 0.9rem + 0.12vw, 1rem);
   --text-xs:      0.8125rem;
   --text-eyebrow: 0.78125rem;
   /* The estimate and the big credential numerals. */
-  --text-figure:  clamp(2.1rem, 1.5rem + 2.4vw, 3.1rem);
+  --text-figure:  clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
 
-  --leading-display: 1.02;
+  --leading-display: 1.04;
   --leading-tight:   1.08;
   --leading-snug:    1.25;
   --leading-body:    1.62;
   --tracking-display: -0.028em;
-  --tracking-tight:   -0.018em;
+  --tracking-tight:   -0.02em;
   --tracking-eyebrow: 0.14em;
   --measure:       66ch;
   --measure-tight: 48ch;
 
   /* --- space ------------------------------------------------------------------------------ */
-  --section-y: clamp(3.5rem, 2.5rem + 4.2vw, 6.25rem);
+  --section-y: clamp(4rem, 2.8rem + 6vw, 8.5rem);
   --gutter:    clamp(1.125rem, 4vw, 3rem);
-  --container: 78rem;
+  --container: 80rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -169,8 +168,8 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
-  --space-8: 3.5rem;
-  --space-9: 4.75rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
 
   /* --- radius -------------------------------------------------------------------------------- */
   --r-xs: 6px;
@@ -179,7 +178,7 @@
   --r-lg: 22px;
   --r-xl: 30px;
   --r-pill: 999px;
-  --pad-card: clamp(1.25rem, 1rem + 0.8vw, 1.5rem);
+  --pad-card: clamp(1.25rem, 1rem + 1vw, 1.75rem);
 
   /* --- motion -------------------------------------------------------------------------------- */
   --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
@@ -198,5 +197,5 @@
 }
 
 @media (min-width: 64rem) {
-  :root { --header-h: 4.5rem; }
+  :root { --header-h: 5rem; }
 }

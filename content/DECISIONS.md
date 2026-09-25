@@ -96,24 +96,27 @@ board is still set as type — monograms, names, qualifications and bios — bec
 no photograph of a director exists, and a stock face in that slot would be a lie
 about a real person.
 
-## D6 — Two typefaces, and tabular figures only where they help
-Schibsted Grotesk for text, self-hosted as one variable 400–900 latin file plus a
-real italic file, with a metric-matched fallback carrying `size-adjust`.
+## D6 — One family, set the way Apple sets it; tabular figures only where they help
+**Amended 2026-09-25 at SAJ's request for "Apple-like fonts".** The Newsreader
+serif and Schibsted Grotesk are gone. The stack is now `-apple-system,
+BlinkMacSystemFont, 'SF Pro Display' / 'SF Pro Text', 'Inter', 'Inter Fallback', …`:
 
-**Amended 2026-09-24: a display serif joins it.** Newsreader (Production Type,
-OFL 1.1) sets h1–h3, prices and the large figures. Each headline carries one
-italic accent phrase, in `--accent-ink` on paper and `--accent-lift` on navy. The
-serif is what separates this site from the geometric-sans template most
-consultancy sites in the region share, and it is the register of the documents
-the firm actually produces. It is **cut down at build time** by
-`scripts/make-fonts.py` (fontTools `instancer`) to the optical sizes 20–72 and
-weights 300–600 the site uses.
+- **On Apple devices** it resolves to San Francisco, the system face, and nothing
+  is downloaded. San Francisco itself cannot be served from a website (its licence
+  limits it to Apple platforms), so it is never self-hosted.
+- **Everywhere else** it is Inter (Rasmus Andersson, OFL 1.1), the open face drawn
+  closest to San Francisco, self-hosted as one variable file carrying weight and
+  optical size (`public/fonts/inter-latin-opsz.woff2`, copied from
+  `@fontsource-variable/inter`). Optical sizing gives large headings the tight
+  display cut and body copy the open text cut, as San Francisco does.
+- Headlines are **semibold (600) and tightly tracked**; the accent phrase in each
+  headline is upright and in `--accent-ink` / `--accent-lift` rather than italic.
 
-Both faces are `font-display: optional`, so there is no swap and no CLS. There is
-deliberately no monospace: a fee and the sentence around it are the same family.
+`font-display: optional` with a preload and a metric-matched Arial fallback, so
+there is no swap and no layout shift. There is deliberately no monospace.
 
-**Tabular figures are withheld from currency.** Under `tnum` this face gives the
-grouping comma a full digit advance and centres it in that slot, so every price
+**Tabular figures are withheld from currency.** This was forced by the previous
+text face, which under `tnum` gave the grouping comma a full digit advance and centres it in that slot, so every price
 renders as `LKR 36 , 000` with a visible gap either side. Nothing on this site
 stacks two prices in a column where digit alignment would repay that, and amounts
 that do sit in a column are right-aligned, which lines up their edges whatever the
@@ -335,3 +338,31 @@ here are exactly those lengths: payroll covers four items, and five sectors lean
 accounting. Service pages pick a layout from the count: fours in fours, five as two
 over three on a six-column track, the rest in threes. Two related sectors run as
 two wide cards rather than two-thirds of an empty row.
+
+## D16 — Motion, and the frozen mobile menu
+**The menu bug (fixed 2026-09-25).** Opening the mobile menu after scrolling froze
+the page, for two independent reasons, both fixed and both now covered by a
+behavioural scan:
+
+1. Once scrolled, the header is glass, and `backdrop-filter` makes an element the
+   containing block for its `position: fixed` children. The full-screen menu panel
+   was laid out against the 64px bar instead of the viewport, so it rendered far
+   above the screen while the page behind it was scroll-locked. An open menu now
+   drops the glass (`.site-header.is-menu`).
+2. The scroll lock sets `overflow: hidden` on `<html>`. With `body { overflow-x:
+   hidden }`, that stops the body's overflow propagating to the viewport and turns
+   the body into its own scroll container: the sticky header scrolls away and the
+   page jumps. The body now uses `overflow-x: clip`, which trims the same overflow
+   without ever becoming a scroller.
+
+**Motion** lives in `src/styles/motion.css` and one small observer in `Base.astro`:
+blocks below the fold fade and rise into view (grid siblings 70ms apart,
+photographs settling from a slight zoom), inner-page heroes rise in on load, the
+mobile menu drops in with its groups staggered, buttons lift a pixel on hover and
+press on click, FAQ answers slide open where the browser can animate to
+`height: auto`, and page-to-page navigation is a soft fade-and-rise view transition
+with the header held still. Three rules: nothing is hidden without JavaScript, and
+nothing on the first screen is hidden at all; every animation ends on the
+element's natural style (`fill-mode: backwards`, never `both`), so hover effects
+keep working; and reduced motion turns all of it off.
+

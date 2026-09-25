@@ -10,7 +10,7 @@ npm run dev      # local dev server
 npm run verify   # build, then every check, in order
 ```
 
-**JavaScript.** Three small inline scripts, and the site works with all of them blocked:
+**JavaScript.** Four small inline scripts, and the site works with all of them blocked:
 
 - the **fee estimator**, on the home page and `/packages/`. Its default state is rendered
   on the server with the arithmetic already done, so with the script blocked the page
@@ -19,7 +19,9 @@ npm run verify   # build, then every check, in order
   mega menu's `aria-expanded`, Escape and outside-click handling. Without it the header is
   solid and the mega menu opens on hover and focus;
 - the **counters** on the home page's credentials rail, which count up once when they
-  come into view. The real numbers are in the HTML.
+  come into view. The real numbers are in the HTML;
+- the **scroll reveal** in `Base.astro`, which fades blocks in as they arrive. It only
+  ever hides blocks that start below the fold, so with it blocked nothing is hidden.
 
 The mobile menu, the FAQ accordion and the page transitions are HTML and CSS.
 
@@ -151,11 +153,10 @@ still in it. Never use it for production.
 node scripts/extract-brand.mjs brand/rb-lockup.png   # -> brand/PALETTE.md
 node scripts/prepare-brand.mjs                       # mark, light mark, favicons, manifest
 node scripts/make-images.mjs                         # every photograph, from src/data/images.json
-python scripts/make-fonts.py                         # the display serif, cut to what the site uses
 npm run build && node scripts/make-og.mjs            # one OG image per page
 ```
 
-Run them in that order after any logo or image change. Three of them fail rather than
+Run them in that order after any logo or image change. Two of them fail rather than
 shipping something wrong:
 
 - `make-images.mjs` reads each photograph's author, licence and source page from the
@@ -166,9 +167,6 @@ shipping something wrong:
   sit there, and fails below the declared minimum. Sources are cached in `brand/stock/`.
   To add a photograph, add an entry to the manifest with its Commons file name, where it is
   used, its crop focus and its alt text, then run the script. See decision D9.
-- `make-fonts.py` needs Python with `fontTools` (`pip install fonttools brotli`). It
-  instances the Newsreader variable font from `@fontsource-variable/newsreader` to the
-  optical sizes and weights the site uses.
 - `prepare-brand.mjs` fails if the dark-ground variant of the mark cannot clear 3:1 on the
   dark band. As drawn, the mark reaches **1.44:1** there — its navy half would simply
   vanish — and the lifted variant reaches **5.97:1**.
@@ -182,11 +180,14 @@ still written to `public/brand/` for print and signatures. See decision D8.
 
 ## The palette and the type
 
-**Two typefaces.** Newsreader, a display serif, sets h1–h3, prices and large figures, with
-one italic accent phrase per headline. Schibsted Grotesk sets everything else, variable
-400–900 plus a real italic. Both are self-hosted with metric-matched fallbacks and
-`font-display: optional`, so no swap and no CLS. There is deliberately no monospace.
-Files in `public/fonts/`. See decision D6.
+**One family, Apple's way.** San Francisco on Apple devices (the system face, nothing
+downloaded) and Inter everywhere else, self-hosted as one variable file with weight and
+optical size, with a metric-matched fallback and `font-display: optional`, so no swap and
+no CLS. Headlines are semibold and tightly tracked. See decision D6.
+
+**Motion** is in `src/styles/motion.css`: scroll reveals, hero entrances, the menu
+drop-in, button feedback, smooth FAQ answers and page transitions. Nothing is hidden
+without JavaScript, and reduced motion turns it all off. See decision D16.
 
 Tabular figures are applied to phone numbers, dates and counts and **withheld from
 currency**: under `tnum` this face gives the grouping comma a full digit advance, and every

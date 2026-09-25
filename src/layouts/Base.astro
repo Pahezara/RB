@@ -6,6 +6,7 @@ import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/glass.css';
 import '../styles/components.css';
+import '../styles/motion.css';
 
 interface Props {
   title: string;
@@ -84,13 +85,11 @@ const jsonLd = {
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#04152a" />
 
-    {/* The two faces every page paints above the fold. Preloaded so that, on
-        almost every connection, they arrive before first paint and
-        font-display: optional has nothing to fall back from. The display
-        italic is NOT preloaded: it is only fetched where an accent word asks
-        for it. */}
-    <link rel="preload" href="/fonts/newsreader-display-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+    {/* Inter, for every device that is not an Apple one (those use the system
+        San Francisco and never request it). Preloaded so that it arrives
+        before first paint and font-display: optional has nothing to fall back
+        from. */}
+    <link rel="preload" href="/fonts/inter-latin-opsz.woff2" as="font" type="font/woff2" crossorigin />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
@@ -101,5 +100,54 @@ const jsonLd = {
       <slot />
     </main>
     <Footer />
+
+    <script>
+      /* Scroll reveal. Blocks that start below the fold fade and rise into place
+         as they come into view, siblings in a grid a beat apart. Anything
+         already on screen is left alone, so nothing on the first screen ever
+         flashes; with this script blocked, or under reduced motion, nothing is
+         hidden at all. The styles are in src/styles/motion.css. */
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && 'IntersectionObserver' in window) {
+        const SEL = [
+          '.section-head', '.story-body', '.card', '.tile', '.line', '.family',
+          '.tier', '.step', '.director', '.way', '.route', '.route-svcs',
+          '.cover', '.rel > li', '.others > li', '.credit', '.kit-card',
+          '.faq', '.faq-side', '.figures', '.values', '.team-viz', '.vv-quote',
+          '.board-grid > li', '.ind-grid > li', '.pillars > li', '.tell-card',
+          '.next', '.mini-pkg', '.matrix', '.table-wrap', '.estimate',
+          '.cta-card', '.go > li', '.legal-body > *', '.sect-chips',
+          '.fee-list', '.panel', '.solid-panel', '.marquee', '.vision-quote',
+        ].join(',');
+        const all = Array.from(document.querySelectorAll<HTMLElement>(SEL));
+        // Only the outermost match animates: a card inside a revealed row must
+        // not rise a second time.
+        const els = all.filter((el) =>
+          !el.parentElement?.closest(SEL) &&
+          !el.closest('.site-header, .page-hero, .hero, .site-footer'));
+        const fold = window.innerHeight * 0.92;
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            e.target.classList.add('rv-in');
+            io.unobserve(e.target);
+          }
+        }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+        const seen = new Map<Element, number>();
+        for (const el of els) {
+          if (el.getBoundingClientRect().top < fold) continue;
+          const group = el.closest('ul, ol, .grid') ?? el.parentElement!;
+          const i = seen.get(group) ?? 0;
+          seen.set(group, i + 1);
+          el.style.setProperty('--rv-delay', `${Math.min(i, 5) * 70}ms`);
+          el.classList.add('rv');
+          io.observe(el);
+        }
+        // Printing, or a jump to the end with the keyboard, must never find a
+        // block still waiting to appear.
+        const showAll = () => els.forEach((el) => el.classList.add('rv-in'));
+        window.addEventListener('beforeprint', showAll);
+      }
+    </script>
   </body>
 </html>
