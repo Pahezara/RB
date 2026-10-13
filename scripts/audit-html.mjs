@@ -168,7 +168,10 @@ function auditBuilt() {
         continue;
       }
       if (href.startsWith('/')) {
-        const [path, hash] = href.split('#');
+        // A query string selects state on the page (/contact/?service=tax); it
+        // does not name a different page, so it is dropped before resolving.
+        const [pathQ, hash] = href.split('#');
+        const path = pathQ.split('?')[0];
         const key = path.replace(/\/$/, '') || '/';
         if (!pageIds.has(key)) {
           err(file, `internal link ${href} points at a page that was not built`);

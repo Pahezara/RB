@@ -1,5 +1,6 @@
 ---
-import { site, serviceLines, industries } from '../data/site';
+import { site, whatsappHref } from '../data/site';
+import { categories, servicesIn } from '../data/services';
 import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 ---
@@ -23,10 +24,10 @@ const year = new Date().getFullYear();
             <span class="brand-b">Business Partners</span>
           </span>
         </a>
-        <p class="tagline display">{site.tagline}.</p>
+        <p class="tagline display">{site.tagline}. <span>{site.taglineSub}.</span></p>
         <p class="blurb">
-          Accounting, tax, payroll, advisory, analytics and corporate secretarial
-          services under one umbrella. A firm of professionals since {site.founded}.
+          Business setup, outsourced finance, corporate administration, systems
+          and advisory support. A firm of professionals since {site.founded}.
         </p>
       </div>
 
@@ -34,6 +35,7 @@ const year = new Date().getFullYear();
         <p class="reach-label">Talk to us</p>
         <a class="reach link-plain tnum" href={site.phoneHref}>{site.phone}</a>
         <a class="reach reach--sm link-plain" href={`mailto:${site.email}`}>{site.email}</a>
+        <a class="reach reach--sm link-plain" href={whatsappHref()} target="_blank" rel="noopener">WhatsApp {site.phone}</a>
         <p class="reach-addr">
           <Icon name="map-pin" size={18} />
           <span>{site.address.street}, {site.address.locality}, Sri Lanka</span>
@@ -42,58 +44,51 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="cols">
-      <nav aria-label="Services">
-        <h2>Services</h2>
-        <ul>
-          {serviceLines.map((s) => (
-            <li><a class="link-plain" href={`/services/${s.slug}/`}>{s.title}</a></li>
-          ))}
-        </ul>
-      </nav>
-
-      <nav aria-label="Industries">
-        <h2>Industries</h2>
-        <ul>
-          {industries.map((i) => (
-            <li><a class="link-plain" href={`/industries/#${i.slug}`}>{i.title}</a></li>
-          ))}
-        </ul>
-      </nav>
+      {categories.map((c) => (
+        <nav aria-label={c.title}>
+          <h2><a class="link-plain" href={`/services/#${c.slug}`}>{c.title}</a></h2>
+          <ul>
+            {servicesIn(c.slug).map((sv) => (
+              <li><a class="link-plain" href={`/services/${sv.slug}/`}>{sv.title}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
 
       <nav aria-label="The firm">
         <h2>The firm</h2>
         <ul>
-          <li><a class="link-plain" href="/about/">About Reliance</a></li>
+          <li><a class="link-plain" href="/about/">About</a></li>
+          <li><a class="link-plain" href="/services/">Services</a></li>
+          <li><a class="link-plain" href="/management/">Management</a></li>
+          <li><a class="link-plain" href="/investors/">Investors</a></li>
+          <li><a class="link-plain" href="/insights/">Insights</a></li>
           <li><a class="link-plain" href="/packages/">Incorporation packages</a></li>
-          <li><a class="link-plain" href="/#estimate">Fee estimator</a></li>
+          <li><a class="link-plain" href="/industries/">Industries</a></li>
           <li><a class="link-plain" href="/contact/">Contact</a></li>
           <li><a class="link-plain" href={site.social.linkedin} rel="noopener">LinkedIn</a></li>
         </ul>
       </nav>
+    </div>
 
-      <div class="assoc-col">
-        <h2>Tax and assurance</h2>
-        {/* The link and the punctuation after it sit on ONE line. A newline
-            between them is whitespace, and it renders as "Synergy Advisors ." */}
-        <p class="assoc">
-          Tax and assurance work is conducted through{' '}
-          {site.associates.map((a, i) => (
-            <Fragment><a class="link-plain" href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '.'}</Fragment>
-          ))}
-        </p>
-        <a class="btn btn--primary foot-cta" href="/contact/">Start an enquiry <Icon name="arrow-right" size={18} stroke={2} /></a>
-      </div>
+    {/* [CONTENT] footer: the affiliation, stated as the document states it. The
+        link and the punctuation after it sit on ONE line. */}
+    <div class="affil-row">
+      <p class="assoc">
+        Affiliated with <a class="link-plain" href={site.affiliate.href} rel="noopener">{site.affiliate.name}</a> ({site.affiliate.role}). Tax and assurance engagements are subject to the appointed provider’s terms.
+      </p>
+      <a class="btn btn--primary foot-cta" href={whatsappHref('Hello Reliance Business Partners, I would like to discuss my requirements.')} target="_blank" rel="noopener">Discuss Your Requirements <Icon name="arrow-right" size={18} stroke={2} /></a>
     </div>
 
     <div class="base">
       <p class="colophon">
         &copy; {year} {site.legalName}. Figures on this site are the firm's published
-        fee structure. Nothing here is a quotation, and nothing on it is accounting,
-        tax or legal advice for your particular circumstances.
+        fee structure. An instant quotation is indicative, and nothing on this site is
+        accounting, tax or legal advice for your particular circumstances.
       </p>
       <ul class="meta">
-        <li><a class="link-plain" href="/privacy/">Privacy</a></li>
-        <li><a class="link-plain" href="/terms/">Terms</a></li>
+        <li><a class="link-plain" href="/privacy/">Privacy Notice</a></li>
+        <li><a class="link-plain" href="/terms/">Website Terms</a></li>
         <li><a class="link-plain" href="/credits/">Image credits</a></li>
       </ul>
       <p class="powered">
@@ -145,6 +140,7 @@ const year = new Date().getFullYear();
     letter-spacing: var(--tracking-display);
     color: var(--ink-invert);
   }
+  .tagline span { display: block; color: var(--accent-lift); }
   .blurb {
     margin-top: var(--space-4);
     color: var(--muted-invert);
@@ -192,7 +188,9 @@ const year = new Date().getFullYear();
     padding-block: clamp(2.5rem, 2rem + 2vw, 4rem);
   }
   @media (min-width: 36rem) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 64rem) { .cols { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.3fr); } }
+  @media (min-width: 52rem) { .cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 80rem) { .cols { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-7) var(--space-5); } }
+  .cols ul a { line-height: 1.35; }
 
   .site-footer h2 {
     font-family: var(--font-sans);
@@ -201,8 +199,12 @@ const year = new Date().getFullYear();
     text-transform: uppercase;
     font-weight: 700;
     color: var(--accent-lift);
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-3);
+    min-height: var(--tap-min);
+    display: flex;
+    align-items: center;
   }
+  .site-footer h2 a:not(.btn) { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--accent-lift); font-size: inherit; }
   .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
   /* :not(.btn) is load-bearing. `.site-footer a` is (0,1,1) and `.btn--primary`
      is (0,1,0), so without it this rule would win and paint the accent button's
@@ -225,7 +227,16 @@ const year = new Date().getFullYear();
 
   .assoc { color: var(--muted-invert); font-size: var(--text-sm); line-height: 1.6; max-width: 40ch; }
   .assoc a { text-decoration: underline; text-underline-offset: 0.2em; }
-  .foot-cta { margin-top: var(--space-5); }
+  .affil-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-6);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--line-invert);
+  }
+  .affil-row .assoc { max-width: 60ch; }
 
   /* --- lower band --------------------------------------------------------------- */
   .base {

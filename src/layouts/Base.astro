@@ -1,5 +1,6 @@
 ---
-import { site, serviceLines } from '../data/site';
+import { site } from '../data/site';
+import { services } from '../data/services';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/tokens.css';
@@ -37,7 +38,7 @@ const jsonLd = {
   '@type': 'AccountingService',
   name: site.legalName,
   alternateName: site.shortName,
-  slogan: site.tagline,
+  slogan: `${site.tagline}: ${site.taglineSub}`,
   url: site.url,
   telephone: site.phone,
   email: site.email,
@@ -49,11 +50,11 @@ const jsonLd = {
     addressRegion: site.address.region,
     addressCountry: site.address.country,
   },
-  areaServed: { '@type': 'Country', name: 'Sri Lanka' },
+  areaServed: [{ '@type': 'Country', name: 'Sri Lanka' }, { '@type': 'Country', name: 'United Arab Emirates' }],
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Business services',
-    itemListElement: serviceLines.map((s) => ({
+    itemListElement: services.map((s) => ({
       '@type': 'Offer',
       itemOffered: { '@type': 'Service', name: s.title, description: s.blurb },
     })),
@@ -114,10 +115,11 @@ const jsonLd = {
           '.tier', '.step', '.director', '.way', '.route', '.route-svcs',
           '.cover', '.rel > li', '.others > li', '.credit', '.kit-card',
           '.faq', '.faq-side', '.figures', '.values', '.team-viz', '.vv-quote',
-          '.board-grid > li', '.ind-grid > li', '.pillars > li', '.tell-card',
+          '.board-grid > li', '.ind-grid > li', '.cat-grid > li', '.tell-card',
           '.next', '.mini-pkg', '.matrix', '.table-wrap', '.estimate',
           '.cta-card', '.go > li', '.legal-body > *', '.sect-chips',
           '.fee-list', '.panel', '.solid-panel', '.marquee', '.vision-quote',
+          '.needs > li', '.duo > *', '.affil', '.vmv', '.links > li', '.svc-help', '.svc-approach', '.svc-faq', '.extra',
         ].join(',');
         const all = Array.from(document.querySelectorAll<HTMLElement>(SEL));
         // Only the outermost match animates: a card inside a revealed row must

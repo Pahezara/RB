@@ -159,8 +159,12 @@
 
   /* --- space ------------------------------------------------------------------------------ */
   --section-y: clamp(4rem, 2.8rem + 6vw, 8.5rem);
-  --gutter:    clamp(1.125rem, 4vw, 3rem);
-  --container: 80rem;
+  /* The content column fills the screen less two gutters that grow with it,
+     up to a cap only an ultra-wide monitor reaches. In rem, so it scales with
+     the root on large screens: about 1376px of a 1440px laptop, 1700px of a
+     1920px monitor. Text blocks keep their own measure inside it. */
+  --gutter:    clamp(1.125rem, 4vw, 4rem);
+  --container: 124rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;

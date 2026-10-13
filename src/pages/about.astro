@@ -3,68 +3,46 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Icon from '../components/Icon.astro';
-import { site, directors, team, sectors, serviceLines, credentials } from '../data/site';
+import { site, team, sectors, credentials, directors } from '../data/site';
 
-const title = 'About — Reliance Business Partners';
+/* [CONTENT] About: title and description. */
+const title = 'About Reliance Business Partners | Business Support Sri Lanka';
 const description =
-  'Reliance Business Partners (Pvt) Ltd is a firm of professionals established in 2018 in Gangodawila, Nugegoda, rendering business services under one umbrella.';
+  'Meet Reliance Business Partners, established in 2018, supporting businesses with accounting, corporate administration, systems and advisory services.';
 
-/* The five values from the profile, each with the icon that stands for it. */
-const valueIcons: Record<string, string> = {
-  'Integrity': 'shield-check',
-  'Accountability': 'scale',
-  'Strengthening the client relationship': 'handshake',
-  'Professionalism': 'badge-check',
-  'Confidentiality': 'lock',
-};
-
-const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-
-const initials = (name: string) => {
-  const parts = name.replace(/^Mr\.?\s*/, '').replace(/\./g, ' ').trim().split(/\s+/);
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
+/* "Import and export", ... "NGOs" -> a sentence-case list for the prose. */
+const sectorList = sectors.map((s) => (s === 'NGOs' ? s : s.toLowerCase()));
 ---
 <Base title={title} description={description} overHero>
   <PageHero
     variant="photo"
     image="colombo-golden"
-    eyebrow="About the firm"
-    title="A firm of professionals, <em>under one umbrella.</em>"
-    lede={`${site.legalName} was established in ${site.founded} as a limited liability company, to render the business services a growing company needs from one place rather than four.`}
+    eyebrow="About Reliance Business Partners"
+    title="Practical business support with a <em>long-term perspective.</em>"
+    lede={`${site.legalName} was established in ${site.founded} to bring business-related professional services together under one umbrella.`}
     crumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
   />
 
-  {/* ------------------------------------------------------------ THE FIRM */}
+  {/* ------------------------------------------------------------ WHO WE ARE */}
   <section class="section" aria-labelledby="firm-h">
     <div class="container story">
       <div>
         <p class="eyebrow">Who we are</p>
-        <h2 id="firm-h" class="story-h">One firm, so the numbers only have to be <em>right once.</em></h2>
+        <h2 id="firm-h" class="story-h">From the records a business keeps <em>to the decisions it makes.</em></h2>
       </div>
       <div class="story-body">
-        {/* Each link and the punctuation after it sit on ONE line: a newline
-            between them is whitespace and renders as "payroll , analytics".
-            And the titles are never lowercased: they carry acronyms. */}
         <p class="lede">
-          The firm covers {words[serviceLines.length] ?? serviceLines.length} areas of work:{' '}
-          {serviceLines.map((s, i) => {
-            const sep = i < serviceLines.length - 2 ? ', ' : i === serviceLines.length - 2 ? ' and ' : '.';
-            return <Fragment><a href={`/services/${s.slug}/`}>{s.title}</a>{sep}</Fragment>;
-          })}
+          We support entrepreneurs and organisations that need dependable finance,
+          corporate administration, business advice and operational support.
         </p>
         <p>
-          Keeping them in one firm is not a convenience. The ledger the accountant
-          keeps is the ledger the tax computation is built from, the payroll feeds
-          the same books, and the company secretary files against the same records.
+          Our work connects the records a business maintains with the decisions its
+          owners and managers need to make. From building an accounting function to
+          documenting procedures or preparing a business plan, we focus on practical
+          work that supports the next stage of the business.
         </p>
         <p>
-          Tax and assurance work is conducted through{' '}
-          {site.associates.map((a, i) => (
-            <Fragment><a href={a.href} rel="noopener">{a.name}</a>{i === 0 ? ' and ' : '. '}</Fragment>
-          ))}
-          They are named here rather than left to be discovered, because a client is
-          entitled to know which practice signs the audit.
+          {site.legalName} is affiliated with <a href={site.affiliate.href} rel="noopener">{site.affiliate.name}</a> ({site.affiliate.role}). Tax and assurance work is conducted through Synergy Advisors and Sanjeewa Associates, and each provider’s role is made clear before an engagement begins.
         </p>
       </div>
     </div>
@@ -84,42 +62,59 @@ const initials = (name: string) => {
     </div>
   </section>
 
-  {/* ------------------------------------------------------------ VISION + VALUES */}
+  {/* ------------------------------------------------------------ VISION + MISSION */}
   <section class="section band--dark on-invert vv" aria-labelledby="vision-h">
     <div class="container">
-      <div class="vv-grid">
-        <div>
-          <p class="eyebrow">Vision 2030</p>
-          <h2 id="vision-h" class="visually-hidden">Vision</h2>
-          <blockquote class="vv-quote display"><p>&ldquo;{site.vision}&rdquo;</p></blockquote>
+      <div class="vmv">
+        <div class="vm">
+          <p class="eyebrow">Our vision</p>
+          <h2 id="vision-h" class="vm-quote">{site.vision}</h2>
         </div>
-        <div>
-          <p class="eyebrow">Values</p>
-          <ul class="values">
-            {site.values.map((v) => (
-              <li>
-                <span class="icon-tile"><Icon name={valueIcons[v] ?? 'badge-check'} /></span>
-                <span>{v}</span>
-              </li>
-            ))}
-          </ul>
+        <div class="vm vm--mission">
+          <p class="eyebrow">Our mission</p>
+          <p class="vm-text">{site.mission}</p>
         </div>
       </div>
+      <p class="tagline-line">{site.tagline} <span>&middot; {site.taglineSub}</span></p>
     </div>
   </section>
 
-  {/* ------------------------------------------------------------ THE TEAM
-      A single stacked bar, drawn to scale from the profile's own counts. The
-      numbers are also in the list beside it, so the bar is decoration for
-      anyone who cannot see it and loses nothing for them. */}
-  <section class="section" aria-labelledby="team-h">
+  {/* ------------------------------------------------------------ VALUES */}
+  <section class="section" aria-labelledby="values-h">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Our values</p>
+          <h2 id="values-h">Seven commitments that <em>guide how we work.</em></h2>
+        </div>
+        <p class="intro">What a client can expect from us on every engagement, large or small.</p>
+      </div>
+      <ul class="values">
+        {site.values.map((v, i) => (
+          <li class="value">
+            <span class="value-top">
+              <span class="icon-tile"><Icon name={v.icon} /></span>
+              <span class="value-n tnum">{String(i + 1).padStart(2, '0')}</span>
+            </span>
+            <h3>{v.name}</h3>
+            <p>{v.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ THE TEAM */}
+  <section class="section band" aria-labelledby="team-h">
     <div class="container team">
       <div>
         <p class="eyebrow">The team</p>
         <h2 id="team-h">{team.total} people, <em>four grades.</em></h2>
         <p class="lede team-lede">
-          Qualified accountants at the core, supported by managers and associates.
+          Qualified accountants at the core, supported by managers and associates, and
+          led by {directors.length} directors.
         </p>
+        <a class="link-arrow team-link" href="/management/">Meet the directors <Icon name="arrow-right" size={16} stroke={2} /></a>
       </div>
       <div class="team-viz">
         <div class="team-bar" aria-hidden="true">
@@ -143,45 +138,16 @@ const initials = (name: string) => {
     </div>
   </section>
 
-  {/* ------------------------------------------------------------ THE BOARD
-      No photographs of the directors exist, and no stock face will stand in
-      for one. Each is set as a monogram, with their credentials in full. */}
-  <section class="section band" aria-labelledby="board-h">
-    <div class="container">
-      <div class="section-head section-head--split">
-        <div>
-          <p class="eyebrow">Board of directors</p>
-          <h2 id="board-h">Who is <em>answerable</em> for the work.</h2>
-        </div>
-        <p class="intro">
-          Four directors, between them Chartered Accountants, Chartered Management
-          Accountants, Registered Company Secretaries and Investment Advisors.
-        </p>
-      </div>
-      <ul class="board">
-        {directors.map((d) => (
-          <li class="director">
-            <div class="d-head">
-              <span class="monogram display" aria-hidden="true">{initials(d.name)}</span>
-              <div>
-                <h3>{d.name}</h3>
-                <p class="d-creds">{d.creds}</p>
-              </div>
-            </div>
-            <p class="d-bio">{d.bio}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
   {/* ------------------------------------------------------------ SECTORS */}
   <section class="section" aria-labelledby="sect-h">
     <div class="container sect">
       <div>
-        <p class="eyebrow">Sectorial expertise</p>
-        <h2 id="sect-h">Fourteen sectors the firm <em>already knows.</em></h2>
-        <a class="link-arrow sect-link" href="/industries/">See how we work with each <Icon name="arrow-right" size={16} stroke={2} /></a>
+        <p class="eyebrow">Businesses we support</p>
+        <h2 id="sect-h">Fifteen sectors the firm <em>already knows.</em></h2>
+        <p class="sect-p">
+          Our corporate profile identifies experience across {sectorList.slice(0, -1).join(', ')} and {sectorList[sectorList.length - 1]}.
+        </p>
+        <a class="link-arrow sect-link" href="/industries/">How we work with each <Icon name="arrow-right" size={16} stroke={2} /></a>
       </div>
       <ul class="chips sect-chips">
         {sectors.map((s) => <li>{s}</li>)}
@@ -193,10 +159,9 @@ const initials = (name: string) => {
 </Base>
 
 <style>
-  /* ------------------------------------------------------------ story */
   .story { display: grid; gap: var(--space-6); }
   @media (min-width: 64rem) { .story { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-9); } }
-  .story-h { max-width: 16ch; }
+  .story-h { max-width: 18ch; }
   .story-body { display: grid; gap: var(--space-5); color: var(--ink-soft); }
   .story-body .lede { color: var(--ink); max-width: none; }
 
@@ -211,42 +176,57 @@ const initials = (name: string) => {
   @media (min-width: 52rem) { .figures { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .figures dd { margin: 0; display: grid; gap: var(--space-2); }
 
-  /* ------------------------------------------------------------ vision + values */
-  .vv-grid { display: grid; gap: var(--space-8); }
-  @media (min-width: 64rem) { .vv-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: var(--space-9); align-items: start; } }
-  .vv-quote { margin: 0; }
-  .vv-quote p { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem); line-height: 1.16; letter-spacing: var(--tracking-tight); color: var(--ink-invert); font-weight: 500; }
-  .values { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
-  .values li {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-3);
-    border-radius: var(--r-sm);
-    background: var(--surface-invert-2);
-    border: 1px solid var(--line-invert);
-    font-weight: 600;
+  /* ------------------------------------------------------------ vision + mission */
+  .vmv { display: grid; gap: var(--space-7); }
+  @media (min-width: 64rem) { .vmv { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-9); align-items: start; } }
+  .vm-quote { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem); line-height: 1.14; font-weight: 600; color: var(--ink-invert); }
+  .vm--mission { padding: var(--pad-card); background: var(--surface-invert-2); border: 1px solid var(--line-invert); border-radius: var(--r-lg); }
+  .vm-text { font-size: var(--text-lede); line-height: 1.6; color: var(--ink-invert); }
+  .tagline-line {
+    margin-top: var(--space-7);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line-invert);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
     color: var(--ink-invert);
   }
+  .tagline-line span { color: var(--accent-lift); }
+
+  /* ------------------------------------------------------------ values */
+  .values { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .values { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) {
+    .values { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-5); }
+    .value { grid-column: span 3; }
+    .value:nth-child(n + 5) { grid-column: span 4; }
+  }
+  .value {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--pad-card);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .value-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
+  .value-n { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); color: var(--muted); }
+  .value h3 { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: -0.01em; }
+  .value p { color: var(--ink-soft); font-size: var(--text-sm); }
 
   /* ------------------------------------------------------------ team */
   .team { display: grid; gap: var(--space-7); align-items: center; }
   @media (min-width: 64rem) { .team { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-9); } }
   .team-lede { margin-top: var(--space-5); }
-  .team-bar {
-    display: flex;
-    height: 4.5rem;
-    border-radius: var(--r-md);
-    overflow: hidden;
-    margin-bottom: var(--space-6);
-    box-shadow: var(--shadow-1);
-  }
+  .team-link { margin-top: var(--space-4); }
+  .team-bar { display: flex; height: 4.5rem; border-radius: var(--r-md); overflow: hidden; margin-bottom: var(--space-6); box-shadow: var(--shadow-1); }
   .seg { display: flex; align-items: flex-end; padding: var(--space-2) var(--space-3); min-width: 0; }
   .seg + .seg { border-left: 2px solid var(--surface); }
-  .seg-n { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; }
-  /* Four steps of the brand, darkest for the most senior grade. Each label is
-     measured against its own fill in check-contrast's registry: ink-invert on
-     the two navies, ink-on-accent on the orange, ink on the tint. */
+  .seg-n { font-family: var(--font-display); font-weight: 600; font-size: 1.6rem; line-height: 1; }
+  /* Darkest for the most senior grade. Each label measured against its own
+     fill in check-contrast's registry. */
   .seg-0, .key-0 { background: var(--surface-invert); color: var(--ink-invert); }
   .seg-1, .key-1 { background: var(--surface-invert-2); color: var(--ink-invert); }
   .seg-2, .key-2 { background: var(--accent); color: var(--ink-on-accent); }
@@ -256,37 +236,9 @@ const initials = (name: string) => {
   .key-3 { box-shadow: inset 0 0 0 1px var(--line-strong); }
   .total-row dt, .total-row dd { font-weight: 700; color: var(--ink); }
 
-  /* ------------------------------------------------------------ board */
-  .board { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
-  @media (min-width: 52rem) { .board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .director {
-    display: grid;
-    gap: var(--space-5);
-    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-  }
-  .d-head { display: flex; gap: var(--space-5); align-items: center; }
-  .monogram {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 4.5rem;
-    height: 4.5rem;
-    border-radius: var(--r-pill);
-    background: var(--surface-invert);
-    color: var(--ink-invert);
-    font-size: 1.55rem;
-    position: relative;
-  }
-  .monogram::after { content: ""; position: absolute; inset: -5px; border-radius: inherit; border: 1px solid var(--line-strong); }
-  .director h3 { font-family: var(--font-sans); font-size: var(--text-h4); font-weight: 700; letter-spacing: 0; }
-  .d-creds { margin-top: var(--space-1); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); line-height: 1.5; }
-  .d-bio { color: var(--ink-soft); font-size: var(--text-sm); }
-
   /* ------------------------------------------------------------ sectors */
   .sect { display: grid; gap: var(--space-6); align-items: start; }
   @media (min-width: 64rem) { .sect { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-9); } }
-  .sect-link { margin-top: var(--space-5); }
+  .sect-p { margin-top: var(--space-5); color: var(--ink-soft); }
+  .sect-link { margin-top: var(--space-4); }
 </style>

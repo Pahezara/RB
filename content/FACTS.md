@@ -82,10 +82,10 @@ Website development from LKR 65,000 (once) · cloud POS from LKR 4,500 a month �
 offline POS from LKR 45,000 (once). All three are **starting prices** and are
 labelled "from" everywhere they appear, including inside the estimator's breakdown.
 
-## 8. Sectors — `[PROFILE]`, all fourteen
+## 8. Sectors — `[PROFILE]`, all fourteen, plus NGOs from `[CONTENT]`
 Import and export · Manufacturing · Construction · Hotels · Insurance · Services ·
 Wholesale and retail · Power and energy · Agriculture · Professionals · Trading ·
-Advertising · Restaurants · Online e-commerce
+Advertising · Restaurants · Online e-commerce · NGOs
 
 Published as *sectorial expertise*, which is what the deck calls it. It is not a
 client list and the page says so.
@@ -103,3 +103,11 @@ labels, blurbs and "where the firm usually starts" service mappings, and each se
 line's icon, photograph and opening paragraph. All are marked editorial in
 `src/data/site.ts`, and each opening paragraph paraphrases the `covers` list beneath it
 without adding a claim.
+
+## 10. Website content — `[CONTENT]`, 2026-10-13
+`RBPL_Website_Content.docx`: the navigation, the 24 service pages, the home,
+about, investors and contact copy, the important-sites list and the footer line.
+Transcribed into `src/data/services.ts` and the pages. The vision, mission, seven
+values and the tagline ("Your Trusted Partner: Taking Your Business to the Next
+Level") came in the same brief, verbatim, and replace the profile's 2030 vision
+and five values. Address now includes "2nd Floor".

@@ -8,7 +8,7 @@
  * measured 3.48:1 and went muddy, which is the photograph losing everything
  * that made it worth using. A card keeps both.
  */
-import { site } from '../data/site';
+import { site, whatsappHref } from '../data/site';
 import Img from './Img.astro';
 import Icon from './Icon.astro';
 
@@ -18,12 +18,16 @@ interface Props {
   primaryLabel?: string;
   primaryHref?: string;
 }
+/* Defaults: [CONTENT] "Let us understand your next business decision". */
 const {
-  title = 'Tell us what you are <em>setting up.</em>',
-  text = 'Describe it in your own words. You get the scope and the fee in writing before any work begins, and making contact costs nothing.',
-  primaryLabel = 'Start an enquiry',
+  title = 'Let us understand <em>your next business decision.</em>',
+  text = 'Tell us what you are building, improving or planning. We will discuss the support required and prepare a proposal suited to your scope.',
+  primaryLabel = 'Request a Service Proposal',
   primaryHref = '/contact/',
 } = Astro.props;
+const external = /^https?:/.test(primaryHref);
+const newTab = external ? { target: '_blank', rel: 'noopener' } : {};
+const waHello = whatsappHref('Hello Reliance Business Partners, I would like to discuss my requirements.');
 ---
 <section class="cta-band" aria-labelledby="cta-h">
   <div class="cta-bg" aria-hidden="true">
@@ -35,8 +39,11 @@ const {
       <h2 id="cta-h" set:html={title} />
       <p class="cta-text">{text}</p>
       <div class="cta-actions">
-        <a class="btn btn--primary btn--lg" href={primaryHref}>{primaryLabel} <Icon name="arrow-right" size={18} stroke={2} /></a>
-        <a class="btn btn--ghost btn--lg tnum" href={site.phoneHref}><Icon name="phone" size={18} stroke={2} /> {site.phone}</a>
+        <a class="btn btn--primary btn--lg" href={primaryHref} {...newTab}>{primaryLabel} <Icon name="arrow-right" size={18} stroke={2} /></a>
+        {external
+          ? <a class="btn btn--ghost btn--lg" href="/contact/">Send an enquiry</a>
+          : <a class="btn btn--ghost btn--lg" href={waHello} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> WhatsApp us</a>}
+        <a class="btn btn--ghost btn--lg tnum cta-tel" href={site.phoneHref}><Icon name="phone" size={18} stroke={2} /> {site.phone}</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { site, directors, team } from '../data/site';
+
+const title = 'Management | Reliance Business Partners';
+const description =
+  'The directors of Reliance Business Partners: Chartered Accountants, a Chartered Management Accountant and a Certified Business Accountant, leading a team of 17.';
+
+/* "J M N Sanjeewa" -> "JS": first given initial, then the surname. */
+const initials = (name: string) => {
+  const parts = name.replace(/^Mr\.?\s*/, '').replace(/\./g, ' ').trim().split(/\s+/);
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+---
+<Base title={title} description={description} overHero>
+  <PageHero
+    variant="plain"
+    eyebrow="Management"
+    title="The people answerable <em>for the work.</em>"
+    lede={`${site.legalName} is led by ${directors.length} directors with Chartered Accountancy, management accounting, company secretarial and investment advisory backgrounds, and a team of ${team.total}.`}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Management' }]}
+  />
+
+  {/* No photographs of the directors exist, and no stock face will stand in
+      for one. Each is set as a monogram, with their credentials in full. */}
+  <section class="section" aria-labelledby="dir-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Our directors</p>
+        <h2 id="dir-h">Board of <em>directors.</em></h2>
+      </div>
+      <ul class="board">
+        {directors.map((d) => (
+          <li class="director">
+            <div class="d-head">
+              <span class="monogram display" aria-hidden="true">{initials(d.name)}</span>
+              <div>
+                <h3>{d.name}</h3>
+                <p class="d-creds">{d.creds}</p>
+              </div>
+            </div>
+            <p class="d-bio">{d.bio}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="team-h">
+    <div class="container team">
+      <div>
+        <p class="eyebrow">The wider team</p>
+        <h2 id="team-h">{team.total} professionals, <em>one coordinated relationship.</em></h2>
+        <p class="lede team-lede">
+          Where a matter needs a specialist we do not employ, such as an auditor, a
+          lawyer or a technical assessor, we coordinate with an appropriately
+          qualified provider and make each party’s role clear.
+        </p>
+      </div>
+      <dl class="rows team-rows">
+        {team.rows.map((r) => (
+          <div>
+            <dt>{r.role}</dt>
+            <dd class="tnum">{r.n}</dd>
+          </div>
+        ))}
+        <div class="total-row">
+          <dt>Total</dt>
+          <dd class="tnum">{team.total}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="aff-h">
+    <div class="container">
+      <div class="aff">
+        <span class="icon-tile"><Icon name="handshake" /></span>
+        <div>
+          <h2 id="aff-h" class="aff-h">Affiliated with {site.affiliate.name}</h2>
+          <p>
+            {site.affiliate.name} ({site.affiliate.role}) conducts tax and assurance work
+            for corporate clientele; Sanjeewa Associates for sole proprietors and
+            partnerships. Engagements with either are subject to the appointed
+            provider’s terms.
+          </p>
+        </div>
+        <a class="btn btn--secondary" href={site.affiliate.href} rel="noopener">Explore {site.affiliate.name} <Icon name="external-link" size={16} stroke={2} /></a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .board { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
+  @media (min-width: 52rem) { .board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .director {
+    display: grid;
+    align-content: start;
+    gap: var(--space-5);
+    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .d-head { display: flex; gap: var(--space-5); align-items: center; }
+  .monogram {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: var(--r-pill);
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    font-size: 1.45rem;
+    position: relative;
+  }
+  .monogram::after { content: ""; position: absolute; inset: -5px; border-radius: inherit; border: 1px solid var(--line-strong); }
+  .director h3 { font-family: var(--font-sans); font-size: var(--text-h4); font-weight: 700; letter-spacing: 0; }
+  .d-creds { margin-top: var(--space-1); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); line-height: 1.5; }
+  .d-bio { color: var(--ink-soft); }
+
+  .team { display: grid; gap: var(--space-7); align-items: center; }
+  @media (min-width: 64rem) { .team { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-9); } }
+  .team-lede { margin-top: var(--space-5); }
+  .total-row dt, .total-row dd { font-weight: 700; color: var(--ink); }
+
+  .aff {
+    display: grid;
+    gap: var(--space-5);
+    align-items: center;
+    padding: clamp(1.5rem, 1.2rem + 1.4vw, 2.75rem);
+    background: var(--accent-tint);
+    border-radius: var(--r-lg);
+  }
+  @media (min-width: 64rem) { .aff { grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-7); } }
+  .aff-h { font-size: var(--text-h3); margin-bottom: var(--space-2); }
+  .aff p { color: var(--ink); font-size: var(--text-sm); max-width: 68ch; }
+  .aff .icon-tile { background: var(--surface-raised); }
+</style>

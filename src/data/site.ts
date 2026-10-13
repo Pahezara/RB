@@ -8,6 +8,9 @@
  * [FEES]    = `RB Logo/Secretarial fee Structure.xlsx`, the firm's own sheet.
  *             Figures are transcribed exactly. Not one is rounded.
  * [SAJ]     = supplied directly by the client, dated.
+ * [CONTENT] = `RBPL_Website_Content.docx`, the firm's website copy, supplied by
+ *             SAJ on 2026-10-13. Where it and the profile differ, it is newer
+ *             and it wins.
  *
  * The two documents are NOT in this repository: it is public, and no build
  * script reads them. They are held alongside the checkout at `RB Logo/`, and
@@ -21,8 +24,10 @@ export const site = {
   legalName: 'Reliance Business Partners (Pvt) Ltd',
   shortName: 'Reliance Business Partners',
 
-  /** [PROFILE] cover line, verbatim. */
-  tagline: 'Your trusted partner',
+  /** [SAJ] 2026-10-13, as written in the brief (the [CONTENT] document has
+      "Your trusted partner / Take your business to next level"). */
+  tagline: 'Your Trusted Partner',
+  taglineSub: 'Taking Your Business to the Next Level',
 
   /** [PROFILE] "established in 2018 as a limited liability Company". */
   founded: 2018,
@@ -34,33 +39,49 @@ export const site = {
   phone: '+94 711 22 45 45',
   phoneHref: 'tel:+94711224545',
 
+  /**
+   * [CONTENT] "Keep 'Discuss Your Requirements' visible as the main action and
+   * link it to WhatsApp." No separate WhatsApp number was supplied, so this is
+   * the firm's one published number. Change it here if WhatsApp is elsewhere.
+   */
+  whatsapp: '94711224545',
+
   /** [PROFILE] Contact Us. */
   email: 'info@rbpl.lk',
 
   /**
-   * [PROFILE] Contact Us: "No. 464, High Level Road, Gangodawila, Nugegoda,
-   * Sri Lanka". No postcode is given in any source, so none is published and
-   * none appears in the JSON-LD. Inventing one would be inventing a fact.
+   * [CONTENT] Contact Us: "2nd Floor, No. 464, High Level Road, Gangodawila,
+   * Nugegoda, Sri Lanka". No postcode is given in any source, so none is
+   * published and none appears in the JSON-LD.
    */
   address: {
-    street: 'No. 464, High Level Road',
+    street: '2nd Floor, No. 464, High Level Road',
     locality: 'Gangodawila, Nugegoda',
     region: 'Western Province',
     country: 'LK',
   },
 
-  /** [PROFILE] Vision and Values, verbatim. */
+  /** [SAJ] 2026-10-13, verbatim. Replaces the profile's 2030 vision. */
   vision:
-    'To be the trusted partner delivering comprehensive business solutions ' +
-    'that address the needs of both existing and potential clients by 2030.',
+    'To be the trusted business partner for entrepreneurs, investors and ' +
+    'organisations building resilient businesses globally.',
 
-  /** [PROFILE] Vision and Values, verbatim. */
+  /** [SAJ] 2026-10-13, verbatim. */
+  mission:
+    'To help businesses establish, operate, grow and navigate change through ' +
+    'coordinated corporate, financial, technology and advisory services. We bring ' +
+    'practical expertise and dependable support to strengthen operations, inform ' +
+    'decisions and create lasting value while driving the businesses to next level.',
+
+  /** [SAJ] 2026-10-13, verbatim. `icon` is editorial. */
   values: [
-    'Integrity',
-    'Accountability',
-    'Strengthening the client relationship',
-    'Professionalism',
-    'Confidentiality',
+    { name: 'Integrity', icon: 'shield-check', body: 'We act honestly, uphold ethical standards and provide objective guidance.' },
+    { name: 'Accountability', icon: 'scale', body: 'We take ownership of our work, honour our commitments and communicate clearly about progress and responsibilities.' },
+    { name: 'Client Partnership', icon: 'handshake', body: 'We take time to understand each client’s business and build lasting relationships through responsive, practical support.' },
+    { name: 'Professional Excellence', icon: 'badge-check', body: 'We apply care, sound judgement and relevant expertise, engaging qualified specialists where required.' },
+    { name: 'Confidentiality', icon: 'lock', body: 'We respect the trust placed in us and safeguard business, financial and personal information.' },
+    { name: 'Innovation and Improvement', icon: 'sparkles', body: 'We embrace useful technology, better processes and continuous learning to improve how businesses operate.' },
+    { name: 'Sustainable Growth', icon: 'sprout', body: 'We support decisions that balance immediate business needs with long-term resilience and responsible growth.' },
   ],
 
   social: {
@@ -69,129 +90,22 @@ export const site = {
   },
 
   /**
-   * [PROFILE] "Tax & Assurance Services (Conducted through Sanjeewa Associates
-   * and Synergy Advisors)". Named on the site because a client is entitled to
-   * know which firm actually signs the audit.
+   * [CONTENT] "RBPL is affiliated with Synergy Advisors (Chartered
+   * Accountants)". Tax work is conducted through Synergy Advisors and Sanjeewa
+   * Associates; audit through Synergy Advisors for corporate clientele and
+   * Sanjeewa Associates for sole proprietors and partnerships. Named because a
+   * client is entitled to know which firm actually signs the audit.
    */
+  affiliate: { name: 'Synergy Advisors', role: 'Chartered Accountants', href: 'https://www.sa.lk/' },
   associates: [
-    { name: 'Sanjeewa Associates', href: 'https://www.linkedin.com/in/Sanjeewa-associates-443185137' },
-    { name: 'Synergy Advisors', href: 'https://www.sa.lk' },
+    { name: 'Synergy Advisors', href: 'https://www.sa.lk/', serves: 'corporate clientele' },
+    { name: 'Sanjeewa Associates', href: 'https://www.linkedin.com/in/Sanjeewa-associates-443185137', serves: 'sole proprietors and partnerships' },
   ],
 };
 
-/**
- * [PROFILE] "Our Services" and "Our Services (Cont'd)". Six service areas, and
- * the nature of service under each, transcribed row for row.
- */
-export const serviceLines = [
-  {
-    slug: 'accounting',
-    /** Editorial: the Lucide icon and the photograph used for this line. */
-    icon: 'calculator',
-    image: 'svc-accounting',
-    /** Editorial paraphrase of `covers` below, for the service page's opening. */
-    lead: 'Day-to-day book-keeping and reconciliations through to year-end financial statements, kept in the accounting software your business already runs on — or run for you end to end as a freelance finance function.',
-    title: 'Accounting and BPO',
-    blurb: 'Your books kept properly, in the software you already use, by people who do this all day.',
-    covers: [
-      'Freelance accountant service',
-      'Accounting and book-keeping',
-      'Reconciliations',
-      'General ledgers maintained in QuickBooks, Xero, Zoho, ERPNext and similar',
-      'Preparation of financial statements',
-      'Data entry',
-    ],
-  },
-  {
-    slug: 'tax',
-    /** Editorial: the Lucide icon and the photograph used for this line. */
-    icon: 'landmark',
-    image: 'svc-tax',
-    /** Editorial paraphrase of `covers` below, for the service page's opening. */
-    lead: "Tax computations, administration and planning, and the full range of assurance work — statutory and internal audit, due diligence, system studies and asset verification — carried out through the firm's associate practices.",
-    title: 'Tax and assurance',
-    blurb: 'Computations, filings and audit, carried out through our associate practices.',
-    covers: [
-      'Tax computations',
-      'Tax administration',
-      'Tax planning consultations',
-      'Statutory audit service',
-      'Internal audit',
-      'Due diligence',
-      'System studies',
-      'Asset verifications',
-    ],
-    /** [PROFILE] the parenthetical under the service area heading. */
-    note: 'Conducted through Sanjeewa Associates and Synergy Advisors.',
-  },
-  {
-    slug: 'advisory',
-    /** Editorial: the Lucide icon and the photograph used for this line. */
-    icon: 'compass',
-    image: 'svc-advisory',
-    /** Editorial paraphrase of `covers` below, for the service page's opening. */
-    lead: 'For decisions that need a number behind them: what a business or its shares are worth, whether a project stands up on paper, and how the organisation around it should be structured.',
-    title: 'Business advisory',
-    blurb: 'What a business is worth, whether a plan holds up, and what the numbers say about both.',
-    covers: [
-      'Shares and business valuation',
-      'Feasibility studies',
-      'Project reports',
-      'HR advisory services',
-      'Financial advisory',
-    ],
-  },
-  {
-    slug: 'payroll',
-    /** Editorial: the Lucide icon and the photograph used for this line. */
-    icon: 'wallet',
-    image: 'svc-payroll',
-    /** Editorial paraphrase of `covers` below, for the service page's opening. */
-    lead: 'The monthly payroll prepared, statutory payments processed, payslips issued and the annual T10 forms filed, so the payroll stops being a job someone in the business has to find time for.',
-    title: 'Payroll',
-    blurb: 'The monthly run, the statutory payments and the annual forms, off your desk.',
-    covers: [
-      'Monthly payroll preparation',
-      'Statutory payments processing',
-      'Payslips',
-      'Annual T10 forms',
-    ],
-  },
-  {
-    slug: 'analytics',
-    /** Editorial: the Lucide icon and the photograph used for this line. */
-    icon: 'chart-column',
-    image: 'svc-analytics',
-    /** Editorial paraphrase of `covers` below, for the service page's opening. */
-    lead: 'Your own figures turned into dashboards that answer the questions you actually ask, and the Power BI training your team needs to keep building them.',
-    title: 'Data analytics and Power BI',
-    blurb: 'Your own figures, turned into something you can actually look at and act on.',
-    covers: [
-      'Dashboard preparation',
-      'Training on Power BI',
-      'Data analytics',
-    ],
-  },
-  {
-    slug: 'secretarial',
-    /** Editorial: the Lucide icon and the photograph used for this line. */
-    icon: 'file-signature',
-    image: 'svc-secretarial',
-    /** Editorial paraphrase of `covers` below, for the service page's opening. */
-    lead: "From incorporation to the recurring filings that keep a company in good standing: statutory forms, minute books, the share register and the board's compliance checklist.",
-    title: 'Corporate secretarial',
-    blurb: 'Incorporation, and the filings that keep the company in good standing afterwards.',
-    covers: [
-      'Incorporation of companies: private, public, limited by guarantee and foreign',
-      'Recurring secretarial filings such as Form 15, Form 20, Form 3 and Form 39',
-      'Maintenance of minute books',
-      'Share register maintenance',
-      'Board compliance checklist',
-    ],
-    /** The only line with published prices, so it is the only one that links out. */
-    packagesHref: '/packages/',
-  },
-] as const;
+/** A WhatsApp chat with the firm, optionally with the first message written. */
+export const whatsappHref = (text?: string) =>
+  `https://wa.me/${site.whatsapp}` + (text ? `?text=${encodeURIComponent(text)}` : '');
 
 /**
  * [FEES] Sheet1, columns B, D and F. The three incorporation packages, priced
@@ -404,41 +318,30 @@ export const extras = [
 export const annualRetainer = 15_000;
 
 /**
- * [PROFILE] Board of Directors, across three slides. Bios are condensed; every
- * qualification and every role named here appears in the deck.
+ * [CONTENT] "Our directors", with the qualifications from [PROFILE] Board of
+ * Directors. The bios are the document's own, which describe each director's
+ * profile rather than claim more than it states.
  */
 export const directors = [
   {
-    name: 'Mr. J. M. N. Sanjeewa',
+    name: 'J M N Sanjeewa',
     creds: 'FCA (CA Sri Lanka), ACMA (SL), BSc Accounting (Special), MBA',
-    bio:
-      'A Fellow Member of the Institute of Chartered Accountants of Sri Lanka and an ' +
-      'Associate Member of the Chartered Institute of Management Accountants. He is a ' +
-      'Registered Company Secretary and an Investment Advisor, and works across corporate ' +
-      'governance and financial advisory.',
+    bio: 'A Fellow Member of CA Sri Lanka with a BSc in Accounting (Special) and an MBA. His profile includes company secretarial, corporate governance and financial advisory experience.',
   },
   {
-    name: 'Mr. M. A. W. P. Wijerathna',
+    name: 'M A W P Wijerathna',
     creds: 'ACA (CA Sri Lanka), BSc Business Administration (Special)',
-    bio:
-      'An Associate Member of CA Sri Lanka and a Registered Company Secretary. His work is ' +
-      'in corporate compliance and administration, advising on organisational management ' +
-      'and on what the statutory requirements actually ask for.',
+    bio: 'An Associate Member of CA Sri Lanka with a BSc in Business Administration (Special), bringing company secretarial and corporate administration experience.',
   },
   {
-    name: 'Mr. R. P. P. Amarasekara',
+    name: 'R P P Amarasekara',
     creds: 'ACMA, Investment Advisor',
-    bio:
-      'An Associate Chartered Management Accountant and an experienced Investment Advisor. ' +
-      'He works on financial planning, investment strategy and portfolio management, ' +
-      'grounded in management accounting.',
+    bio: 'An Associate Chartered Management Accountant whose profile includes financial planning and investment advisory experience.',
   },
   {
-    name: 'Mr. M. V. D. Mendis',
+    name: 'M V D Mendis',
     creds: 'Certified Business Accountant',
-    bio:
-      'A Certified Business Accountant working in financial reporting and business ' +
-      'advisory, supporting clients in managing their financial operations.',
+    bio: 'A Certified Business Accountant whose profile includes financial reporting and business advisory work.',
   },
 ] as const;
 
@@ -453,7 +356,8 @@ export const team = {
   total: 17,
 } as const;
 
-/** [PROFILE] Sectorial expertise, all fourteen, in the order the deck lists them. */
+/** [PROFILE] Sectorial expertise, all fourteen in the deck's order, plus NGOs,
+    which [CONTENT] "Businesses we support" adds. */
 export const sectors = [
   'Import and export', 'Power and energy',
   'Manufacturing', 'Agriculture',
@@ -462,6 +366,7 @@ export const sectors = [
   'Insurance', 'Advertising',
   'Services', 'Restaurants',
   'Wholesale and retail', 'Online e-commerce',
+  'NGOs',
 ] as const;
 
 /**
@@ -500,29 +405,6 @@ export const steps = [
   },
 ] as const;
 
-export const audiences = [
-  {
-    title: 'Registering a company',
-    detail: 'You want a company incorporated in Sri Lanka and you want to know what it costs before you call.',
-    to: '/packages/',
-  },
-  {
-    title: 'Running one already',
-    detail: 'Forms are due, the minute book is behind, or the share register needs to be right.',
-    to: '/services/secretarial/',
-  },
-  {
-    title: 'Handing over the books',
-    detail: 'You want the accounting, the reconciliations and the monthly payroll off your desk.',
-    to: '/services/accounting/',
-  },
-  {
-    title: 'Trying to see the numbers',
-    detail: 'The data exists somewhere and nobody can answer a question with it.',
-    to: '/services/analytics/',
-  },
-] as const;
-
 export const faqs = [
   {
     q: 'What does it cost to incorporate a company?',
@@ -542,20 +424,29 @@ export const faqs = [
   },
   {
     q: 'Who carries out the audit and the tax work?',
-    a: 'Tax and assurance work is conducted through Sanjeewa Associates and Synergy Advisors. That is stated here rather than buried, because you are entitled to know which practice signs your audit.',
+    a: 'RBPL is affiliated with Synergy Advisors (Chartered Accountants). Tax work is conducted through Synergy Advisors and Sanjeewa Associates; audits through Synergy Advisors for companies and Sanjeewa Associates for sole proprietors and partnerships. That is stated here rather than buried, because you are entitled to know which practice signs your audit.',
   },
   {
     q: 'Which accounting software do you work in?',
-    a: 'We maintain general ledgers in QuickBooks, Xero, Zoho and ERPNext among others. If your books are already somewhere, the usual answer is that we work in what you have rather than moving you.',
+    a: 'Our corporate profile includes work with eFS, QuickBooks, Xero, Zoho, Odoo and ERPNext. If your books are already somewhere, the usual answer is that we work in what you have rather than moving you.',
   },
   {
     q: 'Do you take on the accounting after incorporation as well?',
     a: 'Yes, and most clients do. Book-keeping, reconciliations, financial statements, monthly payroll and the statutory payments are all in-house, alongside the secretarial work.',
   },
+  /* [CONTENT] Common questions. */
+  {
+    q: 'Can I engage you for one service?',
+    a: 'Yes. Individual services or combined engagements can be scoped.',
+  },
+  {
+    q: 'Do you work with international businesses?',
+    a: 'Yes. Tell us your location and reporting needs so we can scope the support required.',
+  },
 ] as const;
 
 /**
- * The fourteen sectors in [PROFILE] "Sectorial expertise", grouped into six
+ * The fifteen sectors ([PROFILE] "Sectorial expertise", plus NGOs from [CONTENT]), grouped into six
  * families so each family can carry one photograph. Every one of the fourteen
  * names appears, exactly as the deck spells it.
  *
@@ -608,12 +499,12 @@ export const industries = [
   },
   {
     slug: 'professional',
-    title: 'Professional and financial services',
-    short: 'Professional services',
+    title: 'Professional, financial and non-profit',
+    short: 'Professional and NGO',
     icon: 'briefcase-business',
     image: 'ind-professional',
-    sectors: ['Professionals', 'Services', 'Insurance', 'Advertising'],
-    blurb: 'Businesses where time is the product, so payroll, compliance and clean monthly figures do most of the work.',
+    sectors: ['Professionals', 'Services', 'Insurance', 'Advertising', 'NGOs'],
+    blurb: 'Organisations where time is the product, so payroll, compliance and clean monthly figures do most of the work, and for an NGO, records a funder can rely on.',
     services: ['payroll', 'secretarial', 'analytics'],
   },
   {
@@ -629,51 +520,38 @@ export const industries = [
 ] as const;
 
 /**
- * Why a business would choose this firm, stated only in terms the sources
- * support. Each `basis` names the fact the pillar rests on, so a pillar cannot
- * drift into a claim nobody can check.
+ * [CONTENT] Accounting: "work with eFS, QuickBooks, Xero, Zoho, Odoo and
+ * ERPNext", plus Power BI from the analytics page. Set as TYPE, never as the
+ * vendors' logos: the firm works in these tools, it is not their partner.
  */
-export const pillars = [
-  {
-    icon: 'layers',
-    title: 'Six disciplines, one set of books',
-    body: 'Accounting, tax, payroll, advisory, analytics and company secretarial work under one roof. The ledger the accountant keeps is the ledger the tax computation is built from.',
-    basis: '[PROFILE] About us: "business related services ... under one umbrella"',
-  },
-  {
-    icon: 'badge-check',
-    title: 'A qualified board',
-    body: 'Chartered Accountants, Chartered Management Accountants and Registered Company Secretaries sit on the board of directors.',
-    basis: '[PROFILE] Board of Directors',
-  },
-  {
-    icon: 'receipt-text',
-    title: 'Fees in the open',
-    body: 'Every incorporation package and per-director rate is published, and the estimator adds them up for you before you pick up the phone.',
-    basis: '[FEES] Sheet1',
-  },
-  {
-    icon: 'laptop',
-    title: 'Your software, not ours',
-    body: 'General ledgers kept in QuickBooks, Xero, Zoho, ERPNext and similar, so the books stay in the system your business already uses.',
-    basis: '[PROFILE] Our Services: "Maintenance of GLs through software (QB, Xero, Zoho, ERP next, etc.)"',
-  },
-] as const;
+export const platforms = ['eFS', 'QuickBooks', 'Xero', 'Zoho', 'Odoo', 'ERPNext', 'Power BI'] as const;
 
-/**
- * [PROFILE] the four ledger packages named under Accounting & BPO, plus Power BI
- * from the analytics line. Set as TYPE, never as the vendors' logos: the firm
- * works in these tools, it is not their partner, and a row of logos would
- * imply otherwise.
- */
-export const platforms = ['QuickBooks', 'Xero', 'Zoho', 'ERPNext', 'Power BI'] as const;
-
-/** The credentials rail. Every number is a count from [PROFILE]. */
+/** The credentials rail. Counts from [PROFILE] and [CONTENT]; the service
+    count is the number of service pages, checked against services.ts. */
 export const credentials = [
   { n: 2018, label: 'Year established', count: false },
   { n: 17, label: 'Professionals on the team', count: true },
-  { n: 4, label: 'Directors on the board', count: true },
-  { n: 14, label: 'Sectors of expertise', count: true },
+  { n: 24, label: 'Specialist services', count: true },
+  { n: 15, label: 'Sectors supported', count: true },
+] as const;
+
+/**
+ * [CONTENT] "Links to important sites". Each address checked by hand on
+ * 2026-10-13; the UAE page's own path includes /Doing-business/, which the
+ * document's link omitted.
+ */
+export const usefulLinks = [
+  { name: 'Synergy Advisors', note: 'Affiliated Chartered Accountants', href: 'https://www.sa.lk/' },
+  { name: 'Central Bank of Sri Lanka', note: 'Monetary policy, rates and economic data', href: 'https://www.cbsl.gov.lk/' },
+  { name: 'Department of Labour', note: 'Employment law and workplace administration', href: 'https://labourdept.gov.lk/' },
+  { name: 'Employees’ Provident Fund', note: 'EPF registration and contributions', href: 'https://epf.lk/' },
+  { name: 'The Employers’ Federation of Ceylon', note: 'Employer guidance and industrial relations', href: 'https://www.employers.lk/' },
+  { name: 'Department of Foreign Exchange', note: 'Foreign exchange regulations and approvals', href: 'https://www.dfe.lk/' },
+  { name: 'Colombo Port City Economic Commission', note: 'Port City registration and Authorised Persons', href: 'https://www.portcitycolombo.gov.lk/' },
+  { name: 'Department of the Registrar of Companies', note: 'Company registration and filings', href: 'https://drc.gov.lk/' },
+  { name: 'UAE Government portal', note: 'Running a business in a UAE free zone', href: 'https://u.ae/en/information-and-services/business/Doing-business/doing-business-in-free-zones/running-a-business-in-a-free-zone-' },
+  { name: 'Sri Lanka Customs', note: 'Import and export registration', href: 'https://www.customs.gov.lk/' },
+  { name: 'National Medicines Regulatory Authority', note: 'NMRA registrations and approvals', href: 'https://www.nmra.gov.lk/' },
 ] as const;
 
 /**

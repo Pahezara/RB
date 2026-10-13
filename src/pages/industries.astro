@@ -4,19 +4,20 @@ import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Img from '../components/Img.astro';
 import Icon from '../components/Icon.astro';
-import { industries, serviceLines } from '../data/site';
+import { industries, sectors } from '../data/site';
+import { serviceBySlug } from '../data/services';
 
 const title = 'Industries — Reliance Business Partners';
 const description =
-  'The fourteen sectors Reliance Business Partners lists as its expertise, from import and export to hotels, manufacturing, agriculture and online commerce.';
+  'The fifteen sectors Reliance Business Partners supports, from import and export to hotels, manufacturing, agriculture, NGOs and online commerce.';
 
-const svc = (slug: string) => serviceLines.find((s) => s.slug === slug)!;
+const svc = serviceBySlug;
 const sectorCount = industries.reduce((n, i) => n + i.sectors.length, 0);
 ---
 <Base title={title} description={description} overHero>
   <PageHero
     eyebrow="Sectorial expertise"
-    title={`${sectorCount === 14 ? 'Fourteen' : sectorCount} sectors, <em>six families.</em>`}
+    title={`${sectorCount === 15 ? 'Fifteen' : sectorCount} sectors, <em>six families.</em>`}
     lede="The industries whose books, filings and seasons the firm has worked in. This is not a client list: it is the ground the firm already knows, and the services that usually carry the weight in each."
     crumbs={[{ label: 'Home', href: '/' }, { label: 'Industries' }]}
   >
@@ -86,7 +87,7 @@ const sectorCount = industries.reduce((n, i) => n + i.sectors.length, 0);
 
   <CtaBand
     title="Your sector is not on the list? <em>Ask anyway.</em>"
-    text="The fourteen are where the firm has worked most. The six service lines apply to almost any business, and the first conversation costs nothing."
+    text="The fifteen are where the firm has worked most. Most of its services apply to almost any business, and the first conversation costs nothing."
   />
 </Base>
 

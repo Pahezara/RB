@@ -1,0 +1,167 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import { whatsappHref } from '../data/site';
+import { serviceBySlug } from '../data/services';
+
+/* [CONTENT] Investors and business owners. */
+const title = 'Investor and Business Owner Support | RBPL';
+const description =
+  'Explore Sri Lanka investment support, acquisition due diligence, business sales and funding preparation with Reliance Business Partners.';
+
+const paths = [
+  {
+    icon: 'search-check',
+    kicker: 'Investors',
+    title: 'For investors exploring a business opportunity',
+    body: 'Assess the commercial proposition, review available financial information and understand the proposed operating structure. We can coordinate business setup, feasibility analysis and due diligence, then help plan accounting and reporting support after the investment.',
+    cta: 'Discuss an Investment Opportunity',
+    msg: 'Hello Reliance Business Partners, I would like to discuss an investment opportunity.',
+  },
+  {
+    icon: 'hand-coins',
+    kicker: 'Raising capital',
+    title: 'For owners seeking an investment partner',
+    body: 'Explain what your business needs, what the capital will fund and how the proposed partnership could work. We help prepare business plans, projections and supporting records, and coordinate discussions with relevant parties where suitable.',
+    cta: 'Prepare My Business for Investors',
+    msg: 'Hello Reliance Business Partners, I would like to prepare my business for investors.',
+  },
+  {
+    icon: 'arrow-right-left',
+    kicker: 'Selling',
+    title: 'For owners considering a sale',
+    body: 'Start with a confidential conversation about your objectives, the proposed sale scope and the information available. We help prepare the business for buyer enquiries and coordinate the next stages of the process.',
+    cta: 'Discuss a Business Sale',
+    msg: 'Hello Reliance Business Partners, I would like a confidential conversation about selling my business.',
+  },
+];
+
+/* [CONTENT] "A structured first conversation". */
+const share = ['The sector', 'The location', 'An approximate investment or funding range', 'Your ownership preference', 'The expected timing'];
+const related = ['due-diligence', 'funding', 'business-sale', 'advisory', 'company-registration', 'port-city'].map(serviceBySlug);
+const wa = whatsappHref('Hello Reliance Business Partners, I would like a confidential first conversation about an investment.');
+---
+<Base title={title} description={description} overHero>
+  <PageHero
+    eyebrow="Investors and business owners"
+    title="Make your next investment decision <em>with better information.</em>"
+    lede="Whether you are entering Sri Lanka, considering an acquisition or preparing your business for an investor, RBPL helps you organise the information and professional support behind the decision. We work from your objectives and the specific opportunity to define the next steps."
+    image="ind-professional"
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Investors' }]}
+  >
+    <a class="btn btn--primary btn--lg" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> Start a Confidential Enquiry</a>
+  </PageHero>
+
+  <section class="section" aria-label="Three starting points">
+    <div class="container">
+      <ul class="paths">
+        {paths.map((p, i) => (
+          <li class:list={['path', i === 0 && 'path--lead']}>
+            <span class="icon-tile"><Icon name={p.icon} /></span>
+            <p class="path-k">{p.kicker}</p>
+            <h2 class="path-h">{p.title}</h2>
+            <p class="path-p">{p.body}</p>
+            <a class:list={['btn', i === 0 ? 'btn--primary' : 'btn--dark']} href={whatsappHref(p.msg)} target="_blank" rel="noopener">{p.cta} <Icon name="arrow-right" size={18} stroke={2} /></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="first-h">
+    <div class="container first">
+      <div>
+        <p class="eyebrow">A structured first conversation</p>
+        <h2 id="first-h">Five things to tell us, <em>and nothing sensitive yet.</em></h2>
+        <p class="lede first-lede">
+          We will identify the information needed to scope the work and agree how
+          sensitive material should be shared.
+        </p>
+      </div>
+      <div class="first-card">
+        <ol class="share">
+          {share.map((s, i) => <li><span class="tnum">{i + 1}</span>{s}</li>)}
+        </ol>
+        <p class="first-note">
+          Introductions and opportunities are considered case by case. RBPL does not
+          promise funding, transaction completion or investment returns. Specialist
+          legal, tax and regulated advice is coordinated where required.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="svc-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">The services behind it</p>
+        <h2 id="svc-h">From the first look <em>to the reporting after.</em></h2>
+      </div>
+      <ul class="rel">
+        {related.map((r) => (
+          <li>
+            <a class="rel-card link-plain" href={`/services/${r.slug}/`}>
+              <div class="media rel-media"><Img slug={r.image} sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw" alt="" /></div>
+              <div class="rel-body">
+                <h3>{r.title}</h3>
+                <p>{r.blurb}</p>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Start with a <em>confidential conversation.</em>"
+    text="Tell us the opportunity or the requirement in outline. We will tell you what is needed to scope it, and how sensitive information should be shared."
+    primaryLabel="Discuss an Investment or Business Sale"
+    primaryHref={wa}
+  />
+</Base>
+
+<style>
+  .paths { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 64rem) { .paths { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); } }
+  .path {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .path--lead { position: relative; overflow: hidden; }
+  .path--lead::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--brand-ramp); }
+  .path-k { margin-top: var(--space-2); font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--accent-ink); }
+  .path-h { font-size: var(--text-h3); line-height: 1.2; }
+  .path-p { color: var(--ink-soft); font-size: var(--text-sm); }
+  .path .btn { margin-top: auto; }
+  .path-p { margin-bottom: var(--space-3); }
+
+  .first { display: grid; gap: var(--space-7); align-items: start; }
+  @media (min-width: 64rem) { .first { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-9); } }
+  .first-lede { margin-top: var(--space-5); }
+  .first-card { padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem); background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--r-lg); }
+  .share { list-style: none; margin: 0; padding: 0; display: grid; }
+  .share li { display: flex; align-items: center; gap: var(--space-4); min-height: 3.25rem; border-bottom: 1px solid var(--line); font-weight: 600; }
+  .share span { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: var(--r-pill); background: var(--accent-tint); color: var(--accent-ink); font-size: var(--text-xs); font-weight: 700; flex: none; }
+  .first-note { margin-top: var(--space-5); color: var(--muted); font-size: var(--text-sm); }
+
+  .rel { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .rel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .rel { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); } }
+  .rel-card { display: flex; flex-direction: column; height: 100%; background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; color: var(--ink); transition: transform var(--dur-control) var(--ease-out), box-shadow var(--dur-control) var(--ease-out); }
+  .rel-card:hover { transform: translate3d(0, -4px, 0); box-shadow: var(--shadow-2); color: var(--ink); }
+  .rel-media { aspect-ratio: 16 / 9; border-radius: 0; }
+  .rel-media :global(picture) { height: 100%; }
+  .rel-body { padding: var(--pad-card); display: grid; gap: var(--space-2); }
+  .rel-body h3 { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: -0.01em; }
+  .rel-body p { color: var(--muted); font-size: var(--text-sm); }
+</style>

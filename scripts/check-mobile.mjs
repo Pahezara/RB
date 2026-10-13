@@ -71,7 +71,10 @@ const PROBE = `(() => {
   const inProse = (el) => !!el.closest('p, li, address, .prose, .answer, .colophon, .step-meta');
   const targets = [];
   for (const el of document.querySelectorAll('a[href], button, summary, input, select, textarea, [role="button"]')) {
-    const r = el.getBoundingClientRect();
+    // A checkbox or radio wrapped in its <label> is activated by tapping the
+    // label, so the label's box is the real target and is what gets measured.
+    const wrap = el.matches('input[type="radio"], input[type="checkbox"]') ? el.closest('label') : null;
+    const r = (wrap || el).getBoundingClientRect();
     if (r.width === 0 || r.height === 0) continue;
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || cs.display === 'none') continue;

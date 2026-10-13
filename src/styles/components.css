@@ -82,6 +82,8 @@
 .btn--sm { min-height: var(--tap-min); padding: var(--space-2) var(--space-4); font-size: var(--text-xs); }
 .btn--lg { min-height: 54px; padding: 0.95rem 1.65rem; font-size: var(--text-body); }
 .btn--block { display: flex; width: 100%; }
+/* On a narrow phone a long label wraps rather than pushing the page sideways. */
+@media (max-width: 39.99rem) { .btn { white-space: normal; text-align: center; max-width: 100%; } }
 
 /* --- the arrow link ----------------------------------------------------------
    For "read more" moments inside cards and rows. Accent-ink on paper (5.71:1),

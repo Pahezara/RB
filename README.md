@@ -10,7 +10,10 @@ npm run dev      # local dev server
 npm run verify   # build, then every check, in order
 ```
 
-**JavaScript.** Four small inline scripts, and the site works with all of them blocked:
+**JavaScript.** A handful of small inline scripts, and the site works with all of them blocked:
+
+- the **hero slider** on the home page: five service-group slides, autoplay that pauses on hover, focus, off-screen and under reduced motion, with prev/pause/next and dots. Without it the first slide stays and every group is listed further down;
+- the **enquiry form** on `/contact/`, which writes the enquiry into the visitor's e-mail app or WhatsApp (DECISIONS D10). Without it the button stays disabled and the direct routes are given;
 
 - the **fee estimator**, on the home page and `/packages/`. Its default state is rendered
   on the server with the arithmetic already done, so with the script blocked the page
@@ -242,12 +245,17 @@ the navy and the orange read as printed on it rather than lit on a screen.
 2. **Opening hours** — not in the business profile. Without them there is no
    `openingHoursSpecification` in the structured data, which is a real loss for local
    search.
-3. **A WhatsApp number** — the profile gives one phone number and the site will not assume
-   it also answers WhatsApp. In this market that is the channel most enquiries want.
+3. **Confirm the WhatsApp number** — every "Discuss…" button opens WhatsApp on
+   +94 711 22 45 45, the one published number. Change `site.whatsapp` if WhatsApp is on
+   another line.
 4. **Registration / licence numbers** — still the strongest remaining trust signal for an
    accounting and secretarial firm.
 5. **Form 18 and Form 19** — the fee sheet says "Certified" on Advanced and plain on
    Premium. The site flags the difference rather than correcting it. Confirm which is
    right and the footnote can go.
-6. **The enquiry is a `mailto:` link, not a form** — a real endpoint needs a third-party
-   service and the client's approval. See decision D10.
+6. **The enquiry form has no server** — it hands the enquiry to the visitor's e-mail app or
+   WhatsApp. A real endpoint needs a service and the client's approval. See decision D10.
+7. **EHRiS** — the content document asks for a description on the payroll page but does not
+   say what EHRiS is. See decision D17.
+8. **Admin login** — insights, management and services editing needs a git-based CMS and a
+   GitHub sign-in authorised by the site owner. See decision D17.

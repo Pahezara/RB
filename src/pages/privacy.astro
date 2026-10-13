@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Legal from '../components/Legal.astro';
 import { site } from '../data/site';
-const title = 'Privacy — Reliance Business Partners';
+const title = 'Privacy Notice | Reliance Business Partners';
 const description =
   'How Reliance Business Partners handles the information you send through this website, what is stored, and how to ask for it to be removed.';
 
@@ -18,10 +18,10 @@ const toc = [
 <Base title={title} description={description} overHero>
   <PageHero
     variant="plain"
-    eyebrow="Privacy"
+    eyebrow="Privacy Notice"
     title="Nothing tracked. <em>Nothing sold.</em>"
     lede="What happens to information you send us through this website, in plain terms."
-    crumbs={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Privacy Notice' }]}
   />
 
   <Legal toc={toc}>
@@ -35,7 +35,10 @@ const toc = [
     </p>
     <h2 id="send">What you send us</h2>
     <p>
-      The enquiry actions open your own phone or e-mail application. Anything you then send reaches us as an ordinary call or e-mail, and e-mail is held in our e-mail system so we can reply and act on it.
+      The enquiry form does not post to this website. When you press send, it writes your enquiry into your own e-mail application, or into WhatsApp if that is the contact method you chose, and nothing reaches us until you send it from there. Nothing you type into the form is stored by this website.
+    </p>
+    <p>
+      Anything you send reaches us as an ordinary call, e-mail or WhatsApp message, and is held in our e-mail or messaging systems so we can reply and act on it. WhatsApp is operated by WhatsApp LLC (Meta), and messages sent through it are also subject to its own privacy policy. Please do not send bank details, identity documents or confidential transaction files in a first enquiry.
     </p>
     <h2 id="use">What we do with it</h2>
     <p>

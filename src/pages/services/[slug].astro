@@ -4,169 +4,209 @@ import PageHero from '../../components/PageHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import Img from '../../components/Img.astro';
 import Icon from '../../components/Icon.astro';
-import { serviceLines, site, packages, engagement, industries } from '../../data/site';
+import { packages, engagement, whatsappHref } from '../../data/site';
+import { services, categoryBySlug, servicesIn, serviceBySlug, type Service } from '../../data/services';
 
 export function getStaticPaths() {
-  return serviceLines.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
 }
 
-const { service } = Astro.props;
-const index = serviceLines.findIndex((s) => s.slug === service.slug);
-const title = `${service.title} — Reliance Business Partners`;
-const description = `${service.blurb} From Reliance Business Partners, Nugegoda, Colombo.`;
-
-const others = serviceLines.filter((s) => s.slug !== service.slug);
-/* Editorial mapping from src/data/site.ts: which industry families this line
-   usually matters to. It claims no client in any of them. */
-const relevant = industries.filter((i) => (i.services as readonly string[]).includes(service.slug));
+const { service } = Astro.props as { service: Service };
+const category = categoryBySlug(service.category);
+const siblings = servicesIn(service.category);
+const position = siblings.findIndex((s) => s.slug === service.slug) + 1;
+const related = service.related.map(serviceBySlug);
 const money = (n: number) => n.toLocaleString('en-US');
-const isSecretarial = 'packagesHref' in service && service.packagesHref;
 
-/* The covers grid is laid out for its count, so no line ends on an orphan:
-   four and eight sit in fours, five as two over three, the rest in threes. */
-const nCovers = service.covers.length;
-const coversLayout = nCovers === 5 ? 'covers--5' : nCovers % 4 === 0 ? 'covers--4' : 'covers--3';
+/* The page's own button opens WhatsApp with the service already named. */
+const wa = whatsappHref(`Hello Reliance Business Partners, I would like to discuss: ${service.title}.`);
+
+/* The help list is laid out for its count, so no row ends on an orphan. */
+const n = service.help.length;
+const helpLayout = n === 5 ? 'help--5' : n === 7 ? 'help--7' : n % 4 === 0 ? 'help--4' : 'help--3';
 ---
-<Base title={title} description={description} overHero>
+<Base title={service.seoTitle} description={service.seoDescription} overHero>
   <PageHero
-    eyebrow={`Service ${String(index + 1).padStart(2, '0')} of 06`}
-    title={service.title}
-    lede={service.lead}
+    eyebrow={service.title}
+    title={service.headline}
+    lede={service.intro[0]}
     image={service.image}
-    crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: service.title }]}
+    crumbs={[
+      { label: 'Home', href: '/' },
+      { label: 'Services', href: '/services/' },
+      { label: category.title, href: `/services/#${category.slug}` },
+      { label: service.title },
+    ]}
   >
-    <a class="btn btn--primary btn--lg" href="/contact/">Start an enquiry <Icon name="arrow-right" size={18} stroke={2} /></a>
-    <a class="btn btn--ghost btn--lg tnum" href={site.phoneHref}><Icon name="phone" size={18} stroke={2} /> {site.phone}</a>
+    <a class="btn btn--primary btn--lg" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> {service.cta}</a>
+    <a class="btn btn--ghost btn--lg" href={`/contact/?service=${service.slug}`}>Send an enquiry</a>
   </PageHero>
 
-  {/* What is included: the `covers` list from the profile, one card each. */}
-  <section class="section" aria-labelledby="inc-h">
+  {/* ------------------------------------------------------------ HOW WE CAN HELP */}
+  <section class="section" aria-labelledby="help-h">
     <div class="container">
       <div class="section-head section-head--split">
         <div>
-          <p class="eyebrow">What this covers</p>
-          {/* Never lowercased: the titles carry acronyms (BPO, Power BI). */}
-          <h2 id="inc-h">{service.title}, <em>in full.</em></h2>
+          <p class="eyebrow">How we can help</p>
+          <h2 id="help-h">{service.title}, <em>in practice.</em></h2>
         </div>
-        <p class="intro">{service.blurb}</p>
-      </div>
-
-      <ul class:list={['covers', coversLayout]}>
-        {service.covers.map((c, i) => (
-          <li class="cover">
-            <span class="cover-n tnum">{String(i + 1).padStart(2, '0')}</span>
-            <span class="cover-t">{c}</span>
-          </li>
-        ))}
-      </ul>
-
-      {'note' in service && service.note && (
-        <div class="assoc">
-          <span class="icon-tile"><Icon name="scale" /></span>
-          <div>
-            <p class="assoc-h">Delivered through associate practices</p>
-            <p>
-              {service.note} You are told which practice carries out your work before it begins,
-              because a client is entitled to know who signs the audit.
-            </p>
-          </div>
-        </div>
-      )}
-    </div>
-  </section>
-
-  {isSecretarial && (
-    <section class="section band--dark on-invert" aria-labelledby="price-h">
-      <div class="container">
-        <div class="section-head section-head--split">
-          <div>
-            <p class="eyebrow">Incorporation, priced in the open</p>
-            <h2 id="price-h">Three packages, <em>every fee published.</em></h2>
-          </div>
-          <p class="intro">
-            Each priced for a company with one director, with a published rate for
-            every additional director. The estimator adds them up for you.
-          </p>
-        </div>
-        <ul class="mini-pkgs">
-          {packages.map((p, i) => (
-            <li class:list={['mini-pkg', i === packages.length - 1 && 'mini-pkg--top']}>
-              <p class="mp-name">{p.name}</p>
-              <p class="mp-price display"><span class="mp-cur">LKR</span> {money(p.price)}</p>
-              <p class="mp-meta">One director &middot; {p.includes.length} items included</p>
-              <p class="mp-add">+ LKR {money(p.perDirector)} per additional director</p>
-            </li>
-          ))}
-        </ul>
-        <div class="row mp-actions">
-          <a class="btn btn--primary btn--lg" href="/packages/">Compare the packages <Icon name="arrow-right" size={18} stroke={2} /></a>
-          <a class="btn btn--ghost btn--lg" href="/#estimate">Open the estimator</a>
+        <div class="intro">
+          {service.intro.length > 1
+            ? service.intro.slice(1).map((p) => <p class="intro-p">{p}</p>)
+            : <p class="intro-p">{service.blurb}</p>}
+          <p class="cat-chip"><Icon name={category.icon} size={16} /> {category.title} &middot; {position} of {siblings.length}</p>
         </div>
       </div>
-    </section>
-  )}
 
-  {/* How any engagement starts. */}
-  <section class:list={['section', !isSecretarial && 'band']} aria-labelledby="start-h">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">How we start</p>
-        <h2 id="start-h">The scope and the fee, <em>in writing first.</em></h2>
-      </div>
-      <ol class="steps steps--3">
-        {engagement.map((e) => (
-          <li class="step">
-            <span class="step-n">{e.n}</span>
-            <h3>{e.title}</h3>
-            <p>{e.detail}</p>
+      <ol class:list={['help', helpLayout, 'svc-help']}>
+        {service.help.map((h, i) => (
+          <li class="help-item">
+            <span class="help-n tnum">{String(i + 1).padStart(2, '0')}</span>
+            <span class="help-t">{h}</span>
           </li>
         ))}
       </ol>
     </div>
   </section>
 
-  {relevant.length > 0 && (
-    <section class="section" aria-labelledby="rel-h">
-      <div class="container">
-        <div class="section-head section-head--split">
-          <div>
-            <p class="eyebrow">Where it tends to matter most</p>
-            <h2 id="rel-h">Sectors that lean <em>on this.</em></h2>
-          </div>
-          <p class="intro">From the fourteen sectors the firm lists as its expertise. A guide to where this line usually carries weight, not a client list.</p>
-        </div>
-        <ul class:list={['rel', `rel--${relevant.length}`]}>
-          {relevant.map((ind) => (
-            <li>
-              <a class="rel-card link-plain" href={`/industries/#${ind.slug}`}>
-                <div class="media rel-media"><Img slug={ind.image} sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw" alt="" /></div>
-                <div class="rel-body">
-                  <h3>{ind.title}</h3>
-                  <p>{ind.blurb}</p>
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
+  {/* ------------------------------------------------------------ APPROACH */}
+  <section class="section band" aria-labelledby="approach-h">
+    <div class="container approach">
+      <div class="svc-approach">
+        <p class="eyebrow">Our approach</p>
+        <h2 id="approach-h">Scope first, <em>then the work.</em></h2>
+        <p class="approach-p">{service.approach}</p>
+        {service.note && (
+          <p class="note"><Icon name="scale" size={18} /><span>{service.note}</span></p>
+        )}
       </div>
-    </section>
-  )}
-
-  {/* The other five lines. */}
-  <section class="section band" aria-labelledby="more-h">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">From the same firm</p>
-        <h2 id="more-h">The other <em>five disciplines.</em></h2>
-      </div>
-      <ul class="others">
-        {others.map((s) => (
+      <ol class="steps-v">
+        {engagement.map((e) => (
           <li>
-            <a class="card other link-plain" href={`/services/${s.slug}/`}>
-              <span class="icon-tile"><Icon name={s.icon} /></span>
-              <h3>{s.title}</h3>
-              <p>{s.blurb}</p>
-              <span class="link-arrow">Explore <Icon name="arrow-right" size={16} stroke={2} /></span>
+            <span class="step-n">{e.n}</span>
+            <div>
+              <h3>{e.title}</h3>
+              <p>{e.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ PAGE-SPECIFIC */}
+  {service.extra?.map((x) => (
+    x.kind === 'cards' ? (
+      <section class="section extra" aria-label={x.heading}>
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">In detail</p>
+            <h2>{x.heading}</h2>
+          </div>
+          <ol class="xcards">
+            {x.items.map((it, i) => (
+              <li class="xcard">
+                <span class="help-n tnum">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{it.title}</h3>
+                <p>{it.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    ) : x.kind === 'checklist' ? (
+      <section class="section extra" aria-label={x.heading}>
+        <div class="container checklist">
+          <div class="checklist-side">
+            <p class="eyebrow">Before you apply</p>
+            <h2>{x.heading}</h2>
+            {x.intro && <p class="lede">{x.intro}</p>}
+            <a class="btn btn--primary" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> {service.cta}</a>
+          </div>
+          <div class="checklist-body">
+            {x.groups.map((g) => (
+              <div class="cl-group">
+                {g.label && <h3 class="cl-h">{g.label}</h3>}
+                <ul class="ticks">
+                  {g.items.map((it) => <li>{it}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="section band--dark on-invert extra" aria-label="Incorporation packages">
+        <div class="container">
+          <div class="section-head section-head--split">
+            <div>
+              <p class="eyebrow">Incorporation, priced in the open</p>
+              <h2>Three packages, <em>every fee published.</em></h2>
+            </div>
+            <p class="intro">
+              Each priced for a private company with one director, with a published
+              rate for every additional director. The instant quotation adds them up.
+            </p>
+          </div>
+          <ul class="mini-pkgs">
+            {packages.map((p, i) => (
+              <li class:list={['mini-pkg', i === packages.length - 1 && 'mini-pkg--top']}>
+                <p class="mp-name">{p.name}</p>
+                <p class="mp-price display"><span class="mp-cur">LKR</span> {money(p.price)}</p>
+                <p class="mp-meta">One director &middot; {p.includes.length} items included</p>
+                <p class="mp-add">+ LKR {money(p.perDirector)} per additional director</p>
+              </li>
+            ))}
+          </ul>
+          <div class="row mp-actions">
+            <a class="btn btn--primary btn--lg" href="/#estimate">Get an instant quotation <Icon name="arrow-right" size={18} stroke={2} /></a>
+            <a class="btn btn--ghost btn--lg" href="/packages/">Compare the packages</a>
+          </div>
+        </div>
+      </section>
+    )
+  ))}
+
+  {/* ------------------------------------------------------------ QUESTIONS */}
+  <section class="section" aria-labelledby="faq-h">
+    <div class="container faq-grid">
+      <div class="faq-side">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-h">What clients <em>ask first.</em></h2>
+        <a class="link-arrow" href={`/contact/?service=${service.slug}`}>Ask us something else <Icon name="arrow-right" size={16} stroke={2} /></a>
+      </div>
+      <div class="faq svc-faq">
+        {service.faqs.map((f, i) => (
+          <details open={i === 0}>
+            <summary>{f.q}</summary>
+            <div class="answer"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ RELATED */}
+  <section class="section band" aria-labelledby="rel-h">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow">Often combined with</p>
+          <h2 id="rel-h">Related <em>services.</em></h2>
+        </div>
+        <a class="link-arrow" href={`/services/#${category.slug}`}>More in {category.title} <Icon name="arrow-right" size={16} stroke={2} /></a>
+      </div>
+      <ul class="rel">
+        {related.map((r) => (
+          <li>
+            <a class="rel-card link-plain" href={`/services/${r.slug}/`}>
+              <div class="media rel-media"><Img slug={r.image} sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw" alt="" /></div>
+              <div class="rel-body">
+                <span class="icon-tile"><Icon name={r.icon} /></span>
+                <h3>{r.title}</h3>
+                <p>{r.blurb}</p>
+                <span class="link-arrow">Explore <Icon name="arrow-right" size={16} stroke={2} /></span>
+              </div>
             </a>
           </li>
         ))}
@@ -174,39 +214,52 @@ const coversLayout = nCovers === 5 ? 'covers--5' : nCovers % 4 === 0 ? 'covers--
     </div>
   </section>
 
-  <CtaBand />
+  <CtaBand primaryLabel={service.cta} primaryHref={wa} />
 </Base>
 
 <style>
-  .covers {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-4);
+  .intro-p + .intro-p { margin-top: var(--space-4); }
+  .cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--r-pill);
+    background: var(--accent-tint);
+    color: var(--accent-ink);
+    font-size: var(--text-xs);
+    font-weight: 700;
   }
-  @media (min-width: 40rem) { .covers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* ------------------------------------------------------------ help */
+  .help { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .help { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (min-width: 64rem) {
-    .covers { gap: var(--space-5); }
-    .covers--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .covers--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .covers--5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .covers--5 .cover { grid-column: span 2; }
-    .covers--5 .cover:nth-child(-n + 2) { grid-column: span 3; }
+    .help { gap: var(--space-5); }
+    .help--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .help--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .help--5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .help--5 .help-item { grid-column: span 2; }
+    .help--5 .help-item:nth-child(-n + 2) { grid-column: span 3; }
+    .help--7 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .help--7 .help-item { grid-column: span 3; }
+    .help--7 .help-item:nth-child(n + 5) { grid-column: span 4; }
   }
-  .cover {
+  .help-item {
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
     padding: var(--pad-card);
-    min-height: 9.5rem;
+    min-height: 10rem;
     background: var(--surface-raised);
     border: 1px solid var(--line);
     border-radius: var(--r-md);
     position: relative;
     overflow: hidden;
+    transition: border-color var(--dur-hover) var(--ease-out), box-shadow var(--dur-control) var(--ease-out);
   }
-  .cover::before {
+  .help-item::before {
     content: "";
     position: absolute;
     inset: 0 auto 0 0;
@@ -216,30 +269,69 @@ const coversLayout = nCovers === 5 ? 'covers--5' : nCovers % 4 === 0 ? 'covers--
     transform-origin: top;
     transition: transform var(--dur-control) var(--ease-out);
   }
-  .cover:hover::before { transform: scaleY(1); }
-  .cover-n { font-family: var(--font-display); font-size: 1.5rem; color: var(--accent-ink); line-height: 1; }
-  .cover-t { font-family: var(--font-display); font-size: var(--text-h3); line-height: 1.25; letter-spacing: var(--tracking-tight); margin-top: auto; }
+  .help-item:hover { border-color: var(--line-strong); box-shadow: var(--shadow-1); }
+  .help-item:hover::before { transform: scaleY(1); }
+  .help-n { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); color: var(--accent-ink); }
+  .help-t { font-size: var(--text-h4); font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; margin-top: auto; }
 
-  .assoc {
+  /* ------------------------------------------------------------ approach */
+  .approach { display: grid; gap: var(--space-7); align-items: start; }
+  @media (min-width: 64rem) { .approach { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: var(--space-9); } }
+  .approach-p { margin-top: var(--space-5); font-size: var(--text-lede); line-height: 1.55; color: var(--ink-soft); }
+  .note {
     display: flex;
-    gap: var(--space-5);
+    gap: var(--space-3);
     align-items: flex-start;
-    margin-top: var(--space-6);
-    padding: var(--pad-card);
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    border-radius: var(--r-sm);
     background: var(--accent-tint);
-    border-radius: var(--r-md);
-    max-width: 52rem;
+    font-size: var(--text-sm);
+    color: var(--ink);
   }
-  .assoc-h { font-weight: 700; margin-bottom: var(--space-2); }
-  .assoc p:not(.assoc-h) { color: var(--ink-soft); font-size: var(--text-sm); }
+  .note :global(svg) { flex: none; color: var(--accent-ink); margin-top: 2px; }
+  .steps-v { list-style: none; margin: 0; padding: var(--pad-card); display: grid; gap: var(--space-6); background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--r-lg); }
+  .steps-v li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-5); position: relative; }
+  .steps-v li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    top: 3.25rem;
+    bottom: calc(-1 * var(--space-6) + 0.25rem);
+    width: 1px;
+    background: var(--line-strong);
+  }
+  .steps-v h3 { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: 0; margin-top: 0.6rem; }
+  .steps-v p { margin-top: var(--space-2); color: var(--ink-soft); font-size: var(--text-sm); }
 
-  .mini-pkgs {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  /* ------------------------------------------------------------ extras */
+  .xcards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .xcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .xcards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); } }
+  .xcard {
     display: grid;
-    gap: var(--space-4);
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--pad-card);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
   }
+  .xcard h3 { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: 0; }
+  .xcard p { color: var(--ink-soft); font-size: var(--text-sm); }
+
+  .checklist { display: grid; gap: var(--space-7); align-items: start; }
+  @media (min-width: 64rem) {
+    .checklist { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--space-9); }
+    .checklist-side { position: sticky; top: calc(var(--header-h) + var(--space-6)); }
+  }
+  .checklist-side .lede { margin-block: var(--space-5) var(--space-6); }
+  .checklist-body { display: grid; gap: var(--space-6); }
+  .cl-group { padding: var(--pad-card); background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--r-md); }
+  .cl-h { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: 0; margin-bottom: var(--space-4); }
+  .cl-group .ticks li { font-size: var(--text-sm); color: var(--ink-soft); }
+
+  .mini-pkgs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
   @media (min-width: 48rem) { .mini-pkgs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .mini-pkg {
     padding: var(--pad-card);
@@ -259,24 +351,15 @@ const coversLayout = nCovers === 5 ? 'covers--5' : nCovers % 4 === 0 ? 'covers--
   .mp-add { font-size: var(--text-sm); color: var(--muted-invert); margin-top: var(--space-2); }
   .mp-actions { margin-top: var(--space-6); }
 
-  @media (min-width: 68rem) { .steps--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); --cols: 3; } }
+  /* ------------------------------------------------------------ faq */
+  .faq-grid { display: grid; gap: var(--space-6); }
+  @media (min-width: 64rem) { .faq-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--space-9); align-items: start; } }
+  .faq-side .link-arrow { margin-top: var(--space-4); }
 
+  /* ------------------------------------------------------------ related */
   .rel { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
   @media (min-width: 40rem) { .rel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 64rem) {
-    .rel { gap: var(--space-5); }
-    .rel--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .rel--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .rel--5 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .rel--5 > li { grid-column: span 2; }
-    .rel--5 > li:nth-child(-n + 2) { grid-column: span 3; }
-  }
-  /* Two sectors run the full width as two wide cards, image beside text. */
-  @media (min-width: 64rem) {
-    .rel--2 .rel-card { flex-direction: row; }
-    .rel--2 .rel-media { flex: 0 0 45%; aspect-ratio: auto; min-height: 15rem; }
-  }
-  .rel--1 { max-width: 40rem; }
+  @media (min-width: 64rem) { .rel { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); } }
   .rel-card {
     display: flex;
     flex-direction: column;
@@ -289,16 +372,10 @@ const coversLayout = nCovers === 5 ? 'covers--5' : nCovers % 4 === 0 ? 'covers--
     transition: transform var(--dur-control) var(--ease-out), box-shadow var(--dur-control) var(--ease-out);
   }
   .rel-card:hover { transform: translate3d(0, -4px, 0); box-shadow: var(--shadow-2); color: var(--ink); }
-  .rel-media { aspect-ratio: 16 / 10; border-radius: 0; }
+  .rel-media { aspect-ratio: 16 / 9; border-radius: 0; }
   .rel-media :global(picture) { height: 100%; }
-  .rel-body { padding: var(--pad-card); display: grid; gap: var(--space-2); }
-  .rel-body h3 { font-size: var(--text-h3); }
+  .rel-body { padding: var(--pad-card); display: flex; flex-direction: column; gap: var(--space-3); flex: 1; }
+  .rel-body h3 { font-size: var(--text-h4); font-family: var(--font-sans); font-weight: 700; letter-spacing: -0.01em; }
   .rel-body p { color: var(--muted); font-size: var(--text-sm); }
-
-  .others { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
-  @media (min-width: 40rem) { .others { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 64rem) { .others { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-  .other { height: 100%; }
-  .other h3 { font-size: 1.3rem; }
-  .other .link-arrow { margin-top: auto; padding-top: var(--space-3); }
+  .rel-body .link-arrow { margin-top: auto; }
 </style>

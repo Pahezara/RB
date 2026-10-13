@@ -47,11 +47,13 @@ html {
   /* Anchors clear the fixed header. One measured variable, used by both. */
   scroll-padding-top: calc(var(--header-h) + var(--header-inset) + 1rem);
 }
-/* On desktop the whole scale steps down a notch (15px root, from the reader's
-   16px default), so a 1080p screen shows a full section rather than a headline.
-   A percentage, so a reader who has raised their browser's text size still
-   gets it. Phones and tablets keep the full 16px. */
-@media (min-width: 64rem) { html { font-size: 93.75%; } }
+/* Phones and tablets keep the reader's full 16px. From a laptop up the root
+   scales smoothly with the screen: 15px at 1024px wide, 16px at about 1360px,
+   18px at 1920px and 20px from 2400px. Everything is set in rem, so the whole
+   page grows with it, and a large monitor shows the same composition as a
+   laptop instead of a laptop-sized column between two blank bars. The rem part
+   keeps a reader's own browser text-size setting in effect. */
+@media (min-width: 64rem) { html { font-size: clamp(0.9375rem, 0.3125vw + 0.7375rem, 1.25rem); } }
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }

@@ -213,30 +213,29 @@ Sources are cached in `brand/stock/`, so the build is reproducible offline once
 fetched. The OG cards (`scripts/make-og.mjs`) use the home hero's night skyline,
 whose scrim is already measured.
 
-## D10 — The enquiry is direct actions, not a form
-There is no form. The contact page offers the phone and a `mailto:` **link**
-carrying a prefilled subject and body that asks for the same things a form would.
+## D10 — The enquiry form writes into the visitor's own app
+**Amended 2026-10-13.** The [CONTENT] document specifies a full enquiry form, so
+the contact page now has one, with its labels, hint, notice and button exactly as
+written. What it still does not have is a server.
 
-**Why not a form.** A form with `action="mailto:"` makes the browser warn that the
-submission is not secure — the warning is about the destination, not the site's
-own certificate — and it then fails outright on most phones, so a visitor who
-clicked "send anyway" could easily have sent nothing. Links are not submissions,
-so no browser warns about them, and both actions work with no JavaScript and no
-third party holding the client's messages.
+On submit, the form validates, then writes the enquiry into the visitor's own
+e-mail app (to info@rbpl.lk, subject naming the service area) or, if they chose
+WhatsApp as their contact method, into a WhatsApp chat with the firm. Nothing is
+sent to or stored by this website, which is also what the Privacy Notice says.
+The document's success message ("Your enquiry has been received") would be false
+here, because nothing is received until the visitor presses send in their own
+app, so the message says the enquiry is ready to send. A visitor arriving from a
+service page (`/contact/?service=payroll`) finds the service area selected and the
+service named in the description.
 
-**Open question for SAJ.** A real form needs an HTTPS endpoint. Three options:
+Without JavaScript the button stays disabled and a note gives the direct routes.
+A plain GET submission was rejected: it would put the visitor's name, e-mail and
+description into the address bar and the server logs.
 
-1. **A hosted form service** (Web3Forms, Formspree). Plain HTML POST, no
-   JavaScript, works immediately. The trade-off is that a third party receives and
-   stores every enquiry, and the access key sits in the page source.
-2. **A Vercel Function plus an e-mail API** (Resend, Postmark). The enquiry never
-   touches a form vendor, but it needs an account and an API key held as an
-   environment variable, and it is code to maintain.
-3. **Leave it as direct actions.** Nothing to maintain, nothing to break, no third
-   party. The cost is that visitors who prefer typing into a form do not get one.
-
-Until SAJ chooses, option 3 is what ships, because it is the only one of the three
-that is working right now.
+**Still open for SAJ: a real submission.** The three options are unchanged: a
+hosted form service (a third party stores every enquiry), a Vercel Function with an
+e-mail API (an account and an API key), or this. The CSP's `connect-src 'self'`
+and `form-action 'self'` must be widened for the first.
 
 ## D11 — How the page is composed
 **Rewritten 2026-09-24 for the redesign.** The brief was to out-class
@@ -365,4 +364,49 @@ with the header held still. Three rules: nothing is hidden without JavaScript, a
 nothing on the first screen is hidden at all; every animation ends on the
 element's natural style (`fill-mode: backwards`, never `both`), so hover effects
 keep working; and reduced motion turns all of it off.
+
+## D17 — The website content document, and what it changed
+`RBPL_Website_Content.docx` (SAJ, 2026-10-13) is the firm's own website copy,
+cited as `[CONTENT]`. Where it differs from the 2026 business profile, it is newer
+and it wins. What it changed:
+
+- **Navigation.** Home | About | Services | Management | Insights | Contact Us,
+  with "Discuss Your Requirements" as the main action, linked to WhatsApp. The
+  services sit in the document's five menu groups: Start and expand, Finance and
+  compliance, Systems and performance, Investment and business change, Approvals
+  and quality. Two sections the document adds after its menu table (trademark,
+  and legal and regulatory coordination) sit under Approvals and quality.
+- **24 service pages**, from one data file (`src/data/services.ts`) and one
+  template. Each carries the document's title tag, description, headline,
+  opening, "How we can help" list, approach, questions and button label. Port City
+  carries the document's required-information list; UAE its six setup steps;
+  company registration and corporate secretarial the published packages.
+- **New pages:** Management (the directors, with the document's bios), Investors
+  (the three routes and the structured first conversation, with no business ever
+  listed for sale, per the document's developer note), and Insights (the
+  document's important sites, each address checked; articles appear only once the
+  firm writes them).
+- **The home page** follows the document: the headline, the four "what does your
+  business need next" routes, "one relationship", the five service groups, the
+  two audiences, the Synergy Advisors affiliation and the closing proposal
+  request. The instant quotation sits directly under the hero's main action, as
+  the document asks. A five-slide hero shows the five service groups; each slide
+  photograph is a separately scrimmed, measured variant (`slide-*`).
+- **Firm facts.** The 2nd Floor address, NGOs as a fifteenth sector, eFS and Odoo
+  among the platforms, the Synergy Advisors affiliation (tax through Synergy
+  Advisors and Sanjeewa Associates; audit through Synergy for companies and
+  Sanjeewa Associates for sole proprietors and partnerships), and, from the same
+  brief, the new vision, mission, seven values and the tagline "Your Trusted
+  Partner: Taking Your Business to the Next Level".
+
+**Not done, and why.**
+- *EHRiS.* The payroll section asks for "a separate description on EHRiS" without
+  saying what it is. Writing one would be inventing a product description.
+- *Admin login* for insights, management and services. A static site has no
+  server to log into. It needs a git-based CMS (Decap or Keystatic) with a GitHub
+  sign-in, which the site owner has to authorise. The content is already in files
+  such a CMS edits: services in one data file, insights read from
+  `src/content/insights/*.md`.
+- *The document's UAE link* returned 404; the working page has `/Doing-business/`
+  in its path, and that is what the site links to.
 

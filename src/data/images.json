@@ -4,7 +4,7 @@
     {
       "slug": "colombo-night",
       "file": "Stunning Night View of Colombo City Skyline.jpg",
-      "use": "Home hero",
+      "use": "Link-preview images for every page",
       "widths": [
         800,
         1280,
@@ -144,7 +144,7 @@
     {
       "slug": "colombo-dusk",
       "file": "A view of Colombo's dramatic skyline at dusk.jpg",
-      "use": "Vision statement band",
+      "use": "Home vision band",
       "widths": [
         800,
         1280,
@@ -181,7 +181,7 @@
     {
       "slug": "colombo-golden",
       "file": "Colombo sunset skyline Jul 2016.jpg",
-      "use": "About page hero",
+      "use": "About page opening",
       "widths": [
         800,
         1280,
@@ -319,7 +319,7 @@
     {
       "slug": "orange-arch",
       "file": "Orange reflective architecture (Unsplash).jpg",
-      "use": "Closing call to action (type sits on a solid card, not on the photograph)",
+      "use": "Closing band on every page",
       "widths": [
         800,
         1280,
@@ -338,7 +338,7 @@
     {
       "slug": "svc-accounting",
       "file": "Man typing on laptop (Unsplash).jpg",
-      "use": "Accounting and BPO",
+      "use": "Accounting and BPO; Finance and compliance card",
       "widths": [
         480,
         800,
@@ -357,7 +357,7 @@
     {
       "slug": "svc-tax",
       "file": "Writing with a fountain pen (Unsplash).jpg",
-      "use": "Tax and assurance",
+      "use": "Tax advisory and planning; SOPs and procedure manuals",
       "widths": [
         480,
         800,
@@ -376,7 +376,7 @@
     {
       "slug": "svc-advisory",
       "file": "Discussing business strategy (Unsplash).jpg",
-      "use": "Business advisory",
+      "use": "Business and financial advisory",
       "widths": [
         480,
         800,
@@ -395,7 +395,7 @@
     {
       "slug": "svc-payroll",
       "file": "Crunching the numbers (Unsplash).png",
-      "use": "Payroll",
+      "use": "Payroll outsourcing; Internal processes and controls; Investment partner and funding support",
       "widths": [
         480,
         800,
@@ -414,7 +414,7 @@
     {
       "slug": "svc-analytics",
       "file": "Statistics on a laptop (Unsplash).jpg",
-      "use": "Data analytics and Power BI",
+      "use": "Data analytics and Power BI; Due diligence; Systems and performance card",
       "widths": [
         480,
         800,
@@ -433,7 +433,7 @@
     {
       "slug": "svc-secretarial",
       "file": "Legal Contract & Signature - Warm Tones.jpg",
-      "use": "Corporate secretarial",
+      "use": "Corporate secretarial and beneficial ownership; Approvals and quality card",
       "widths": [
         480,
         800,
@@ -452,7 +452,7 @@
     {
       "slug": "ind-trade",
       "file": "An ariel view of the Port of Colombo from the Lotus Tower.jpg",
-      "use": "Industries: trade and distribution",
+      "use": "Home: international businesses; Industries page; Colombo Port City business setup",
       "widths": [
         480,
         800,
@@ -471,7 +471,7 @@
     {
       "slug": "ind-hospitality",
       "file": "Rice and curry at Liberty Mall food court.jpg",
-      "use": "Industries: hospitality",
+      "use": "Industries page",
       "widths": [
         480,
         800,
@@ -490,7 +490,7 @@
     {
       "slug": "ind-industry",
       "file": "Tea Factory Ii (195470003).jpeg",
-      "use": "Industries: manufacturing, construction and energy",
+      "use": "Industries page; Fixed asset registers and verification; Business turnaround and recovery",
       "widths": [
         480,
         800,
@@ -509,7 +509,7 @@
     {
       "slug": "ind-agriculture",
       "file": "Tea plantation Haputale.jpg",
-      "use": "Industries: agriculture",
+      "use": "Industries page",
       "widths": [
         480,
         800,
@@ -528,7 +528,7 @@
     {
       "slug": "ind-professional",
       "file": "Office buildings under clouds (Unsplash).jpg",
-      "use": "Services page opening; industries: professional and financial services",
+      "use": "Services and Investors openings; Industries page; Company registration in Sri Lanka; Investment and business change card",
       "widths": [
         480,
         800,
@@ -547,7 +547,7 @@
     {
       "slug": "ind-digital",
       "file": "Shopping for gifts (Unsplash).jpg",
-      "use": "Industries: online commerce",
+      "use": "Industries page; Website design and digital marketing",
       "widths": [
         480,
         800,
@@ -566,7 +566,7 @@
     {
       "slug": "contact",
       "file": "Casual Meeting Room (Unsplash).jpg",
-      "use": "Contact page",
+      "use": "Contact page opening; HR advisory and administration",
       "widths": [
         480,
         800,
@@ -582,6 +582,835 @@
       "width": 2560,
       "height": 1441,
       "authorUrl": "https://unsplash.com/@danielcgold"
+    },
+    {
+      "slug": "uae-skyline",
+      "file": "Dubai skyline unsplash.jpg",
+      "use": "UAE company formation; Start and expand card",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "60% 50%",
+      "alt": "The Dubai skyline at night, reflected in the water",
+      "author": "Robert Bock",
+      "authorUrl": "",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Dubai_skyline_unsplash.jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "containers",
+      "file": "Container terminal from above (Unsplash).jpg",
+      "use": "Customs registration",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "50% 50%",
+      "alt": "Rows of shipping containers in a terminal, seen from above",
+      "author": "chuttersnap",
+      "authorUrl": "https://unsplash.com/@chuttersnap",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Container_terminal_from_above_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "law-books",
+      "file": "Leather bound books (Unsplash).jpg",
+      "use": "Legal and regulatory coordination",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "65% 55%",
+      "alt": "A stack of old leather-bound books on a wooden table",
+      "author": "Chris Lawton",
+      "authorUrl": "https://unsplash.com/@chrislawton",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Leather_bound_books_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "work-desk",
+      "file": "Notepad on a busy workspace (Unsplash).jpg",
+      "use": "Audit and assurance coordination; Business sale, liquidation and divestment",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "55% 55%",
+      "alt": "A laptop, notebook and desk lamp on a tidy office desk",
+      "author": "Grovemade",
+      "authorUrl": "https://unsplash.com/@grovemade",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Notepad_on_a_busy_workspace_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "lab-glass",
+      "file": "Plants in beakers (Unsplash).jpg",
+      "use": "NMRA and quality certification",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "50% 60%",
+      "alt": "Rows of laboratory flasks holding plant samples on a shelf",
+      "author": "chuttersnap",
+      "authorUrl": "https://unsplash.com/@chuttersnap",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Plants_in_beakers_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1709
+    },
+    {
+      "slug": "workspace",
+      "file": "Workspace 1 (Unsplash).jpg",
+      "use": "ERP and business systems; Trademark and logo registration",
+      "widths": [
+        480,
+        800,
+        1280
+      ],
+      "focus": "55% 60%",
+      "alt": "A laptop and a framed picture on a plain wooden desk",
+      "author": "Pineapple Supply Co.",
+      "authorUrl": "https://unsplash.com/@pineapple",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Workspace_1_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "slide-start",
+      "file": "An ariel view of the Port of Colombo from the Lotus Tower.jpg",
+      "use": "Home hero slide: start and expand",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "55% 55%",
+      "alt": "",
+      "scrim": {
+        "kind": "left",
+        "strength": 0.92,
+        "reach": 0.86,
+        "foot": 0.74,
+        "footStrength": 0.62,
+        "top": 0.4,
+        "topReach": 0.22
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.06,
+            0.24,
+            0.56,
+            0.82
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 6.66
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.06,
+            0.4,
+            0.56,
+            0.6
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+          "measured": 3.13
+        },
+        {
+          "name": "rail",
+          "box": [
+            0.05,
+            0.86,
+            0.97,
+            0.985
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 11.89
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 8.24
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.2,
+          0,
+          0.9,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.3,
+          "from": 0.4,
+          "to": 0.95,
+          "strength": 0.7,
+          "top": 0.55,
+          "topReach": 0.34
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 9.15
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+            "measured": 6.69
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 6.42
+          }
+        ],
+        "width": 1792,
+        "height": 1922
+      },
+      "author": "Mohamed Ansaf",
+      "authorUrl": "",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:An_ariel_view_of_the_Port_of_Colombo_from_the_Lotus_Tower.jpg",
+      "width": 2560,
+      "height": 1922
+    },
+    {
+      "slug": "slide-finance",
+      "file": "Man typing on laptop (Unsplash).jpg",
+      "use": "Home hero slide: finance and compliance",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "55% 50%",
+      "alt": "",
+      "scrim": {
+        "kind": "left",
+        "strength": 0.96,
+        "reach": 1.02,
+        "foot": 0.74,
+        "footStrength": 0.62,
+        "top": 0.4,
+        "topReach": 0.22
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.06,
+            0.24,
+            0.56,
+            0.82
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 8.84
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.06,
+            0.4,
+            0.56,
+            0.6
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+          "measured": 3.76
+        },
+        {
+          "name": "rail",
+          "box": [
+            0.05,
+            0.86,
+            0.97,
+            0.985
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 15.63
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 16.75
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.3,
+          0,
+          1,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.3,
+          "from": 0.4,
+          "to": 0.95,
+          "strength": 0.7,
+          "top": 0.55,
+          "topReach": 0.34
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 8.93
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+            "measured": 6.98
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 8.28
+          }
+        ],
+        "width": 1792,
+        "height": 1707
+      },
+      "author": "Alejandro Escamilla",
+      "authorUrl": "https://unsplash.com/@alejandroescamilla",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Man_typing_on_laptop_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "slide-systems",
+      "file": "Statistics on a laptop (Unsplash).jpg",
+      "use": "Home hero slide: systems and performance",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "55% 45%",
+      "alt": "",
+      "scrim": {
+        "kind": "left",
+        "strength": 0.96,
+        "reach": 1.02,
+        "foot": 0.74,
+        "footStrength": 0.62,
+        "top": 0.4,
+        "topReach": 0.22
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.06,
+            0.24,
+            0.56,
+            0.82
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 7.56
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.06,
+            0.4,
+            0.56,
+            0.6
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+          "measured": 3.4
+        },
+        {
+          "name": "rail",
+          "box": [
+            0.05,
+            0.86,
+            0.97,
+            0.985
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 14.82
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 10.05
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.25,
+          0,
+          0.95,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.3,
+          "from": 0.4,
+          "to": 0.95,
+          "strength": 0.7,
+          "top": 0.55,
+          "topReach": 0.34
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 10
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+            "measured": 7
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 6.32
+          }
+        ],
+        "width": 1698,
+        "height": 1728
+      },
+      "author": "Carlos Muza",
+      "authorUrl": "https://unsplash.com/@kmuza",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Statistics_on_a_laptop_(Unsplash).jpg",
+      "width": 2426,
+      "height": 1728
+    },
+    {
+      "slug": "slide-invest",
+      "file": "Office buildings under clouds (Unsplash).jpg",
+      "use": "Home hero slide: investment and business change",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "55% 55%",
+      "alt": "",
+      "scrim": {
+        "kind": "left",
+        "strength": 1,
+        "reach": 1.2,
+        "foot": 0.74,
+        "footStrength": 0.62,
+        "top": 0.4,
+        "topReach": 0.22
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.06,
+            0.24,
+            0.56,
+            0.82
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 8.61
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.06,
+            0.4,
+            0.56,
+            0.6
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+          "measured": 3.79
+        },
+        {
+          "name": "rail",
+          "box": [
+            0.05,
+            0.86,
+            0.97,
+            0.985
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 16.76
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 11.7
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.15,
+          0,
+          0.85,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.3,
+          "from": 0.4,
+          "to": 0.95,
+          "strength": 0.7,
+          "top": 0.55,
+          "topReach": 0.34
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 6.91
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+            "measured": 5.81
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 5.29
+          }
+        ],
+        "width": 1792,
+        "height": 1707
+      },
+      "author": "Anthony DELANOIX",
+      "authorUrl": "https://unsplash.com/@anthonydelanoix",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "page": "https://commons.wikimedia.org/wiki/File:Office_buildings_under_clouds_(Unsplash).jpg",
+      "width": 2560,
+      "height": 1707
+    },
+    {
+      "slug": "slide-approvals",
+      "file": "Legal Contract & Signature - Warm Tones.jpg",
+      "use": "Home hero slide: approvals and quality",
+      "widths": [
+        800,
+        1280,
+        1920
+      ],
+      "focus": "60% 45%",
+      "alt": "",
+      "scrim": {
+        "kind": "left",
+        "strength": 0.96,
+        "reach": 1.02,
+        "foot": 0.74,
+        "footStrength": 0.62,
+        "top": 0.4,
+        "topReach": 0.22
+      },
+      "regions": [
+        {
+          "name": "copy",
+          "box": [
+            0.06,
+            0.24,
+            0.56,
+            0.82
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 8
+        },
+        {
+          "name": "accent",
+          "box": [
+            0.06,
+            0.4,
+            0.56,
+            0.6
+          ],
+          "ink": "accent-lift",
+          "min": 3,
+          "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+          "measured": 3.53
+        },
+        {
+          "name": "rail",
+          "box": [
+            0.05,
+            0.86,
+            0.97,
+            0.985
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "measured": 14.33
+        },
+        {
+          "name": "header",
+          "box": [
+            0,
+            0,
+            1,
+            0.11
+          ],
+          "ink": "ink-invert",
+          "min": 4.5,
+          "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+          "measured": 15.06
+        }
+      ],
+      "portrait": {
+        "crop": [
+          0.2,
+          0,
+          0.95,
+          1
+        ],
+        "widths": [
+          480,
+          800
+        ],
+        "scrim": {
+          "kind": "bottom",
+          "base": 0.3,
+          "from": 0.4,
+          "to": 0.95,
+          "strength": 0.7,
+          "top": 0.55,
+          "topReach": 0.34
+        },
+        "regions": [
+          {
+            "name": "copy",
+            "box": [
+              0.04,
+              0.66,
+              0.96,
+              1
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "measured": 11
+          },
+          {
+            "name": "accent",
+            "box": [
+              0.04,
+              0.76,
+              0.96,
+              1
+            ],
+            "ink": "accent-lift",
+            "min": 3,
+            "why": "WCAG 1.4.3 large text: the accent line of the headline is set at display size, 38px and up",
+            "measured": 7.03
+          },
+          {
+            "name": "header",
+            "box": [
+              0,
+              0,
+              1,
+              0.19
+            ],
+            "ink": "ink-invert",
+            "min": 4.5,
+            "why": "The transparent header sits here on first paint: brand, nav and phone number, all in ink-invert",
+            "measured": 7.9
+          }
+        ],
+        "width": 1920,
+        "height": 1920
+      },
+      "author": "Blogtrepreneur",
+      "authorUrl": "",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Legal_Contract_%26_Signature_-_Warm_Tones.jpg",
+      "width": 2560,
+      "height": 1920
     }
   ]
 }

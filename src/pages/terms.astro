@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Legal from '../components/Legal.astro';
 import { site } from '../data/site';
-const title = 'Terms — Reliance Business Partners';
+const title = 'Website Terms | Reliance Business Partners';
 const description =
   'The terms this website is provided on: the published fees are a fee structure, not a quotation, and nothing here is advice on your situation.';
 
@@ -11,7 +11,7 @@ const toc = [
   { id: 'advice', label: 'This site is not advice' },
   { id: 'prices', label: 'Prices and the estimator' },
   { id: 'engage', label: 'Contacting us does not engage us' },
-  { id: 'associates', label: 'Associate practices' },
+  { id: 'associates', label: 'Affiliated practices' },
   { id: 'photos', label: 'Photographs' },
   { id: 'accuracy', label: 'Accuracy' },
 ];
@@ -20,9 +20,9 @@ const toc = [
   <PageHero
     variant="plain"
     eyebrow="Terms"
-    title="Terms of <em>use.</em>"
+    title="Website <em>terms.</em>"
     lede="What this website is, and what it is not. Short, because a fee structure and a phone number should not need much small print."
-    crumbs={[{ label: 'Home', href: '/' }, { label: 'Terms' }]}
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Website Terms' }]}
   />
 
   <Legal toc={toc}>
@@ -32,15 +32,15 @@ const toc = [
     </p>
     <h2 id="prices">Prices are a fee structure, not a quotation</h2>
     <p>
-      The package prices and the per-director rates on this site are the firm's published fee structure and are stated exactly. They are not an offer, and the estimator produces an estimate rather than a quotation. Starting prices marked &ldquo;from&rdquo; depend on scope. Government charges, and the charges of any third party, are separate unless a package says otherwise.
+      The package prices and the per-director rates on this site are the firm's published fee structure and are stated exactly. They are not an offer, and the instant quotation produces an indicative figure from those rates, not a binding quotation. Starting prices marked &ldquo;from&rdquo; depend on scope. Government charges, and the charges of any third party, are separate unless a package says otherwise.
     </p>
     <h2 id="engage">Contacting us does not engage us</h2>
     <p>
-      Calling or e-mailing does not by itself create a professional engagement. That begins only when we have agreed in writing to act for you and you have accepted the scope and the fee.
+      Calling, e-mailing, messaging on WhatsApp or sending the enquiry form does not by itself create a professional engagement. That begins only when we have agreed in writing to act for you and you have accepted the scope and the fee.
     </p>
-    <h2 id="associates">Work carried out by associate practices</h2>
+    <h2 id="associates">Work carried out by affiliated practices</h2>
     <p>
-      Tax and assurance work is conducted through {site.associates.map((a) => a.name).join(' and ')}. Where your matter is carried out by an associate practice, you are told so before the work begins.
+      {site.legalName} is affiliated with {site.affiliate.name} ({site.affiliate.role}). Tax work is conducted through Synergy Advisors and Sanjeewa Associates, and audit and assurance through Synergy Advisors for corporate clientele and Sanjeewa Associates for sole proprietors and partnerships. Tax and assurance engagements are subject to the appointed provider’s terms, and you are told which practice carries out your matter before the work begins.
     </p>
     <h2 id="photos">Photographs</h2>
     <p>
