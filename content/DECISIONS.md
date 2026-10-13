@@ -410,3 +410,30 @@ and it wins. What it changed:
 - *The document's UAE link* returned 404; the working page has `/Doing-business/`
   in its path, and that is what the site links to.
 
+
+## D18 — The page fills the screen
+**Added 2026-10-13.** On large monitors the content sat in an 80rem column with
+wide blank bars either side, and the header's links did not line up with it.
+Now:
+
+- **The type stays at 15px on laptops and desktops** (16px from 2200px). A first
+  attempt scaled the root with the screen, up to 18px at 1920px, and read as
+  zoomed in; it was reverted the same day. The content column is what widens, not
+  the type. Phones and tablets keep the reader's 16px.
+- **The content column is 124rem** (about 1860px of a 1920px screen), less gutters that
+  grow to 4rem, so only ultra-wide screens show any margin beyond the gutter.
+  Text blocks keep their own measure inside it.
+- **Header and content share one container**, measured to start at the same x at
+  every width from 1024 to 3440px. The header CTA appears from 77rem and the
+  phone number from 106rem, the widths at which each fits without wrapping a
+  link; between 64 and 77rem the CTA is a compact WhatsApp icon.
+
+A sweep of every page at 13 sizes (320x568 to 1920x1080, portrait and landscape)
+finds no element outside the viewport and no header overflow.
+
+**The phone hero** shows the slide photograph as a banner under the header, with
+the eyebrow, headline, lede and buttons entirely below it on solid navy. The
+earlier layout started the copy inside the photo's faded foot, which on a phone
+read as text crowded onto a zoomed crop. Slide phone crops now also render at
+1200px wide for 3x screens.
+

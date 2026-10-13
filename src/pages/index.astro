@@ -46,7 +46,7 @@ if (credentials.find((c) => c.label === 'Specialist services')?.n !== services.l
 
     <div class="container hero-grid">
       <div class="hero-copy on-invert">
-        <p class="eyebrow"><span>{site.legalName}</span></p>
+        <p class="eyebrow"><span>{site.shortName}<span class="eb-wide"> (Pvt) Ltd</span></span></p>
         <h1 id="hero-h" class="hero-h">
           <span class="line"><span>Build your business with a partner who</span></span>
           <span class="line"><span><em>sees the whole picture.</em></span></span>
@@ -621,14 +621,31 @@ if (credentials.find((c) => c.label === 'Specialist services')?.n !== services.l
 
   /* --- the hero on a phone: the photograph is a box across the top, served as
      each slide's own phone crop with its own measured scrim. */
+  /* On a phone the photograph is a banner across the top, under the header,
+     and every word sits BELOW it on the solid navy: nothing overlaps the
+     picture, so nothing is cramped against it. The phone crop's baked scrim
+     already fades its foot into the navy, so the banner melts into the band. */
   @media (max-width: 47.99rem) {
     .hero {
-      --hero-media-h: min(88vw, 26rem);
+      --hero-media-h: min(76vw, 21rem);
       min-height: 0;
       justify-content: flex-start;
-      padding-top: calc(var(--hero-media-h) - 6.5rem);
+      padding-top: calc(var(--hero-media-h) + var(--space-2));
     }
     .hero-bg { bottom: auto; height: var(--hero-media-h); }
+    .hero-bg::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 35%;
+      background: linear-gradient(to bottom, transparent, var(--surface-invert));
+      pointer-events: none;
+    }
+    .slide-img.is-active :global(img) { animation-duration: 12s; }
+    .hero-h { font-size: clamp(2rem, 1.2rem + 4.4vw, 2.6rem); line-height: 1.05; }
+    .hero-lede { font-size: 1.0625rem; }
+    .hero-actions .btn { flex: 1 1 100%; }
+    .eb-wide { display: none; }
     .slider { padding: var(--space-5); }
     /* The dots get their own full-width row, so each is a 44px target. */
     .slider-ctrl { flex-wrap: wrap; }
