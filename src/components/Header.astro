@@ -560,6 +560,14 @@ const money = (n: number) => n.toLocaleString('en-US');
     .brand-a { font-size: 1.5rem; }
     .nav { display: block; }
     .menu { display: none; }
+    /* Three columns, the outer two equal: the menu sits on the true centre of
+       the page, not in the middle of whatever space the logo and the buttons
+       leave. max-content stops either side being squeezed on a narrow laptop,
+       where the menu shifts slightly rather than anything overlapping. */
+    .bar { display: grid; grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr); }
+    .brand { justify-self: start; }
+    .nav { margin-inline: 0; }
+    .actions { justify-self: end; margin-inline-start: 0; }
     .nav-link { padding-inline: var(--space-2); }
     .nav-link::after { left: var(--space-2); right: var(--space-2); }
   }
