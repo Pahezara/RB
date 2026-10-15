@@ -42,6 +42,27 @@ const money = (n: number) => n.toLocaleString('en-US');
   all; the chevron button exists so keyboard and touch users can open it
   without first navigating to /services/, and it carries aria-expanded.
 */}
+{/* The contact strip above the header, after sa.lk: e-mail and phone on the
+    left, the estimate and the two social routes on the right. It scrolls away;
+    the header below it stays. Hidden on phones, where the menu carries all of
+    it and every pixel above the fold matters. */}
+<div class="topbar">
+  <div class="container topbar-in">
+    <p class="tb-left">
+      <a class="link-plain" href={`mailto:${site.email}`}><Icon name="mail" size={15} stroke={2} /> {site.email}</a>
+      <span class="tb-sep" aria-hidden="true"></span>
+      <a class="link-plain tnum" href={site.phoneHref}><Icon name="phone" size={15} stroke={2} /> {site.phone}</a>
+      <span class="tb-sep tb-wide" aria-hidden="true"></span>
+      <span class="tb-wide"><Icon name="map-pin" size={15} stroke={2} /> {site.address.locality}, Sri Lanka</span>
+    </p>
+    <p class="tb-right">
+      <a class="link-plain" href={site.social.linkedin} rel="noopener">LinkedIn</a>
+      <a class="link-plain" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={15} stroke={2} /> WhatsApp</a>
+      <a class="tb-cta link-plain" href="/estimate/"><Icon name="calculator" size={15} stroke={2} /> Get an Estimate</a>
+    </p>
+  </div>
+</div>
+
 <header class="site-header" data-hero={overHero ? 'dark' : undefined}>
   <div class="container bar">
     <a class="brand link-plain" href="/" aria-label={`${site.shortName}, home`}>
@@ -105,10 +126,6 @@ const money = (n: number) => n.toLocaleString('en-US');
     </nav>
 
     <div class="actions">
-      <a class="tel link-plain tnum" href={site.phoneHref}>
-        <Icon name="phone" size={16} stroke={2} />
-        {site.phone}
-      </a>
       <a class="btn btn--primary cta" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> Discuss Your Requirements</a>
       <a class="btn btn--primary cta-compact" href={wa} target="_blank" rel="noopener" aria-label="Discuss your requirements on WhatsApp"><Icon name="message-circle" size={20} stroke={2} /></a>
 
@@ -185,6 +202,20 @@ const money = (n: number) => n.toLocaleString('en-US');
 </script>
 
 <style>
+  /* --- the contact strip ------------------------------------------------------ */
+  .topbar { display: none; background: var(--surface-invert); color: var(--ink-invert); font-size: var(--text-xs); position: relative; z-index: 101; }
+  @media (min-width: 64rem) { .topbar { display: block; } }
+  .topbar-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 2.5rem; }
+  .tb-left, .tb-right { display: flex; align-items: center; gap: var(--space-4); margin: 0; }
+  .topbar a, .tb-wide { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 2.5rem; color: var(--ink-invert); font-weight: 600; white-space: nowrap; }
+  .topbar a:hover { color: var(--accent-lift); }
+  .topbar :global(svg) { color: var(--accent-lift); flex: none; }
+  .tb-sep { width: 1px; height: 1rem; background: var(--line-invert); }
+  .topbar .tb-wide { display: none; }
+  @media (min-width: 72rem) { .topbar .tb-wide { display: inline-flex; } }
+  .topbar a.tb-cta { padding-inline: var(--space-3); border-radius: var(--r-pill); background: var(--accent); color: var(--ink-on-accent); min-height: 1.9rem; }
+  .topbar a.tb-cta :global(svg) { color: var(--ink-on-accent); }
+  .topbar a.tb-cta:hover { background: var(--accent-deep); color: var(--ink-on-accent); }
   .site-header {
     position: sticky;
     top: 0;
@@ -575,11 +606,6 @@ const money = (n: number) => n.toLocaleString('en-US');
     .cta { display: inline-flex; }
     .nav-link { padding-inline: var(--space-3); }
     .nav-link::after { left: var(--space-3); right: var(--space-3); }
-  }
-  /* Six links, the CTA and the phone number only fit side by side on a wide
-     screen; below that the phone lives in the footer, the menu and Contact. */
-  @media (min-width: 106rem) {
-    .tel { display: inline-flex; }
   }
   /* Between 64 and 77rem the desktop nav shows but the CTA does not fit; the
      menu button would be gone, so the CTA's job falls to a compact icon. */

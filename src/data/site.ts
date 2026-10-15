@@ -318,6 +318,19 @@ export const extras = [
 export const annualRetainer = 15_000;
 
 /**
+ * [FEES] Sheet1, B21:B24, as numbers, for the full estimate page. The same
+ * figures as `ongoingFees` above (which prints them as words); a test in
+ * src/pages/estimate.astro stops the build if the two ever disagree.
+ */
+export const feeRates = {
+  annualRetainer: 15_000,
+  drcForm: 2_500,
+  resolution: 2_500,
+  meetingVirtual: 5_000,
+  meetingInPerson: 7_500,
+} as const;
+
+/**
  * [CONTENT] "Our directors", with the qualifications from [PROFILE] Board of
  * Directors. The bios are the document's own, which describe each director's
  * profile rather than claim more than it states.

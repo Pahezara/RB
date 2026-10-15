@@ -326,6 +326,18 @@ export const services: Service[] = [
     ],
     cta: 'Discuss Payroll Support',
     related: ['accounting', 'hr-advisory', 'internal-controls'],
+    /* [CONTENT] "Mention a separate description on EHRiS". The description of
+       eHRIS itself follows how the affiliated practice describes it on sa.lk
+       ("Cloud HR Information System, Attendance & Payroll"), 2026-10-15. */
+    extra: [{
+      kind: 'cards',
+      heading: 'Payroll on eHRIS',
+      items: [
+        { title: 'What eHRIS is', body: 'A cloud HR information system that keeps employee records, attendance and payroll together in one place.' },
+        { title: 'How it fits the monthly run', body: 'Where your business runs eHRIS, or chooses to adopt it, attendance and approved inputs flow straight into payroll preparation, payslips and the statutory schedules.' },
+        { title: 'If you use something else', body: 'Payroll can equally be prepared from your existing system or from spreadsheets. The system, the inputs and the cut-off dates are agreed before processing begins.' },
+      ],
+    }],
   },
   {
     slug: 'secretarial',

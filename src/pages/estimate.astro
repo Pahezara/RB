@@ -1,0 +1,499 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site, packages, extras, feeRates, ongoingFees, whatsappHref } from '../data/site';
+import { categories, servicesIn } from '../data/services';
+
+/*
+ * THE FULL ESTIMATE.
+ *
+ * Every figure on this page comes from src/data/site.ts: the [FEES] sheet for
+ * incorporation and the secretarial rates, [SAJ] for the website and POS
+ * starting prices. Nothing is priced that the firm has not priced. The other
+ * services can still be added, and they appear in the summary as "priced after
+ * scoping" rather than as an invented number, so the visitor can send one
+ * message that covers everything they need.
+ */
+const title = 'Full Estimate | Reliance Business Partners';
+const description =
+  'Estimate company incorporation, secretarial filings, a website, a POS system and other registrations from the published fees of Reliance Business Partners.';
+
+/* The numeric rates must say what the fee sheet says, in words, on /packages/. */
+const words = ongoingFees.map((f) => f.amount).join(' | ');
+for (const n of [feeRates.annualRetainer, feeRates.drcForm, feeRates.resolution, feeRates.meetingVirtual, feeRates.meetingInPerson]) {
+  if (!words.includes(n.toLocaleString('en-US'))) throw new Error(`estimate.astro: feeRates ${n} is not in ongoingFees`);
+}
+
+const money = (n: number) => n.toLocaleString('en-US');
+const scoped = categories
+  .map((c) => ({ ...c, items: servicesIn(c.slug).filter((s) => s.slug !== 'company-registration' && s.slug !== 'secretarial') }))
+  .filter((c) => c.items.length);
+
+/* What the script needs, and nothing else. */
+const data = {
+  packages: packages.map((p) => ({ slug: p.slug, name: p.name, price: p.price, perDirector: p.perDirector })),
+  extras: extras.map((e) => ({ slug: e.slug, name: e.name, price: e.price, kind: e.kind })),
+  rates: feeRates,
+  email: site.email,
+  wa: site.whatsapp,
+};
+---
+<Base title={title} description={description} overHero>
+  <PageHero
+    variant="plain"
+    eyebrow="Full estimate"
+    title="Everything you need, <em>estimated in one place.</em>"
+    lede="Choose an incorporation package, add the filings, a website or a POS system, and tick any other registrations or services. Published fees are added up as you go; anything that needs scoping is listed so you can send the whole picture in one message."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Full estimate' }]}
+  />
+
+  <section class="section est-page" aria-label="Estimate builder">
+    <div class="container est">
+      <form class="steps-col" id="est" data-config={JSON.stringify(data)} onsubmit="return false">
+
+        {/* ------------------------------------------------ 1. INCORPORATION */}
+        <fieldset class="block">
+          <legend class="block-h"><span class="block-n">1</span> Company incorporation</legend>
+          <p class="block-p">Each package is priced for one director. Already have a company? Choose “Not needed”.</p>
+          <div class="pkgs">
+            <label class="pkg">
+              <input type="radio" name="pkg" value="" checked />
+              <span class="pkg-name">Not needed</span>
+              <span class="pkg-price">LKR 0</span>
+              <span class="pkg-meta">I already have a company</span>
+            </label>
+            {packages.map((p) => (
+              <label class="pkg">
+                <input type="radio" name="pkg" value={p.slug} />
+                <span class="pkg-name">{p.name}</span>
+                <span class="pkg-price">LKR {money(p.price)}</span>
+                <span class="pkg-meta">{p.includes.length} items &middot; + LKR {money(p.perDirector)} per extra director</span>
+              </label>
+            ))}
+          </div>
+          <div class="row-q" data-needs-pkg hidden>
+            <span class="q-label">
+              <strong>Number of directors</strong>
+              <span>The first is in the package price.</span>
+            </span>
+            <div class="stepper">
+              <button type="button" class="st-btn" data-step="-1" aria-label="One fewer director"><Icon name="minus" size={18} stroke={2} /></button>
+              <input type="number" name="directors" value="1" min="1" max="20" inputmode="numeric" aria-label="Number of directors" />
+              <button type="button" class="st-btn" data-step="1" aria-label="One more director"><Icon name="plus" size={18} stroke={2} /></button>
+            </div>
+          </div>
+          <a class="link-arrow block-link" href="/packages/">What each package includes <Icon name="arrow-right" size={16} stroke={2} /></a>
+        </fieldset>
+
+        {/* ------------------------------------------------ 2. SECRETARIAL */}
+        <fieldset class="block">
+          <legend class="block-h"><span class="block-n">2</span> Company secretarial filings</legend>
+          <p class="block-p">Charged as they happen. Government charges on each form are separate.</p>
+          {[
+            { name: 'forms', title: 'Additional forms filed with the DRC', rate: feeRates.drcForm, unit: 'per form, plus government charges' },
+            { name: 'resolutions', title: 'Board resolutions after the initial set', rate: feeRates.resolution, unit: 'per resolution' },
+            { name: 'virtual', title: 'Secretary at a board meeting, virtually', rate: feeRates.meetingVirtual, unit: 'per meeting' },
+            { name: 'inperson', title: 'Secretary at a board meeting, in person', rate: feeRates.meetingInPerson, unit: 'per meeting' },
+          ].map((r) => (
+            <div class="row-q">
+              <span class="q-label">
+                <strong>{r.title}</strong>
+                <span>LKR {money(r.rate)} {r.unit}</span>
+              </span>
+              <div class="stepper">
+                <button type="button" class="st-btn" data-step="-1" aria-label={`One fewer: ${r.title}`}><Icon name="minus" size={18} stroke={2} /></button>
+                <input type="number" name={r.name} value="0" min="0" max="99" inputmode="numeric" aria-label={r.title} />
+                <button type="button" class="st-btn" data-step="1" aria-label={`One more: ${r.title}`}><Icon name="plus" size={18} stroke={2} /></button>
+              </div>
+            </div>
+          ))}
+          <label class="check check--wide">
+            <input type="checkbox" name="retainer" />
+            <span>
+              <strong>Annual secretarial retainer, from the second year</strong>
+              <span>LKR {money(feeRates.annualRetainer)} a year, charged when Form 15 is filed. The first year is included in every package.</span>
+            </span>
+          </label>
+        </fieldset>
+
+        {/* ------------------------------------------------ 3. DIGITAL */}
+        <fieldset class="block">
+          <legend class="block-h"><span class="block-n">3</span> Website and point of sale</legend>
+          <p class="block-p">Starting prices. The final figure depends on scope, and is confirmed in writing.</p>
+          <div class="checks">
+            {extras.map((e) => (
+              <label class="check">
+                <input type="checkbox" name="extra" value={e.slug} />
+                <span>
+                  <strong>{e.name}</strong>
+                  <span>from LKR {money(e.price)}{e.kind === 'monthly' ? ' a month' : ', one time'}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        {/* ------------------------------------------------ 4. EVERYTHING ELSE */}
+        <fieldset class="block">
+          <legend class="block-h"><span class="block-n">4</span> Other registrations and services</legend>
+          <p class="block-p">
+            Trademark, Customs and Port City registrations, UAE formation, accounting,
+            payroll and the rest are priced once we understand the scope. Tick what you
+            need and it goes into your estimate as a request for a proposal.
+          </p>
+          <div class="groups">
+            {scoped.map((c) => (
+              <details class="grp" open={c.slug === 'start'}>
+                <summary><Icon name={c.icon} size={18} /> {c.title} <span class="grp-count" data-count-for={c.slug}></span><Icon name="chevron-down" size={18} stroke={2} class="grp-chev" /></summary>
+                <div class="checks checks--grp">
+                  {c.items.map((s) => (
+                    <label class="check check--sm">
+                      <input type="checkbox" name="scoped" value={s.slug} data-title={s.title} data-cat={c.slug} />
+                      <span><strong>{s.title}</strong></span>
+                    </label>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        </fieldset>
+      </form>
+
+      {/* ------------------------------------------------ SUMMARY */}
+      <aside class="sum-col" aria-labelledby="sum-h">
+        <div class="sum on-invert">
+          <h2 id="sum-h" class="eyebrow sum-h">Your estimate</h2>
+          <p class="sum-k">One-time professional fees</p>
+          <p class="sum-total" aria-live="polite"><span class="sum-cur">LKR</span> <span data-total>0</span></p>
+          <p class="sum-sub" data-monthly hidden></p>
+          <p class="sum-sub" data-annual hidden></p>
+
+          <ul class="sum-lines" data-lines>
+            <li class="sum-empty">Nothing selected yet.</li>
+          </ul>
+
+          <div class="sum-scoped" data-scoped-wrap hidden>
+            <p class="sum-k">Priced after scoping</p>
+            <ul data-scoped></ul>
+          </div>
+
+          <div class="sum-actions">
+            <a class="btn btn--primary btn--block" href={whatsappHref()} target="_blank" rel="noopener" data-send-wa><Icon name="message-circle" size={18} stroke={2} /> Send on WhatsApp</a>
+            <a class="btn btn--ghost btn--block" href={`mailto:${site.email}`} data-send-mail><Icon name="mail" size={18} stroke={2} /> Send by e-mail</a>
+            <button type="button" class="btn btn--ghost btn--block" data-print><Icon name="printer" size={18} stroke={2} /> Print or save as PDF</button>
+            <button type="button" class="sum-reset" data-reset>Start again</button>
+          </div>
+          <p class="sum-note">
+            An estimate from the firm’s published fees, not a quotation. Website and POS
+            figures are starting prices. Government and third-party charges are separate.
+            You receive the actual figure in writing before any work begins.
+          </p>
+        </div>
+        <noscript><p class="sum-noscript">This estimate needs JavaScript. Every fee is listed on the <a href="/packages/">packages page</a>.</p></noscript>
+      </aside>
+    </div>
+    {/* Phones: the summary is below the form, so a slim bar keeps the total in
+        sight and jumps to it. Hidden once the summary itself is on screen. */}
+    <a class="mini link-plain" href="#sum-h" data-mini hidden>
+      <span><span class="mini-k">Estimate</span> <strong>LKR <span data-mini-total>0</span></strong></span>
+      <span class="mini-go">View <Icon name="arrow-down" size={16} stroke={2} /></span>
+    </a>
+  </section>
+</Base>
+
+<script>
+  type Cfg = {
+    packages: { slug: string; name: string; price: number; perDirector: number }[];
+    extras: { slug: string; name: string; price: number; kind: 'once' | 'monthly' }[];
+    rates: { annualRetainer: number; drcForm: number; resolution: number; meetingVirtual: number; meetingInPerson: number };
+    email: string; wa: string;
+  };
+  const form = document.getElementById('est') as HTMLFormElement | null;
+  if (form) {
+    const cfg: Cfg = JSON.parse(form.dataset.config!);
+    const $ = <T extends Element>(s: string) => document.querySelector(s) as T;
+    const money = (n: number) => n.toLocaleString('en-US');
+    const num = (name: string) => {
+      const el = form.elements.namedItem(name) as HTMLInputElement;
+      const v = Math.max(Number(el.min || 0), Math.min(Number(el.max || 99), Math.round(Number(el.value) || 0)));
+      return v;
+    };
+    const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]!));
+
+    let text = '';
+    const render = () => {
+      const lines: { label: string; amount: string }[] = [];
+      let once = 0, monthly = 0;
+
+      const pkgSlug = (form.elements.namedItem('pkg') as RadioNodeList).value;
+      const pkg = cfg.packages.find((p) => p.slug === pkgSlug);
+      ($('[data-needs-pkg]') as HTMLElement).hidden = !pkg;
+      if (pkg) {
+        const d = num('directors');
+        once += pkg.price;
+        lines.push({ label: `${pkg.name} incorporation package, one director`, amount: `LKR ${money(pkg.price)}` });
+        if (d > 1) {
+          const extra = (d - 1) * pkg.perDirector;
+          once += extra;
+          lines.push({ label: `${d - 1} additional director${d > 2 ? 's' : ''} × LKR ${money(pkg.perDirector)}`, amount: `LKR ${money(extra)}` });
+        }
+      }
+
+      const per = [
+        ['forms', cfg.rates.drcForm, 'Additional DRC form', '(+ government charges)'],
+        ['resolutions', cfg.rates.resolution, 'Additional board resolution', ''],
+        ['virtual', cfg.rates.meetingVirtual, 'Board meeting attended virtually', ''],
+        ['inperson', cfg.rates.meetingInPerson, 'Board meeting attended in person', ''],
+      ] as const;
+      for (const [name, rate, label, note] of per) {
+        const q = num(name);
+        if (!q) continue;
+        once += q * rate;
+        lines.push({ label: `${q} × ${label}${q > 1 ? 's' : ''} ${note}`.trim(), amount: `LKR ${money(q * rate)}` });
+      }
+
+      form.querySelectorAll<HTMLInputElement>('input[name="extra"]:checked').forEach((el) => {
+        const e = cfg.extras.find((x) => x.slug === el.value)!;
+        if (e.kind === 'monthly') {
+          monthly += e.price;
+          lines.push({ label: `${e.name} (from)`, amount: `LKR ${money(e.price)} / month` });
+        } else {
+          once += e.price;
+          lines.push({ label: `${e.name} (from)`, amount: `LKR ${money(e.price)}` });
+        }
+      });
+
+      const retainer = (form.elements.namedItem('retainer') as HTMLInputElement).checked;
+      const scoped = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="scoped"]:checked'));
+
+      // --- paint
+      $('[data-total]').textContent = money(once);
+      const m = $('[data-monthly]') as HTMLElement;
+      m.hidden = !monthly; m.textContent = `+ LKR ${money(monthly)} a month (from)`;
+      const a = $('[data-annual]') as HTMLElement;
+      a.hidden = !retainer; a.textContent = `+ LKR ${money(cfg.rates.annualRetainer)} a year from the second year (retainer)`;
+      $('[data-lines]').innerHTML = lines.length
+        ? lines.map((l) => `<li><span>${esc(l.label)}</span><span class="sum-amt">${esc(l.amount)}</span></li>`).join('')
+        : '<li class="sum-empty">Nothing selected yet.</li>';
+      ($('[data-scoped-wrap]') as HTMLElement).hidden = !scoped.length;
+      $('[data-scoped]').innerHTML = scoped.map((s) => `<li>${esc(s.dataset.title!)}</li>`).join('');
+      document.querySelectorAll<HTMLElement>('[data-count-for]').forEach((el) => {
+        const n = scoped.filter((s) => s.dataset.cat === el.dataset.countFor).length;
+        el.textContent = n ? `${n} selected` : '';
+      });
+
+      // --- the message the send buttons carry
+      text = [
+        'Estimate from the RBPL website',
+        '',
+        ...lines.map((l) => `- ${l.label}: ${l.amount}`),
+        lines.length ? '' : '(No priced items selected)',
+        `One-time professional fees: LKR ${money(once)}`,
+        monthly ? `Monthly (from): LKR ${money(monthly)}` : null,
+        retainer ? `Annual retainer from the second year: LKR ${money(cfg.rates.annualRetainer)}` : null,
+        scoped.length ? '' : null,
+        scoped.length ? 'Please also send a proposal for:' : null,
+        ...scoped.map((s) => `- ${s.dataset.title}`),
+        '',
+        'Government and third-party charges are separate. I understand this is an estimate, not a quotation.',
+      ].filter((l) => l !== null).join('\n');
+      $('[data-mini-total]').textContent = money(once);
+      ($('[data-send-wa]') as HTMLAnchorElement).href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(text)}`;
+      ($('[data-send-mail]') as HTMLAnchorElement).href = `mailto:${cfg.email}?subject=${encodeURIComponent('Estimate from the website')}&body=${encodeURIComponent(text)}`;
+    };
+
+    // steppers
+    form.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) => b.addEventListener('click', () => {
+      const input = b.parentElement!.querySelector('input')!;
+      input.value = String(Number(input.value || 0) + Number(b.dataset.step));
+      input.value = String(Math.max(Number(input.min), Math.min(Number(input.max), Number(input.value))));
+      render();
+    }));
+    form.addEventListener('input', render);
+    form.addEventListener('change', render);
+    $('[data-print]').addEventListener('click', () => window.print());
+    $('[data-reset]').addEventListener('click', () => { form.reset(); render(); window.scrollTo({ top: form.getBoundingClientRect().top + scrollY - 120 }); });
+
+    // arriving from a service or package page: ?service=port-city or ?package=premium
+    const q = new URLSearchParams(location.search);
+    const svc = q.get('service');
+    if (svc) {
+      const box = form.querySelector<HTMLInputElement>(`input[name="scoped"][value="${CSS.escape(svc)}"]`);
+      if (box) { box.checked = true; (box.closest('details') as HTMLDetailsElement).open = true; }
+    }
+    // Company registration and secretarial are priced by the packages themselves.
+    const pk = q.get('package') ?? (svc === 'company-registration' || svc === 'secretarial' ? 'basic' : null);
+    if (pk) {
+      const r = form.querySelector<HTMLInputElement>(`input[name="pkg"][value="${CSS.escape(pk)}"]`);
+      if (r) r.checked = true;
+    }
+    // the phone total bar: shown on small screens until the summary is in view
+    const mini = $('[data-mini]') as HTMLElement;
+    const small = window.matchMedia('(max-width: 63.99rem)');
+    // Shown only while the summary is still BELOW the screen: once it is in
+    // view, or scrolled past, the bar has nothing left to point at.
+    let sumAhead = true;
+    const syncMini = () => { mini.hidden = !small.matches || !sumAhead; };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => { sumAhead = !e.isIntersecting && e.boundingClientRect.top > 0; syncMini(); }).observe($('.sum'));
+    }
+    small.addEventListener('change', syncMini);
+    syncMini();
+    render();
+  }
+</script>
+
+<style>
+  .est { display: grid; gap: var(--space-6); align-items: start; }
+  @media (min-width: 64rem) { .est { grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.55fr); gap: var(--space-7); } }
+
+  .steps-col { display: grid; gap: var(--space-5); }
+  .block {
+    margin: 0;
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    min-width: 0;
+  }
+  .block-h { display: flex; align-items: center; gap: var(--space-3); padding: 0; font-size: var(--text-h4); font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .block-n { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: var(--r-pill); background: var(--surface-invert); color: var(--ink-invert); font-size: var(--text-xs); font-weight: 700; flex: none; }
+  .block-p { margin: var(--space-2) 0 var(--space-5); color: var(--ink-soft); font-size: var(--text-sm); }
+  .block-link { margin-top: var(--space-3); }
+
+  /* --- package cards: the whole card is the radio's label ------------------- */
+  .pkgs { display: grid; gap: var(--space-3); }
+  @media (min-width: 40rem) { .pkgs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 80rem) { .pkgs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pkg {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    padding-right: var(--space-7);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out);
+  }
+  .pkg input { position: absolute; top: var(--space-4); right: var(--space-4); width: 1.2rem; height: 1.2rem; min-height: 0; accent-color: var(--accent-deep); }
+  .pkg:hover { border-color: var(--ink); }
+  .pkg:has(input:checked) { border-color: var(--ink); background: var(--accent-tint); box-shadow: inset 0 0 0 1px var(--ink); }
+  .pkg:has(input:focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+  .pkg-name { font-weight: 700; }
+  .pkg-price { font-family: var(--font-display); font-size: 1.4rem; font-weight: 650; letter-spacing: var(--tracking-tight); }
+  .pkg-meta { font-size: var(--text-xs); color: var(--muted); line-height: 1.4; }
+  .pkg:has(input:checked) .pkg-meta { color: var(--ink-soft); }
+
+  /* --- quantity rows ------------------------------------------------------------- */
+  .row-q { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding-block: var(--space-4); border-top: 1px solid var(--line); }
+  .row-q[hidden] { display: none; }
+  .pkgs + .row-q { margin-top: var(--space-4); }
+  .q-label { display: grid; gap: 2px; min-width: 0; }
+  .q-label strong { font-size: var(--text-sm); }
+  .q-label span { font-size: var(--text-xs); color: var(--muted); }
+  .stepper { display: inline-flex; align-items: center; flex: none; border: 1px solid var(--line-strong); border-radius: var(--r-pill); background: var(--surface); }
+  .st-btn { display: grid; place-items: center; width: var(--tap-min); height: var(--tap-min); padding: 0; border: 0; border-radius: var(--r-pill); background: none; color: var(--ink); cursor: pointer; }
+  .st-btn:hover { background: var(--surface-sunken); }
+  .stepper input { width: 2.75rem; min-height: var(--tap-min); padding: 0; border: 0; background: none; text-align: center; font-weight: 700; font-size: 1rem; -moz-appearance: textfield; }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* --- checkboxes ----------------------------------------------------------------- */
+  .checks { display: grid; gap: var(--space-3); }
+  @media (min-width: 40rem) { .checks { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); } }
+  .check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+  }
+  .check input { flex: none; width: 1.15rem; height: 1.15rem; min-height: 0; margin-top: 2px; accent-color: var(--accent-deep); }
+  .check > span { display: grid; gap: 2px; }
+  .check strong { font-size: var(--text-sm); }
+  .check > span > span { font-size: var(--text-xs); color: var(--muted); line-height: 1.45; }
+  .check:hover { border-color: var(--ink); }
+  .check:has(input:checked) { border-color: var(--ink); background: var(--accent-tint); }
+  .check--wide { margin-top: var(--space-4); }
+  .check--sm { padding: var(--space-3) var(--space-4); align-items: center; min-height: var(--tap-min); }
+  .check--sm input { margin-top: 0; }
+
+  .groups { display: grid; gap: var(--space-3); }
+  .grp { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+  .grp summary { display: flex; align-items: center; gap: var(--space-3); min-height: 3.25rem; padding-inline: var(--space-4); font-weight: 700; font-size: var(--text-sm); cursor: pointer; list-style: none; }
+  .grp summary::-webkit-details-marker { display: none; }
+  .grp summary :global(svg) { color: var(--accent-ink); flex: none; }
+  .grp-count { white-space: nowrap; font-size: var(--text-xs); font-weight: 700; color: var(--accent-ink); }
+  .grp summary :global(.grp-chev) { margin-left: auto; color: var(--muted); transition: transform var(--dur-control) var(--ease-out); }
+  .grp[open] summary :global(.grp-chev) { transform: rotate(180deg); }
+  .checks--grp { padding: 0 var(--space-4) var(--space-4); }
+  @media (min-width: 40rem) { .checks--grp { grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); } }
+
+  /* --- the summary --------------------------------------------------------------- */
+  @media (min-width: 64rem) { .sum-col { position: sticky; top: calc(var(--header-h) + var(--space-5)); } }
+  .sum {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+    background: var(--surface-invert);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-3);
+  }
+  .sum::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--brand-ramp); }
+  .sum-h { font-family: var(--font-sans); font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); margin-bottom: var(--space-4); }
+  .sum-k { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--muted-invert); }
+  .sum-total { margin-top: var(--space-2); font-family: var(--font-display); font-size: clamp(2.4rem, 2rem + 1.4vw, 3.2rem); font-weight: 650; line-height: 1; letter-spacing: var(--tracking-display); color: var(--ink-invert); }
+  .sum-cur { font-family: var(--font-sans); font-size: max(0.8rem, 0.32em); font-weight: 700; letter-spacing: 0.06em; color: var(--muted-invert); vertical-align: 0.7em; }
+  .sum-sub { margin-top: var(--space-2); font-size: var(--text-sm); font-weight: 600; color: var(--accent-lift); }
+  .sum-lines { list-style: none; margin: var(--space-5) 0 0; padding: var(--space-4) 0 0; border-top: 1px solid var(--line-invert); display: grid; gap: var(--space-3); }
+  .sum-lines :global(li) { display: flex; justify-content: space-between; gap: var(--space-4); font-size: var(--text-sm); color: var(--ink-invert); }
+  .sum-lines :global(.sum-amt) { flex: none; font-weight: 700; white-space: nowrap; }
+  .sum-lines :global(.sum-empty) { color: var(--muted-invert); }
+  .sum-scoped { margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--line-invert); }
+  .sum-scoped[hidden] { display: none; }
+  .sum-scoped ul { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: grid; gap: var(--space-2); }
+  .sum-scoped :global(li) { font-size: var(--text-sm); color: var(--ink-invert); padding-left: var(--space-4); position: relative; }
+  .sum-scoped :global(li)::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-lift); }
+  .sum-actions { display: grid; gap: var(--space-3); margin-top: var(--space-6); }
+  .sum-reset { min-height: var(--tap-min); border: 0; background: none; color: var(--muted-invert); font-weight: 600; font-size: var(--text-sm); text-decoration: underline; text-underline-offset: 0.25em; cursor: pointer; }
+  .sum-reset:hover { color: var(--ink-invert); }
+  .sum-note { margin-top: var(--space-4); font-size: var(--text-xs); line-height: 1.55; color: var(--muted-invert); }
+  .sum-noscript { margin-top: var(--space-4); font-size: var(--text-sm); }
+
+  .mini {
+    position: fixed;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: max(var(--space-3), env(safe-area-inset-bottom));
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 3.25rem;
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+    border-radius: var(--r-pill);
+    background: var(--surface-invert);
+    color: var(--ink-invert);
+    box-shadow: var(--shadow-3);
+  }
+  .mini[hidden] { display: none; }
+  .mini:hover { color: var(--ink-invert); }
+  .mini-k { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--muted-invert); margin-right: var(--space-2); }
+  .mini strong { font-size: 1.05rem; }
+  .mini-go { display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--tap-min); padding-inline: var(--space-4); border-radius: var(--r-pill); background: var(--accent); color: var(--ink-on-accent); font-weight: 700; font-size: var(--text-sm); }
+  @media (max-width: 63.99rem) { .est-page { padding-bottom: 6rem; } }
+
+  @media print {
+    .mini { display: none !important; }
+    .steps-col, .page-hero { display: none !important; }
+    .sum::before { display: none; }
+    .sum-actions { display: none !important; }
+  }
+</style>

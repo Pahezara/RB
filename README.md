@@ -255,7 +255,7 @@ the navy and the orange read as printed on it rather than lit on a screen.
    right and the footnote can go.
 6. **The enquiry form has no server** — it hands the enquiry to the visitor's e-mail app or
    WhatsApp. A real endpoint needs a service and the client's approval. See decision D10.
-7. **EHRiS** — the content document asks for a description on the payroll page but does not
-   say what EHRiS is. See decision D17.
+7. **eHRIS** — the payroll page now describes it, from how sa.lk describes it. Confirm the
+   wording matches how RBPL uses it. See decision D19.
 8. **Admin login** — insights, management and services editing needs a git-based CMS and a
    GitHub sign-in authorised by the site owner. See decision D17.

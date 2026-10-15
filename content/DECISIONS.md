@@ -437,3 +437,34 @@ earlier layout started the copy inside the photo's faded foot, which on a phone
 read as text crowded onto a zoomed crop. Slide phone crops now also render at
 1200px wide for 3x screens.
 
+## D19 — The sa.lk layout, and the full estimate page
+**Added 2026-10-15 at SAJ's request** to use the layout of sa.lk (Synergy
+Advisors, the affiliated practice) and to add a page for a full estimate.
+
+**Layout.** The home page now follows sa.lk's order: a contact strip above the
+header (desktop only), a photographic hero with left-aligned copy, four action
+cards rising over the hero's foot, the business journey in eight stages, an
+image-and-text company block, service cards with + lists, "why choose us" with
+figure boxes, and a systems grid. The words remain RBPL's: the [CONTENT]
+headline and copy, the five service groups, the published fees. The five-slide
+hero stays (requested earlier); its caption now sits inside the measured copy
+column instead of in a card. The FAQ, audiences and affiliation sections are
+kept below the sa.lk sequence. Board, vision and values live on Management and
+About.
+
+**The full estimate (`/estimate/`).** Incorporation package and directors, the
+secretarial filing rates (DRC forms, resolutions, meeting attendance, the annual
+retainer), the website and POS starting prices, and every other service as a
+tick-box. Only what the firm has priced is priced: the other registrations and
+services go into the summary as "priced after scoping", never as an invented
+figure. The summary sends the whole estimate by WhatsApp or e-mail, or prints it.
+`feeRates` in site.ts holds the numeric rates; the build stops if they stop
+matching the worded `ongoingFees`. Service pages link to it with the service
+preselected, and the company registration and secretarial pages preselect the
+Basic package. On phones a slim total bar stays in view until the summary does.
+
+**eHRIS.** The content document asked for a description on the payroll page
+without saying what EHRiS is. sa.lk describes eHRIS as a cloud HR information
+system for attendance and payroll, so the payroll page now carries a short
+section on it, and it appears in the systems grid. SAJ should confirm the wording.
+
