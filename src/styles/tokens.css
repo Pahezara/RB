@@ -134,23 +134,27 @@
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Inter Fallback',
                'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
-  --text-display: clamp(2.65rem, 1.35rem + 5vw, 5.75rem);
-  --text-h1:      clamp(2.4rem,  1.5rem + 3.4vw, 4.4rem);
-  --text-h2:      clamp(2rem,    1.35rem + 2.3vw, 3.4rem);
-  --text-h3:      clamp(1.35rem, 1.15rem + 0.8vw, 1.75rem);
-  --text-h4:      clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  --text-lede:    clamp(1.125rem, 1.02rem + 0.4vw, 1.3125rem);
-  --text-body:    clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);   /* 17px floor */
-  --text-sm:      clamp(0.9375rem, 0.9rem + 0.12vw, 1rem);
-  --text-xs:      0.8125rem;
+  /* Restrained on purpose (2026-10-23): a professional-services site reads as
+     confident at these sizes, and as shouting above them. Body, lede and the
+     small steps were then brought a touch closer to the studio's Northlight
+     site (body about 14-15px), at the owner's request. */
+  --text-display: clamp(2.1rem,  1.45rem + 2.4vw, 3.35rem);
+  --text-h1:      clamp(1.95rem, 1.4rem + 2vw,    2.9rem);
+  --text-h2:      clamp(1.55rem, 1.2rem + 1.35vw, 2.25rem);
+  --text-h3:      clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-h4:      clamp(0.96875rem, 0.95rem + 0.1vw, 1rem);
+  --text-lede:    clamp(0.96875rem, 0.94rem + 0.15vw, 1.0625rem);
+  --text-body:    clamp(0.90625rem, 0.89rem + 0.08vw, 0.9375rem);
+  --text-sm:      0.84375rem;
+  --text-xs:      0.8rem;
   --text-eyebrow: 0.78125rem;
   /* The estimate and the big credential numerals. */
-  --text-figure:  clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  --text-figure:  clamp(1.9rem, 1.45rem + 1.6vw, 2.6rem);
 
   --leading-display: 1.04;
   --leading-tight:   1.08;
   --leading-snug:    1.25;
-  --leading-body:    1.62;
+  --leading-body:    1.6;
   --tracking-display: -0.028em;
   --tracking-tight:   -0.02em;
   --tracking-eyebrow: 0.14em;
@@ -158,7 +162,7 @@
   --measure-tight: 48ch;
 
   /* --- space ------------------------------------------------------------------------------ */
-  --section-y: clamp(4rem, 2.8rem + 6vw, 8.5rem);
+  --section-y: clamp(3.5rem, 2.6rem + 3.6vw, 6.25rem);
   /* The content column fills the screen less two gutters that grow with it,
      up to a cap only an ultra-wide monitor reaches. In rem, so it scales with
      the root on large screens: about 1376px of a 1440px laptop, 1700px of a
@@ -201,5 +205,5 @@
 }
 
 @media (min-width: 64rem) {
-  :root { --header-h: 5rem; }
+  :root { --header-h: 4.5rem; }
 }

@@ -87,3 +87,18 @@ a { transition: color var(--dur-hover) var(--ease-out), text-decoration-color va
 @media print {
   .rv:not(.rv-in) { opacity: 1; }
 }
+
+/* --- reading progress -----------------------------------------------------------
+   A hairline in the brand ramp across the very top, filled by the page's own
+   scroll. Pure CSS; where scroll timelines are unsupported it simply is not drawn. */
+.scroll-line { display: none; }
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-line {
+      display: block; position: fixed; inset: 0 0 auto 0; z-index: 1000; height: 2px;
+      background: var(--brand-ramp); transform-origin: left; pointer-events: none;
+      animation: scroll-fill linear both; animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes scroll-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }

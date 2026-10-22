@@ -96,6 +96,7 @@ const jsonLd = {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="scroll-line" aria-hidden="true"></div>
     <Header overHero={overHero} />
     <main id="main">
       <slot />
@@ -119,7 +120,7 @@ const jsonLd = {
           '.next', '.mini-pkg', '.matrix', '.table-wrap', '.estimate',
           '.cta-card', '.go > li', '.legal-body > *', '.sect-chips',
           '.fee-list', '.panel', '.solid-panel', '.marquee', '.vision-quote',
-          '.needs > li', '.duo > *', '.affil', '.vmv', '.links > li', '.svc-help', '.svc-approach', '.svc-faq', '.extra',
+          '.needs > li', '.paths > li', '.tiers > li', '.how-step', '.bento > *', '.duo > a', '.prices-copy', '.duo > *', '.affil', '.vmv', '.links > li', '.svc-help', '.svc-approach', '.svc-faq', '.extra',
         ].join(',');
         const all = Array.from(document.querySelectorAll<HTMLElement>(SEL));
         // Only the outermost match animates: a card inside a revealed row must

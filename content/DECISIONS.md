@@ -468,3 +468,75 @@ without saying what EHRiS is. sa.lk describes eHRIS as a cloud HR information
 system for attendance and payroll, so the payroll page now carries a short
 section on it, and it appears in the systems grid. SAJ should confirm the wording.
 
+
+## D20 — A clearer, quieter home page
+**Added 2026-10-23** after the client reported the site as confusing and not
+interesting enough, with a request for smaller type.
+
+**Research.** The strongest sites in the category (Osome, Pilot, Stripe Atlas,
+and the 2026 accounting-site roundups) share five habits: one short, plain
+promise with two actions and a proof line beside it; visitors choose by their
+situation, not from a catalogue; prices and the process are visible; few
+sections and short sentences; restrained type.
+
+**Diagnosis.** The previous home page presented the services three times (the
+slider, the eight-stage journey and the five service cards) across twelve
+sections, in large type and long paragraphs.
+
+**What changed.**
+- The type scale is smaller throughout (h1 about 2.9rem at most, h2 2.25rem,
+  body 15–16px), and section spacing is tighter.
+- The home page has seven sections, and each says one thing: a hero with the
+  promise, two actions, a proof line and the service explorer (the five groups as
+  tabs, so the five-slide carousel stays, now as the centrepiece); "where are you
+  today?" (four situations, three services each); prices on the table; three
+  steps; why Reliance (a bento with the figures and the affiliation); two
+  audience cards; a short FAQ.
+- Copy is rewritten short and plain. No new claims: every figure is the firm's
+  own count or published fee; "Most complete" on Premium is literally true (it
+  has the most items).
+- The menu leads with Services and adds Pricing; Home is the logo.
+- Page openings on Services, Pricing, About, Contact, Estimate, Industries and
+  Investors are cut to one or two plain sentences.
+
+## D21 — A home page with signature moments
+The client found the clean D20 page "boring" and asked for the best business
+website in Sri Lanka. The order stays (promise, situation, reach, price,
+process, proof, questions); each part now has one thing worth remembering:
+
+- **Hero:** the five service-group photographs crossfade full-bleed behind
+  the copy, driven by a dock of five tabs with live progress lines. The
+  headline's second line turns over ("registered right", "run smoothly",
+  "grown with intent", "sold on your terms"); the full sentence is read once,
+  from a visually hidden copy.
+- **Ribbon:** all 24 services run past on the brand orange. Decorative
+  (aria-hidden), paused on hover, still under reduced motion.
+- **Paths:** four photographic panels that open as the pointer moves across
+  them on desktop; on touch screens all four are open.
+- **Reach:** a dot-matrix Sri Lanka generated at build time from a simplified
+  coastline, with the Nugegoda office, Colombo Port City and a line drawn out
+  to the UAE. Only places the firm has a service for are marked. The labels
+  are HTML, so they stay at least 12px on a phone.
+- **Prices:** three cards, the most complete one lit with the brand ramp.
+- **Why:** a dark bento with a light that follows the pointer.
+
+Site-wide: inner page heroes now carry the same drifting blue and orange light
+and fine grid, closed by a brand-ramp hairline, and a ramp-coloured reading
+line fills across the top of every page as it scrolls. The "audiences" pair
+left the home page; its two destinations are reached from the map and from
+the fourth path.
+
+## D22 — A new header and top strip, and a slightly smaller type scale
+At the owner's request (2026-10-23), the header was redesigned in the site's
+own language, not copied from another studio site:
+
+- **Top strip:** a quiet 36px line in the dark of the hero, with the tagline on
+  the left and phone, e-mail, WhatsApp and LinkedIn on the right, divided by
+  hairlines. The orange "Get an Estimate" pill left it.
+- **Header:** the menu sits in one pill-shaped rail, centred, with the current
+  page filled (white over the hero, navy on paper). "Get an estimate" is a quiet
+  text action beside the WhatsApp call to action, which is now a smaller orange
+  pill. The bar is 72px on desktop (was 80px).
+- **Type:** body text, the lede and the small steps came down a touch toward
+  the owner's Northlight site: body about 14-15px, small text 13.5px. Headline
+  sizes were already in that range and are unchanged; buttons are 46/50px.

@@ -18,8 +18,8 @@ const sectorList = sectors.map((s) => (s === 'NGOs' ? s : s.toLowerCase()));
     variant="photo"
     image="colombo-golden"
     eyebrow="About Reliance Business Partners"
-    title="Practical business support with a <em>long-term perspective.</em>"
-    lede={`${site.legalName} was established in ${site.founded} to bring business-related professional services together under one umbrella.`}
+    title="Practical support, <em>for the long run.</em>"
+    lede={`Founded in ${site.founded}, we bring the professional services a business needs under one roof, so you have one team to call.`}
     crumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
   />
 
@@ -179,7 +179,7 @@ const sectorList = sectors.map((s) => (s === 'NGOs' ? s : s.toLowerCase()));
   /* ------------------------------------------------------------ vision + mission */
   .vmv { display: grid; gap: var(--space-7); }
   @media (min-width: 64rem) { .vmv { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-9); align-items: start; } }
-  .vm-quote { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3rem); line-height: 1.14; font-weight: 600; color: var(--ink-invert); }
+  .vm-quote { font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem); line-height: 1.14; font-weight: 600; color: var(--ink-invert); }
   .vm--mission { padding: var(--pad-card); background: var(--surface-invert-2); border: 1px solid var(--line-invert); border-radius: var(--r-lg); }
   .vm-text { font-size: var(--text-lede); line-height: 1.6; color: var(--ink-invert); }
   .tagline-line {

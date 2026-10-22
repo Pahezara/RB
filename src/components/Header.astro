@@ -9,13 +9,14 @@ interface Props {
 }
 const { overHero = false } = Astro.props;
 
-/* [CONTENT] "Home | About | Services | Management | Insights | Contact Us".
-   Services is rendered separately, with its mega menu. */
-const before = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about/' },
-];
+/* The [CONTENT] menu, tightened for first-time visitors (2026-10-23): Services
+   leads, because it is what people come for; Pricing is added, because the
+   published fees are the firm's clearest differentiator; Home is the logo, as
+   on every site people already know. Services renders with its mega menu. */
+const before: { label: string; href: string }[] = [];
 const after = [
+  { label: 'Pricing', href: '/packages/' },
+  { label: 'About', href: '/about/' },
   { label: 'Management', href: '/management/' },
   { label: 'Insights', href: '/insights/' },
   { label: 'Contact Us', href: '/contact/' },
@@ -42,24 +43,20 @@ const money = (n: number) => n.toLocaleString('en-US');
   all; the chevron button exists so keyboard and touch users can open it
   without first navigating to /services/, and it carries aria-expanded.
 */}
-{/* The contact strip above the header, after sa.lk: e-mail and phone on the
-    left, the estimate and the two social routes on the right. It scrolls away;
-    the header below it stays. Hidden on phones, where the menu carries all of
-    it and every pixel above the fold matters. */}
+{/* The top strip (redesigned 2026-10-23): a quiet line in the dark of the
+    hero rather than a second toolbar. The tagline on the left, the four direct
+    routes on the right, small and evenly spaced. The estimate moved into the
+    header itself. It scrolls away; the header below it stays. Hidden on phones,
+    where the menu carries all of it. */}
 <div class="topbar">
   <div class="container topbar-in">
-    <p class="tb-left">
-      <a class="link-plain" href={`mailto:${site.email}`}><Icon name="mail" size={15} stroke={2} /> {site.email}</a>
-      <span class="tb-sep" aria-hidden="true"></span>
-      <a class="link-plain tnum" href={site.phoneHref}><Icon name="phone" size={15} stroke={2} /> {site.phone}</a>
-      <span class="tb-sep tb-wide" aria-hidden="true"></span>
-      <span class="tb-wide"><Icon name="map-pin" size={15} stroke={2} /> {site.address.locality}, Sri Lanka</span>
-    </p>
-    <p class="tb-right">
-      <a class="link-plain" href={site.social.linkedin} rel="noopener">LinkedIn</a>
-      <a class="link-plain" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={15} stroke={2} /> WhatsApp</a>
-      <a class="tb-cta link-plain" href="/estimate/"><Icon name="calculator" size={15} stroke={2} /> Get an Estimate</a>
-    </p>
+    <p class="tb-left"><span class="tb-dot" aria-hidden="true"></span><span>{site.tagline}<span class="tb-wide">: {site.taglineSub}</span></span></p>
+    <ul class="tb-right">
+      <li><a class="link-plain tnum" href={site.phoneHref}><Icon name="phone" size={13} stroke={2} /> {site.phone}</a></li>
+      <li><a class="link-plain" href={`mailto:${site.email}`}><Icon name="mail" size={13} stroke={2} /> {site.email}</a></li>
+      <li><a class="link-plain" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={13} stroke={2} /> WhatsApp</a></li>
+      <li><a class="link-plain" href={site.social.linkedin} rel="noopener"><Icon name="briefcase-business" size={13} stroke={2} /> LinkedIn</a></li>
+    </ul>
   </div>
 </div>
 
@@ -126,7 +123,8 @@ const money = (n: number) => n.toLocaleString('en-US');
     </nav>
 
     <div class="actions">
-      <a class="btn btn--primary cta" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> Discuss Your Requirements</a>
+      <a class="est link-plain" href="/estimate/" aria-current={isCurrent('/estimate/') ? 'page' : undefined}><Icon name="calculator" size={16} stroke={2} /> Get an estimate</a>
+      <a class="btn btn--primary cta" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={16} stroke={2} /> Discuss Your Requirements</a>
       <a class="btn btn--primary cta-compact" href={wa} target="_blank" rel="noopener" aria-label="Discuss your requirements on WhatsApp"><Icon name="message-circle" size={20} stroke={2} /></a>
 
       <details class="menu">
@@ -134,7 +132,7 @@ const money = (n: number) => n.toLocaleString('en-US');
         <div class="menu-panel">
           <div class="container menu-inner">
             <ul class="menu-main">
-              {before.map((item) => <li><a class="link-plain" href={item.href}>{item.label}</a></li>)}
+              <li><a class="link-plain" href="/">Home</a></li>
               <li>
                 <a class="link-plain" href="/services/">Services</a>
                 <div class="menu-cats">
@@ -152,7 +150,7 @@ const money = (n: number) => n.toLocaleString('en-US');
             </ul>
             <div class="menu-actions">
               <a class="btn btn--primary btn--block btn--lg" href={wa} target="_blank" rel="noopener"><Icon name="message-circle" size={18} stroke={2} /> Discuss Your Requirements</a>
-              <a class="btn btn--secondary btn--block" href="/#estimate">Get an instant quotation</a>
+              <a class="btn btn--secondary btn--block" href="/estimate/">Get an instant quotation</a>
               <a class="btn btn--secondary btn--block tnum" href={site.phoneHref}>{site.phone}</a>
             </div>
           </div>
@@ -202,20 +200,21 @@ const money = (n: number) => n.toLocaleString('en-US');
 </script>
 
 <style>
-  /* --- the contact strip ------------------------------------------------------ */
-  .topbar { display: none; background: var(--surface-invert); color: var(--ink-invert); font-size: var(--text-xs); position: relative; z-index: 101; }
+  /* --- the top strip --------------------------------------------------------- */
+  .topbar { display: none; position: relative; z-index: 101; background: var(--surface-invert); color: var(--muted-invert); font-size: 0.75rem; }
+  .topbar::after { content: ""; position: absolute; inset: auto 0 0 0; height: 1px; background: linear-gradient(90deg, transparent, var(--line-invert) 15%, var(--line-invert) 85%, transparent); }
   @media (min-width: 64rem) { .topbar { display: block; } }
-  .topbar-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 2.5rem; }
-  .tb-left, .tb-right { display: flex; align-items: center; gap: var(--space-4); margin: 0; }
-  .topbar a, .tb-wide { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 2.5rem; color: var(--ink-invert); font-weight: 600; white-space: nowrap; }
-  .topbar a:hover { color: var(--accent-lift); }
+  .topbar-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 2.25rem; }
+  .tb-left { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; letter-spacing: 0.01em; }
+  .tb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-ramp); box-shadow: 0 0 0 3px oklch(70% 0.17 50 / 0.18); }
+  .tb-right { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; }
+  .tb-right li + li { border-left: 1px solid var(--line-invert); }
+  .topbar a { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.25rem; padding-inline: var(--space-4); color: var(--muted-invert); font-weight: 500; white-space: nowrap; transition: color var(--dur-hover) var(--ease-out); }
+  .tb-right li:last-child a { padding-right: 0; }
+  .topbar a:hover { color: var(--ink-invert); }
   .topbar :global(svg) { color: var(--accent-lift); flex: none; }
-  .tb-sep { width: 1px; height: 1rem; background: var(--line-invert); }
   .topbar .tb-wide { display: none; }
-  @media (min-width: 72rem) { .topbar .tb-wide { display: inline-flex; } }
-  .topbar a.tb-cta { padding-inline: var(--space-3); border-radius: var(--r-pill); background: var(--accent); color: var(--ink-on-accent); min-height: 1.9rem; }
-  .topbar a.tb-cta :global(svg) { color: var(--ink-on-accent); }
-  .topbar a.tb-cta:hover { background: var(--accent-deep); color: var(--ink-on-accent); }
+  @media (min-width: 80rem) { .topbar .tb-wide { display: inline; } }
   .site-header {
     position: sticky;
     top: 0;
@@ -264,12 +263,16 @@ const money = (n: number) => n.toLocaleString('en-US');
   /* 2. over the hero: transparent, light ink. */
   .site-header.is-top:not(.is-menu) {
     background: transparent;
-    border-bottom-color: oklch(100% 0 0 / 0.12);
+    border-bottom-color: transparent;
   }
   .mark--light { display: none; }
   .site-header.is-top:not(.is-menu) .mark--dark { display: none; }
   .site-header.is-top:not(.is-menu) .mark--light { display: block; }
-  .site-header.is-top:not(.is-menu) :is(.brand-a, .nav-link, .tel, .mega-toggle) { color: var(--ink-invert); }
+  .site-header.is-top:not(.is-menu) :is(.brand-a, .nav-link, .tel, .mega-toggle, .est) { color: var(--ink-invert); }
+  .site-header.is-top:not(.is-menu) .nav-list { background: oklch(100% 0 0 / 0.06); border-color: var(--line-invert); }
+  .site-header.is-top:not(.is-menu) .nav-link:hover { background: oklch(100% 0 0 / 0.1); color: var(--ink-invert); }
+  .site-header.is-top:not(.is-menu) .nav-link[aria-current="page"] { background: var(--ink-invert); color: var(--ink); }
+  .site-header.is-top:not(.is-menu) .est :global(svg) { color: var(--accent-lift); }
   /* Only ink-invert over a photograph: it is the ink make-images measures there. */
   .site-header.is-top:not(.is-menu) .brand-b { color: var(--ink-invert); }
   .site-header.is-top:not(.is-menu) .bars,
@@ -317,7 +320,14 @@ const money = (n: number) => n.toLocaleString('en-US');
 
   /* --- nav ----------------------------------------------------------------- */
   .nav { display: none; margin-inline: auto; }
-  .nav-list { display: flex; align-items: center; gap: var(--space-2); list-style: none; margin: 0; padding: 0; }
+  /* The menu sits in a rail: one pill holding the links, the current page
+     filled. It reads as a single control, centred between the mark and the
+     actions, and keeps its shape over the hero and on paper. */
+  .nav-list {
+    display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 4px;
+    border: 1px solid var(--line); border-radius: var(--r-pill); background: oklch(100% 0 0 / 0.55);
+    transition: background-color var(--dur-control) var(--ease-out), border-color var(--dur-control) var(--ease-out);
+  }
   .nav-list > li { position: relative; display: flex; align-items: center; }
   /* The Services item is NOT the positioning context for its panel: the bar
      is. A panel hung off the menu item with a fixed offset runs past the right
@@ -327,38 +337,27 @@ const money = (n: number) => n.toLocaleString('en-US');
   .nav-link {
     display: inline-flex;
     align-items: center;
-    min-height: var(--tap-min);
-    padding-inline: var(--space-3);
+    min-height: 2.25rem;
+    padding-inline: 0.85rem;
+    border-radius: var(--r-pill);
     color: var(--ink-soft);
-    font-size: var(--text-sm);
-    font-weight: 600;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    letter-spacing: -0.005em;
     white-space: nowrap;
-    position: relative;
-    transition: color var(--dur-hover) var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
   }
-  .nav-link::after {
-    content: "";
-    position: absolute;
-    left: var(--space-3);
-    right: var(--space-3);
-    bottom: 8px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--dur-control) var(--ease-out);
-  }
-  .nav-link:hover { color: var(--ink); }
-  .nav-link:hover::after, .nav-link[aria-current="page"]::after { transform: scaleX(1); }
-  .nav-link[aria-current="page"] { color: var(--ink); }
+  .nav-link:hover { color: var(--ink); background: var(--surface-sunken); }
+  .nav-link[aria-current="page"] { color: var(--ink-invert); background: var(--ink); }
+  .has-mega .nav-link { padding-right: 0.35rem; }
 
   .mega-toggle {
     display: grid;
     place-items: center;
-    width: 28px;
-    min-height: var(--tap-min);
-    margin-inline-start: -8px;
+    width: 26px;
+    min-height: 2.25rem;
+    margin-inline-end: 4px;
+    border-radius: var(--r-pill);
     padding: 0;
     border: 0;
     background: none;
@@ -488,8 +487,17 @@ const money = (n: number) => n.toLocaleString('en-US');
   }
   .tel :global(svg) { color: var(--accent-ink); }
   .site-header.is-top:not(.is-menu) .tel :global(svg) { color: var(--accent-lift); }
-  .cta { display: none; }
-  .cta-compact { width: 48px; padding: 0; place-items: center; }
+  .est {
+    display: none; align-items: center; gap: 0.4rem; min-height: var(--tap-min);
+    color: var(--ink); font-size: 0.8125rem; font-weight: 600; white-space: nowrap;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+  .est :global(svg) { color: var(--accent-ink); }
+  .est:hover { color: var(--accent-ink); }
+  .site-header.is-top:not(.is-menu) .est:hover { color: var(--accent-lift); }
+  .cta, .cta-compact { border-radius: var(--r-pill); }
+  .cta { display: none; min-height: 2.5rem; padding: 0.5rem 1.1rem; font-size: 0.8125rem; }
+  .cta-compact { width: 44px; min-height: 44px; padding: 0; place-items: center; }
 
   /* --- mobile menu: <details>, so it works with no JavaScript ---------------- */
   .menu { flex: none; }
@@ -538,7 +546,7 @@ const money = (n: number) => n.toLocaleString('en-US');
     align-items: center;
     min-height: 56px;
     font-family: var(--font-display);
-    font-size: 1.75rem;
+    font-size: 1.35rem;
     font-weight: 600;
     letter-spacing: var(--tracking-tight);
     color: var(--ink);
@@ -587,8 +595,9 @@ const money = (n: number) => n.toLocaleString('en-US');
   @media (max-width: 22rem) { .brand-b { display: none; } }
 
   @media (min-width: 64rem) {
-    .mark { height: 38px; }
-    .brand-a { font-size: 1.5rem; }
+    .mark { height: 34px; }
+    .brand-a { font-size: 1.2rem; }
+    .brand-b { font-size: 0.6875rem; }
     .nav { display: block; }
     .menu { display: none; }
     /* Three columns, the outer two equal: the menu sits on the true centre of
@@ -599,13 +608,11 @@ const money = (n: number) => n.toLocaleString('en-US');
     .brand { justify-self: start; }
     .nav { margin-inline: 0; }
     .actions { justify-self: end; margin-inline-start: 0; }
-    .nav-link { padding-inline: var(--space-2); }
-    .nav-link::after { left: var(--space-2); right: var(--space-2); }
+    .nav-link { padding-inline: 0.7rem; }
   }
   @media (min-width: 77rem) {
-    .cta { display: inline-flex; }
-    .nav-link { padding-inline: var(--space-3); }
-    .nav-link::after { left: var(--space-3); right: var(--space-3); }
+    .cta, .est { display: inline-flex; }
+    .nav-link { padding-inline: 0.95rem; }
   }
   /* Between 64 and 77rem the desktop nav shows but the CTA does not fit; the
      menu button would be gone, so the CTA's job falls to a compact icon. */

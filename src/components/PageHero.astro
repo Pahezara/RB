@@ -48,6 +48,8 @@ if (variant === 'photo') {
     </div>
   )}
   <div class="ph-glow" aria-hidden="true"></div>
+  <div class="ph-aurora" aria-hidden="true"><span></span><span></span></div>
+  <div class="ph-lines" aria-hidden="true"></div>
 
   <div class="container ph-grid">
     <div class="ph-copy on-invert">
@@ -124,6 +126,30 @@ if (variant === 'photo') {
     pointer-events: none;
   }
   .page-hero--photo .ph-glow { display: none; }
+
+  /* The site's signature light: the logo's blue and orange, drifting slowly
+     behind the type, over a fine grid that fades toward the foot. A ramp
+     hairline closes the band. Decoration only, and still under reduced motion. */
+  .ph-aurora { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .ph-aurora span {
+    position: absolute; width: 38rem; height: 26rem; border-radius: 50%;
+    filter: blur(90px); opacity: 0.55; mix-blend-mode: screen;
+  }
+  .ph-aurora span:first-child { right: -8rem; top: -10rem; background: oklch(51% 0.11 240 / 0.8); animation: aur-a 18s ease-in-out infinite alternate; }
+  .ph-aurora span:last-child { right: 14rem; bottom: -16rem; background: oklch(62% 0.17 50 / 0.55); animation: aur-b 22s ease-in-out infinite alternate; }
+  @keyframes aur-a { to { transform: translate3d(-14rem, 6rem, 0) scale(1.15); } }
+  @keyframes aur-b { to { transform: translate3d(12rem, -5rem, 0) scale(0.9); } }
+  .page-hero--photo :is(.ph-aurora, .ph-lines) { display: none; }
+  .ph-lines {
+    position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background-image:
+      linear-gradient(oklch(100% 0 0 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(100% 0 0 / 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 90% at 70% 0%, #000 20%, transparent 80%);
+  }
+  .page-hero::after { content: ""; position: absolute; inset: auto 0 0 0; height: 2px; background: var(--brand-ramp); opacity: 0.9; }
+  @media (prefers-reduced-motion: reduce) { .ph-aurora span { animation: none; } }
 
   .ph-grid { display: grid; gap: var(--space-7); align-items: center; }
   @media (min-width: 64rem) {
