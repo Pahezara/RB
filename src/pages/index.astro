@@ -916,6 +916,11 @@ const pct = ([x, y]: readonly [number, number]) => `left:${(((x - VB.x) / VB.w) 
   .opt input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--ink-invert); }
   .opt input[type="checkbox"]:checked + span::before { content: "\2713"; margin-right: 0.4rem; color: var(--accent-lift); font-weight: 700; }
   .opt input:focus-visible + span { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  /* A legend sits on its fieldset's border by default, so on a tinted fieldset
+     (and in iOS Safari on every one) it hung half outside the box. Floated, it
+     is laid out as ordinary content inside the padding. */
+  .quiz legend { float: left; width: 100%; }
+  .quiz legend + * { clear: both; }
   .q-web { padding: var(--space-4); border-radius: var(--r-lg); background: var(--accent-tint); }
   .q-row { display: grid; gap: var(--space-5); }
   @media (min-width: 40rem) { .q-row { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
