@@ -301,18 +301,18 @@ const money = (n: number) => n.toLocaleString('en-US');
     min-height: var(--tap-min);
   }
   .mark { width: auto; height: 32px; }
-  .brand-name { display: grid; gap: 2px; line-height: 1; }
+  .brand-name { display: grid; gap: 3px; line-height: 1; font-family: var(--font-wordmark); }
   .brand-a {
-    font-family: var(--font-display);
+    font-family: var(--font-wordmark);
     font-size: 1.25rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
+    font-weight: 800;
+    letter-spacing: 0.005em;
     color: var(--ink);
   }
   .brand-b {
     font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-weight: 800;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
     white-space: nowrap;

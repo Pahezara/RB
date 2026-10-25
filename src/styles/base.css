@@ -28,6 +28,26 @@
     U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* The wordmark face. The brand asks for Albertus Extra Bold, a licensed
+   Monotype face that cannot be redistributed: it is used where the visitor has
+   it installed, and Marcellus (SIL OFL, self-hosted), the nearest free glyphic
+   serif, stands in everywhere else. Drop a licensed albertus-extra-bold.woff2
+   into public/fonts and add it to the src list to serve the real face. */
+@font-face {
+  font-family: 'RB Wordmark';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Albertus Extra Bold'), local('AlbertusMT-ExtraBold'), local('Albertus MT Extra Bold');
+}
+/* Declared at 400 only, so the browser emboldens it toward Extra Bold. */
+@font-face {
+  font-family: 'RB Wordmark Alt';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/marcellus-latin.woff2') format('woff2');
+}
+
 @font-face {
   font-family: 'Inter Fallback';
   src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');

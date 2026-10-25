@@ -131,6 +131,8 @@
   /* --- type -------------------------------------------------------------------------------- */
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Inter Fallback',
                'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* The words "Reliance Business Partners" in the logo lock-up, nothing else. */
+  --font-wordmark: 'RB Wordmark', 'RB Wordmark Alt', Georgia, serif;
   --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Inter Fallback',
                'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 

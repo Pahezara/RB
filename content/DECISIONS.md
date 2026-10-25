@@ -540,3 +540,24 @@ own language, not copied from another studio site:
 - **Type:** body text, the lede and the small steps came down a touch toward
   the owner's Northlight site: body about 14-15px, small text 13.5px. Headline
   sizes were already in that range and are unchanged; buttons are 46/50px.
+
+## D23 — Nugegoda only, a requirement questionnaire, the wordmark face
+2026-10-24, at the owner's request:
+
+- **One location.** The map, the hero line and the page description no longer
+  set Colombo Port City or the UAE beside the office, because together they
+  read as if the firm operated there. The map marks the Nugegoda office alone,
+  with a slow wave across the island. Port City and UAE formation remain
+  services, listed as services.
+- **Customise your requirement.** Under the three packages, a short
+  questionnaire: stage, services needed, a separate web design line (with the
+  published "from" price), timing, directors and a note. Like the contact form
+  (D10) it has no server; the answers become a WhatsApp or e-mail message the
+  visitor sends from their own app.
+- **The second-year retainer line** was removed from the calculator. The
+  figure still appears in the FAQ and on the packages page.
+- **Wordmark.** "Reliance Business Partners" in the header and footer is set in
+  Albertus Extra Bold where it is installed. Albertus is a licensed Monotype
+  face and cannot be redistributed, so Marcellus (SIL OFL, self-hosted) stands
+  in. To serve the real face, add a licensed woff2 to public/fonts and to the
+  'RB Wordmark' @font-face in base.css.
